@@ -25,6 +25,7 @@ public class TechnoBot {
             jda.getPresence().setActivity(Activity.watching("youtube.com/technovisiontv"));
         } catch (LoginException e) {
             e.printStackTrace();
+            return;
         }
         jda.addEventListener(new CommandEventListener());
     }
