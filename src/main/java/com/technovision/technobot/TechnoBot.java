@@ -22,7 +22,7 @@ public class TechnoBot {
         try {
             jda = JDABuilder.createDefault(getToken()).build();
             jda.getPresence().setStatus(OnlineStatus.ONLINE);
-            jda.getPresence().setActivity(Activity.watching("youtube.com/technovisiontv"));
+            jda.getPresence().setActivity(Activity.watching("TechnoVisionTV"));
         } catch (LoginException e) {
             e.printStackTrace();
         }
