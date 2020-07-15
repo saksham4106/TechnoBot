@@ -1,5 +1,6 @@
 package com.technovision.technobot.util;
 
+import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.logging.Loggable;
 import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.JDA;
@@ -14,6 +15,7 @@ import java.util.List;
 public class BotRegistry {
     private final Logger logger = new Logger(this);
     private final List<ListenerAdapter> eventListeners = new ArrayList<ListenerAdapter>();
+    private final List<Command> commands = new ArrayList<Command>();
 
     public BotRegistry() {}
 
@@ -34,5 +36,18 @@ public class BotRegistry {
         }
 
         logger.log(Logger.LogLevel.INFO, "Finished EventListener Initialization Process");
+    }
+
+    public void registerCommands(Command... commands) {
+        logger.log(Logger.LogLevel.INFO, "Beginning Command Registry Protocol for "+commands.length+" commands.");
+        for(Command c : commands) {
+            logger.log(Logger.LogLevel.INFO, "Registering Command: "+c.name);
+        }
+        this.commands.addAll(Arrays.asList(commands));
+        logger.log(Logger.LogLevel.INFO, "Finished Command Registry Protocol");
+    }
+
+    public List<Command> getCommands() {
+        return new ArrayList<Command>(commands);
     }
 }
