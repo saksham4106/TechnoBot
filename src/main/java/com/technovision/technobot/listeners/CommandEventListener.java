@@ -43,7 +43,7 @@ public class CommandEventListener extends ListenerAdapter {
             StringBuilder msg = new StringBuilder();
             for (int i = 0; i < args.length; i++) {
                 if (i > 0) {
-                    msg.append(args[i] + " ");
+                    msg.append(args[i]).append(" ");
                 }
             }
             embed.setTitle("Suggestion");
