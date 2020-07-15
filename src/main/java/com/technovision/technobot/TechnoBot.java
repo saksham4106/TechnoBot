@@ -2,6 +2,7 @@ package com.technovision.technobot;
 
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.listeners.CommandEventListener;
+import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.GenericEvent;
@@ -16,9 +17,13 @@ public class TechnoBot {
 
     public static JDA jda;
     public static Configuration config;
+    public static Logger logger;
 
     public static void main(String[] args) {
         createConfig();
+
+        logger = new Logger();
+
         try {
             jda = JDABuilder.createDefault(getToken()).build();
             jda.getPresence().setStatus(OnlineStatus.ONLINE);
