@@ -1,10 +1,16 @@
 package com.technovision.technobot.commands;
 
 import com.technovision.technobot.TechnoBot;
+import com.technovision.technobot.listeners.CommandEventListener;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.technovision.technobot.listeners.CommandEventListener.EMBED_COLOR;
 
@@ -32,15 +38,28 @@ public class CommandRegistry {
         }, new Command("help", "Displays a list of available commands","{prefix}help (optional: category/command)", Command.Category.OTHER) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
-                EmbedBuilder embed = new EmbedBuilder();
-                embed.setTitle(":robot: TechnoBot Commands");
-                embed.addField("Moderator", "`!help moderator`", false);
-                embed.addField("Levels", "`!help levels`", false);
-                embed.addField("Economy", "`!help economy`", false);
-                embed.addField("Commands", "`!help commands`", false);
-                embed.addField("Music", "`!help music`", false);
-                embed.setColor(EMBED_COLOR);
-                event.getChannel().sendMessage(embed.build()).queue();
+                Map<Category, List<Command>> categories = new HashMap<Category,List<Command>>();
+
+                for(Category c : Category.values()) {
+                    categories.put(c, new ArrayList<Command>());
+                }
+                for(Command c : TechnoBot.getInstance().getRegistry().getCommands()) {
+                    categories.get(c.category).add(c);
+                }
+
+                if(args.length==0) {
+                    event.getChannel().sendMessage(new EmbedBuilder() {{
+                        setTitle(":bot: TechnoBot Commands");
+                        setColor(EMBED_COLOR);
+                        setThumbnail("https://cdn.discordapp.com/avatars/595024631438508070/08e21a9478909deacd7bebb29e98a329.png");
+                        setFooter(event.getAuthor().getAsTag(),event.getAuthor().getAvatarUrl());
+                        categories.forEach((category, commands) -> {
+                            addField((category.name().charAt(0)+"").toUpperCase()+category.name().substring(1).toLowerCase(), commands.size()+" commands in category | `"+CommandEventListener.PREFIX+"help "+category.name().toLowerCase()+"`",false);
+                        });
+                    }}.build()).queue();
+                } else {
+                    event.getChannel().sendMessage("Usage: "+usage).queue();
+                }
                 return true;
             }
         }, new Command("suggest", "Suggest a feature or idea related to the server", "{prefix}suggest <idea>", Command.Category.OTHER) {
