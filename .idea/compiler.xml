@@ -10,8 +10,5 @@
         <module name="technobot" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="TechnoBot" target="6" />
-    </bytecodeTargetLevel>
   </component>
 </project>

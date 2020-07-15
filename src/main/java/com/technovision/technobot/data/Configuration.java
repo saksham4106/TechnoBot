@@ -28,7 +28,6 @@ public class Configuration implements DataSave {
         if(!directory.exists()&&!directory.mkdirs()) {
             // TODO: 7/14/2020 Logger#severe (see line 48/61)
         }
-
         load();
         save();
     }
@@ -56,6 +55,7 @@ public class Configuration implements DataSave {
             while(scanner.hasNextLine()) {
                 jsonStr.append(scanner.nextLine());
             }
+            scanner.close();
         } catch (FileNotFoundException e) {
             // TODO: 7/14/2020 Logger#severe(new RuntimeException("An internal error occured while loading "+directory.getPath()+fileName+"!", e));
             e.printStackTrace();
@@ -70,8 +70,11 @@ public class Configuration implements DataSave {
     @Override
     public void save() {
         try {
-            FileWriter writer = new FileWriter(new File(directory.getPath()+"/"+fileName));
-            writer.write(json.toString(4));
+            System.out.println("SAVE METHOD");
+            FileWriter writer = new FileWriter(directory.getPath()+"/"+fileName);
+            writer.write("test");
+            writer.flush();
+            writer.close();
         } catch (IOException e) {
             // TODO: 7/14/2020 Logger#severe(new RuntimeException("An internal error occurred while saving "+directory.getPath()+fileName+"!", e));
             e.printStackTrace();
