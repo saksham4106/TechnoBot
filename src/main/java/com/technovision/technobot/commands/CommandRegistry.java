@@ -49,16 +49,48 @@ public class CommandRegistry {
 
                 if(args.length==0) {
                     event.getChannel().sendMessage(new EmbedBuilder() {{
-                        setTitle(":bot: TechnoBot Commands");
+                        setTitle(":roxbot: TechnoBot Commands");
                         setColor(EMBED_COLOR);
                         setThumbnail("https://cdn.discordapp.com/avatars/595024631438508070/08e21a9478909deacd7bebb29e98a329.png");
-                        setFooter(event.getAuthor().getAsTag(),event.getAuthor().getAvatarUrl());
+                        setFooter(event.getAuthor().getAsTag(), event.getAuthor().getAvatarUrl());
                         categories.forEach((category, commands) -> {
-                            addField((category.name().charAt(0)+"").toUpperCase()+category.name().substring(1).toLowerCase(), commands.size()+" commands in category | `"+CommandEventListener.PREFIX+"help "+category.name().toLowerCase()+"`",false);
+                            addField((category.name().charAt(0) + "").toUpperCase() + category.name().substring(1).toLowerCase(), commands.size() + " commands in category | `" + CommandEventListener.PREFIX + "help " + category.name().toLowerCase() + "`", false);
                         });
                     }}.build()).queue();
+                } else if(args.length<=2) {
+                    for (Category c : categories.keySet()) {
+                        if (args[0].equalsIgnoreCase(c.name())) {
+                            if(args.length==2) {
+                                for(Command cmd : categories.get(c)) {
+                                    if(args[1].equalsIgnoreCase(cmd.name)) {
+                                        EmbedBuilder builder = new EmbedBuilder()
+                                                .setTitle(":robot: TechnoBot Commands")
+                                                .setDescription("Category: "+(c.name().charAt(0) + "").toUpperCase() + c.name().substring(1).toLowerCase()+" | Command: "+cmd.name)
+                                                .addField("Name", cmd.name, true)
+                                                .addField("Description", cmd.description, true)
+                                                .addField("Category", (""+cmd.category.name().charAt(0)).toUpperCase()+cmd.category.name().substring(1).toLowerCase(), true)
+                                                .addField("Usage", cmd.usage.replaceAll("\\{prefix}",CommandEventListener.PREFIX), true);
+                                        event.getChannel().sendMessage(builder.build()).queue();
+                                        return true;
+                                    }
+                                }
+                            }
+                            EmbedBuilder builder = new EmbedBuilder()
+                                    .setTitle(":robot: TechnoBot Commands")
+                                    .setDescription("Category: " + (c.name().charAt(0) + "").toUpperCase() + c.name().substring(1).toLowerCase())
+                                    .setColor(EMBED_COLOR);
+                            for (Command cmd : categories.get(c)) {
+                                builder.addField(cmd.name, cmd.description + "\n`" + CommandEventListener.PREFIX + "help " + c.name().toLowerCase() + " " + cmd.name.toLowerCase() + "`", true);
+                            }
+
+                            event.getChannel().sendMessage(builder.build()).queue();
+
+                            return true;
+                        }
+                    }
+                    event.getChannel().sendMessage("Unknown Category: `" + args[0].toLowerCase() + "`").queue();
                 } else {
-                    event.getChannel().sendMessage("Usage: "+usage).queue();
+                    event.getChannel().sendMessage("Usage: "+usage.replaceAll("\\{prefix}",CommandEventListener.PREFIX)).queue();
                 }
                 return true;
             }
