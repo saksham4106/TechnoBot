@@ -72,7 +72,7 @@ public class Configuration implements DataSave {
         try {
             System.out.println("SAVE METHOD");
             FileWriter writer = new FileWriter(directory.getPath()+"/"+fileName);
-            writer.write("test");
+            writer.write(json.toString(4));
             writer.flush();
             writer.close();
         } catch (IOException e) {

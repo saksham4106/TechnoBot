@@ -1,9 +1,13 @@
 package com.technovision.technobot;
 
 import com.technovision.technobot.data.Configuration;
+import com.technovision.technobot.listeners.CommandEventListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.hooks.EventListener;
 
+import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 
 public class TechnoBot {
@@ -18,6 +22,7 @@ public class TechnoBot {
         } catch (LoginException e) {
             e.printStackTrace();
         }
+        jda.addEventListener(new CommandEventListener());
     }
 
     private static void createConfig() {
@@ -25,8 +30,8 @@ public class TechnoBot {
             @Override
             public void load() {
                 super.load();
-                if(getJson().getString("token")==null) getJson().put("token", "");
-                if(getJson().getString("logs-webhook")==null) getJson().put("logs-webhook", "");
+                if(!getJson().has("token")) getJson().put("token", "");
+                if(!getJson().has("logs-webhook")) getJson().put("logs-webhook", "");
             }
         };
     }
