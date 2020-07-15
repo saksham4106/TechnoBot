@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
 
@@ -47,6 +48,7 @@ public class TechnoBot {
         JDABuilder builder = JDABuilder.createDefault(getToken());
         builder.setStatus(OnlineStatus.ONLINE)
         .setActivity(Activity.watching("TechnoVisionTV"));
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
         jda = builder.build();
 
         registry = new BotRegistry();
