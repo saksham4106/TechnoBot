@@ -3,6 +3,7 @@ package com.technovision.technobot;
 import com.technovision.technobot.commands.CommandRegistry;
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.listeners.CommandEventListener;
+import com.technovision.technobot.listeners.GuildMemberEvents;
 import com.technovision.technobot.logging.Loggable;
 import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.BotRegistry;
@@ -79,7 +80,7 @@ public class TechnoBot {
         getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
 
         new CommandRegistry();
-        getInstance().getRegistry().registerEventListeners(new CommandEventListener());
+        getInstance().getRegistry().registerEventListeners(new CommandEventListener(), new GuildMemberEvents());
         getInstance().getRegistry().addListeners(getInstance().getJDA());
     }
 }
