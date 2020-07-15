@@ -3,6 +3,8 @@ package com.technovision.technobot;
 import com.technovision.technobot.data.Configuration;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 
 import javax.security.auth.login.LoginException;
 
@@ -15,6 +17,8 @@ public class TechnoBot {
         createConfig();
         try {
             jda = JDABuilder.createDefault(getToken()).build();
+            jda.getPresence().setStatus(OnlineStatus.ONLINE);
+            jda.getPresence().setActivity(Activity.watching("youtube.com/technovisiontv"));
         } catch (LoginException e) {
             e.printStackTrace();
         }

@@ -70,9 +70,7 @@ public class Configuration implements DataSave {
     @Override
     public void save() {
         try {
-            System.out.println("SAVE METHOD");
             FileWriter writer = new FileWriter(directory.getPath()+"/"+fileName);
-            writer.write("test");
             writer.flush();
             writer.close();
         } catch (IOException e) {
