@@ -20,25 +20,26 @@ public class CommandEventListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
-
+        if (event.getAuthor().isBot()) { return; }
         String[] mArray = event.getMessage().getContentRaw().split(" ");
         String command = mArray[0];
-
-        String[] args = new String[mArray.length-1];
-        for(int i = 0; i < mArray.length; i++) {
-            if(i>0) args[i-1] = mArray[i];
-        }
-
-        BotRegistry registry = TechnoBot.getInstance().getRegistry();
-
-        for(Command cmd : registry.getCommands()) {
-            if((PREFIX+cmd.name).equalsIgnoreCase(command)) {
-                if(!cmd.execute(event, args)) {
-                    // do something, idk (the command failed to execute in this situation)
-                }
-                return;
+        if (command.startsWith(PREFIX)) {
+            String[] args = new String[mArray.length - 1];
+            for (int i = 0; i < mArray.length; i++) {
+                if (i > 0) args[i - 1] = mArray[i];
             }
+
+            BotRegistry registry = TechnoBot.getInstance().getRegistry();
+
+            for (Command cmd : registry.getCommands()) {
+                if ((PREFIX + cmd.name).equalsIgnoreCase(command)) {
+                    if (!cmd.execute(event, args)) {
+                        // do something, idk (the command failed to execute in this situation)
+                    }
+                    return;
+                }
+            }
+            event.getChannel().sendMessage("Unknown Command!").queue();
         }
-        if(command.startsWith(PREFIX)) event.getChannel().sendMessage("Unknown Command!").queue();
     }
 }
