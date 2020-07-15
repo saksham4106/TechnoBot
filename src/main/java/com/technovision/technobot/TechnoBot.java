@@ -72,7 +72,6 @@ public class TechnoBot {
     public static void main(String[] args) {
         try {
             TechnoBot bot = new TechnoBot();
-            while(bot.getBotConfig()==null) {}
             getInstance().logger = new Logger(bot);
         } catch(LoginException e) { throw new RuntimeException(e); }
 
