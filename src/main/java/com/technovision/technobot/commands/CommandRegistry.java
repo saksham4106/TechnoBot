@@ -1,5 +1,6 @@
 package com.technovision.technobot.commands;
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
@@ -26,6 +27,7 @@ import java.util.*;
 import java.util.List;
 
 import static com.technovision.technobot.listeners.CommandEventListener.EMBED_COLOR;
+import static com.technovision.technobot.listeners.CommandEventListener.PREFIX;
 
 /**
  * Registers commands and their execution
@@ -338,6 +340,32 @@ public class CommandRegistry {
                     return true;
                 }
                 MusicManager.getInstance().addTrack(args[0], event.getChannel(), event.getGuild());
+                return true;
+            }
+        }, new Command("queue", "Displays a queue of songs", "{prefix}queue", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null) {
+                    event.getChannel().sendMessage("Queue is empty.").queue();
+                    return true;
+                }
+                List<AudioTrack> tracks = MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy();
+                if(tracks.size()==0) {
+                    event.getChannel().sendMessage("Queue is empty.").queue();
+                    return true;
+                }
+
+                EmbedBuilder builder = new EmbedBuilder()
+                        .setTitle(event.getGuild().getName()+"'s Queue")
+                        .setDescription(tracks.size()+" songs in queue")
+                        .addField("Now Playing :musical_note:", "["+tracks.get(0).getInfo().title+"]("+tracks.get(0).getInfo().uri+")\nBy: "+tracks.get(0).getInfo().author, false);
+                tracks.remove(0);
+                builder.addField("All Songs","All Songs in queue listed below.",false);
+                for(AudioTrack track : tracks) {
+                    builder.addField(track.getInfo().title, track.getInfo().uri, false);
+                }
+
+                event.getChannel().sendMessage(builder.build()).queue();
                 return true;
             }
         });

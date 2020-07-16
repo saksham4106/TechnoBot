@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class MusicManager extends ListenerAdapter {
     public final Map<Long, MusicSendHandler> handlers = new HashMap<Long, MusicSendHandler>();
-    private AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
+    private final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
 
     private static MusicManager musicManager;
     public static MusicManager getInstance() {
@@ -56,7 +56,7 @@ public class MusicManager extends ListenerAdapter {
         playerManager.loadItem(name, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                channel.sendMessage("Loading track `"+audioTrack.getIdentifier()+"`").queue();
+                channel.sendMessage("Loading track `"+audioTrack.getInfo().title+"`").queue();
                 handlers.get(guild.getIdLong()).trackScheduler.queue(audioTrack);
             }
 
@@ -81,7 +81,7 @@ public class MusicManager extends ListenerAdapter {
         });
     }
 
-    private static class MusicSendHandler implements AudioSendHandler {
+    public static class MusicSendHandler implements AudioSendHandler {
         private final AudioPlayer player;
         private AudioFrame lastFrame;
         public final TrackScheduler trackScheduler;
@@ -113,6 +113,10 @@ public class MusicManager extends ListenerAdapter {
     public static class TrackScheduler extends AudioEventAdapter {
         private final List<AudioTrack> trackQueue = new ArrayList<>();
         private final AudioPlayer player;
+
+        public List<AudioTrack> getQueueCopy() {
+            return new ArrayList<>(trackQueue);
+        }
 
         public TrackScheduler(AudioPlayer player) {
             this.player = player;
