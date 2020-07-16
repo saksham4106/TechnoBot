@@ -3,6 +3,7 @@ package com.technovision.technobot;
 import com.technovision.technobot.commands.CommandRegistry;
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.listeners.CommandEventListener;
+import com.technovision.technobot.listeners.GuildLogEventListener;
 import com.technovision.technobot.listeners.GuildMemberEvents;
 import com.technovision.technobot.listeners.LevelManager;
 import com.technovision.technobot.logging.Loggable;
@@ -13,6 +14,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import javax.security.auth.login.LoginException;
 
@@ -36,6 +38,7 @@ public class TechnoBot {
             super.load();
             if(!getJson().has("token")) getJson().put("token", "");
             if(!getJson().has("logs-webhook")) getJson().put("logs-webhook", "");
+            if(!getJson().has("guildlogs-webhook")) getJson().put("guildlogs-webhook", "");
         }
     };
 
@@ -49,7 +52,8 @@ public class TechnoBot {
         JDABuilder builder = JDABuilder.createDefault(getToken());
         builder.setStatus(OnlineStatus.ONLINE)
         .setActivity(Activity.watching("TechnoVisionTV"));
-        builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
+        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES);
         jda = builder.build();
 
         registry = new BotRegistry();
@@ -82,7 +86,7 @@ public class TechnoBot {
         getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
 
         new CommandRegistry();
-        getInstance().getRegistry().registerEventListeners(new LevelManager(), new CommandEventListener(), new GuildMemberEvents());
+        getInstance().getRegistry().registerEventListeners(new GuildLogEventListener(), new LevelManager(), new CommandEventListener(), new GuildMemberEvents());
         getInstance().getRegistry().addListeners(getInstance().getJDA());
     }
 }
