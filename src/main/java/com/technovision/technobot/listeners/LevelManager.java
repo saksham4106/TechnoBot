@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LevelManager extends ListenerAdapter {
+
+    public static String RANK_CHANNEL = "RANKS-AND-ROLES";
+
     private static LevelManager instance;
     private final Map<Long, Long> lastTalked = new HashMap<Long, Long>();
     public final Configuration levelSave = new Configuration("data/","levels.json") {
@@ -33,8 +36,9 @@ public class LevelManager extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
 
+        if (event.getAuthor().isBot()) { return; }
+        if (event.getMessage().getContentRaw().startsWith("!")) { return; }
         long exactMilli = event.getMessage().getTimeCreated().toInstant().toEpochMilli();
-
 
         boolean exists = false;
 
@@ -65,9 +69,10 @@ public class LevelManager extends ListenerAdapter {
                 JSONObject player = ((JSONObject)o);
                 if(player.getLong("id")==event.getAuthor().getIdLong()) {
                     player.put("lastTalked", exactMilli);
-                    player.put("xp", player.getInt("xp")+Math.floor(Math.random()*49)+1);
+                    player.put("xp", player.getInt("xp")+Math.floor(Math.random()*20)+1);
                     if(player.getInt("xp") >= player.getInt("level")*300) {
-                        event.getChannel().sendMessage(event.getAuthor().getName()+", you just leveled up to level "+(player.getInt("level")+1)+"!").queue();
+                        String levelUp = "Congrats <@!" + event.getAuthor().getId() + ">" + ", you just advanced to level " + (player.getInt("level")+1)+"!";
+                        event.getGuild().getTextChannelsByName(RANK_CHANNEL, true).get(0).sendMessage(levelUp).queue();
                         player.put("xp", player.getInt("xp")-(player.getInt("level")*300));
                         player.put("level", player.getInt("level")+1);
                     }

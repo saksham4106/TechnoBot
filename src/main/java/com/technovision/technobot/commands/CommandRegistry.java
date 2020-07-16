@@ -107,9 +107,8 @@ public class CommandRegistry {
                     for (String arg : args) {
                         msg.append(arg).append(" ");
                     }
-                    embed.setTitle("Suggestion");
                     embed.setFooter(event.getAuthor().getAsTag(), event.getAuthor().getAvatarUrl());
-                    embed.setDescription(msg.toString());
+                    embed.addField("Suggestion", msg.toString(), false);
                     embed.setColor(EMBED_COLOR);
                     TextChannel channel = event.getGuild().getTextChannelsByName("SUGGESTIONS", true).get(0);
                     channel.sendMessage(embed.build()).queue(message -> {
@@ -254,9 +253,9 @@ public class CommandRegistry {
                         event.getChannel().sendMessage(new EmbedBuilder()
                                 .setTitle("Rank")
                                 .setColor(EMBED_COLOR)
+                                .setThumbnail(event.getAuthor().getAvatarUrl())
                                 .addField("XP", player.getInt("xp")+" / "+(player.getInt("level")*300)+" | "+percentStr+"%", false)
                                 .addField("Level", player.getInt("level")+"", false)
-                                .addField("Nerd Stuff", "LastMessage: "+player.getLong("lastTalked"), false)
                                 .setFooter(event.getAuthor().getName(), event.getAuthor().getAvatarUrl())
                                 .build()).queue();
                     }
