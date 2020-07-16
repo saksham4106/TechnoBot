@@ -249,11 +249,12 @@ public class CommandRegistry {
                         JSONObject player = (JSONObject)o;
 
                         float percent = ( (float)(player.getInt("xp")*100) / (float)( (player.getInt("level")*300) ) );
+                        String percentStr = String.valueOf(percent).substring(0, Math.min(String.valueOf(percent).length(), 4));
 
                         event.getChannel().sendMessage(new EmbedBuilder()
                                 .setTitle("Rank")
                                 .setColor(EMBED_COLOR)
-                                .addField("XP", player.getInt("xp")+" / "+(player.getInt("level")*300)+" | "+((percent+"").substring(0, 4))+"%", false)
+                                .addField("XP", player.getInt("xp")+" / "+(player.getInt("level")*300)+" | "+percentStr+"%", false)
                                 .addField("Level", player.getInt("level")+"", false)
                                 .addField("Nerd Stuff", "LastMessage: "+player.getLong("lastTalked"), false)
                                 .setFooter(event.getAuthor().getName(), event.getAuthor().getAvatarUrl())
