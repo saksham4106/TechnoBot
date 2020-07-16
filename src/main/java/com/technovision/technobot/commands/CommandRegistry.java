@@ -4,6 +4,7 @@ import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.LevelManager;
+import com.technovision.technobot.listeners.MusicManager;
 import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -315,6 +316,28 @@ public class CommandRegistry {
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 event.getChannel().sendMessage(":construction: Work in Progress :construction:").queue();
 
+                return true;
+            }
+        });
+
+        TechnoBot.getInstance().getRegistry().registerCommands(new Command("join", "Joins your current voice channel", "{prefix}join", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
+                    event.getChannel().sendMessage("You are not in a voice channel!").queue();
+                    return true;
+                }
+                MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel());
+                return true;
+            }
+        }, new Command("play", "Plays music in voice channel", "{prefix}play", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
+                    event.getChannel().sendMessage("You are not in a voice channel!").queue();
+                    return true;
+                }
+                MusicManager.getInstance().addTrack(args[0], event.getChannel(), event.getGuild());
                 return true;
             }
         });
