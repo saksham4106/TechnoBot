@@ -1,8 +1,10 @@
 package com.technovision.technobot.commands;
 
 import com.technovision.technobot.TechnoBot;
+import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.LevelManager;
+import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -13,10 +15,14 @@ import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static com.technovision.technobot.listeners.CommandEventListener.EMBED_COLOR;
 
@@ -248,18 +254,58 @@ public class CommandRegistry {
                 for(Object o : LevelManager.getInstance().levelSave.getJson().getJSONArray("users")) {
                     if(((JSONObject)o).getLong("id")==event.getAuthor().getIdLong()) {
                         JSONObject player = (JSONObject)o;
-
                         float percent = ( (float)(player.getInt("xp")*100) / (float)( (player.getInt("level")*300) ) );
+                        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.INFO, Float.toString(percent));
                         String percentStr = String.valueOf(percent).substring(0, Math.min(String.valueOf(percent).length(), 4));
+                        try {
+                            //Get Base Image
+                            String imagePath = "data/rankCardBase.png";
+                            BufferedImage myPicture = ImageIO.read(new File(imagePath));
 
-                        event.getChannel().sendMessage(new EmbedBuilder()
-                                .setTitle("Rank")
-                                .setColor(EMBED_COLOR)
-                                .setThumbnail(event.getAuthor().getAvatarUrl())
-                                .addField("XP", player.getInt("xp")+" / "+(player.getInt("level")*300)+" | "+percentStr+"%", false)
-                                .addField("Level", player.getInt("level")+"", false)
-                                .setFooter(event.getAuthor().getName(), event.getAuthor().getAvatarUrl())
-                                .build()).queue();
+                            //Edit
+                            Graphics2D g = (Graphics2D) myPicture.getGraphics();
+                            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                            g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+                            g.setStroke(new BasicStroke(4));
+                            g.setColor(Color.white);
+                            g.setFont(new Font("Helvetica", Font.PLAIN, 22));
+
+                            //Text
+                            g.drawString(event.getAuthor().getName(), 130, 40);
+                            g.setFont(new Font("Helvetica", Font.PLAIN, 15));
+                            g.drawString("Rank #24", 290, 40);
+                            g.drawString("Level " + player.getInt("level"), 130, 72);
+                            g.setFont(new Font("Helvetica", Font.PLAIN, 12));
+                            g.drawString(player.getInt("xp")+" / "+(player.getInt("level")*300), 300, 72);
+                            g.setStroke(new BasicStroke(1));
+                            g.drawLine(130, 50, 350, 50);
+
+                            //XP Bar
+                            g.drawRoundRect(130, 85, 220, 20, 8, 8);
+                            g.setColor(Color.CYAN);
+                            g.fillRoundRect(130, 85, (int) (220 * (percent * 0.01)), 20, 8, 8);
+                            g.setColor(Color.white);
+                            g.setFont(new Font("Helvetica", Font.PLAIN, 12));
+                            g.drawString(percentStr + "%", 230, 100);
+
+                            //Add Avatar
+                            BufferedImage avatar = ImageProcessor.getAvatar(event.getAuthor().getAvatarUrl(), 0.70, 0.70);
+                            g.setStroke(new BasicStroke(4));
+                            int width = avatar.getWidth();
+                            BufferedImage circleBuffer = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
+                            Graphics2D g2 = circleBuffer.createGraphics();
+                            g2.setClip(new Ellipse2D.Float(0, 0, width-36, width-36));
+                            g2.drawImage(avatar, 0, 0, width, width, null);
+                            g.drawImage(circleBuffer, 22, 13, null);
+                            g.setColor(Color.darkGray);
+                            g.drawOval(22, 13, width-36, width-36);
+
+                            //Save File
+                            File rankCard = ImageProcessor.saveImage("data/rankCard.png", myPicture);
+                            event.getChannel().sendFile(rankCard, "rankCard.png").queue();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 return true;

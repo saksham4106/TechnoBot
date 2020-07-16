@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.internal.requests.Route;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 
 public class CommandEventListener extends ListenerAdapter {
 
@@ -33,8 +34,12 @@ public class CommandEventListener extends ListenerAdapter {
 
             for (Command cmd : registry.getCommands()) {
                 if ((PREFIX + cmd.name).equalsIgnoreCase(command)) {
-                    if (!cmd.execute(event, args)) {
-                        // do something, idk (the command failed to execute in this situation)
+                    try {
+                        if (!cmd.execute(event, args)) {
+                            // do something, idk (the command failed to execute in this situation)
+                        }
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
                     }
                     return;
                 }

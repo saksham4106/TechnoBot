@@ -83,6 +83,7 @@ public class TechnoBot {
             getInstance().logger = new Logger(bot);
         } catch(LoginException e) { throw new RuntimeException(e); }
 
+        System.setProperty("http.agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2");
         getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
 
         new CommandRegistry();
