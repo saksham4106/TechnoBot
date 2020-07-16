@@ -2,10 +2,14 @@ package com.technovision.technobot.commands;
 
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.listeners.CommandEventListener;
+import com.technovision.technobot.listeners.LevelManager;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +53,7 @@ public class CommandRegistry {
 
                 if(args.length==0) {
                     event.getChannel().sendMessage(new EmbedBuilder() {{
-                        setTitle(":roxbot: TechnoBot Commands");
+                        setTitle(":robot: TechnoBot Commands");
                         setColor(EMBED_COLOR);
                         setThumbnail("https://cdn.discordapp.com/avatars/595024631438508070/08e21a9478909deacd7bebb29e98a329.png");
                         setFooter(event.getAuthor().getAsTag(), event.getAuthor().getAvatarUrl());
@@ -121,6 +125,148 @@ public class CommandRegistry {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 event.getChannel().sendMessage("Check out TechnoVision's YouTube channel: https://youtube.com/c/TechnoVisionTV").queue();
+                return true;
+            }
+        });
+
+        TechnoBot.getInstance().getRegistry().registerCommands(new Command("kick", "Kicks the specified user for specified reason", "{prefix}kick <user> (optional reason.. all args)", Command.Category.STAFF) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                Member executor = event.getMember();
+                Member target = null;
+                try {
+                    target = event.getMessage().getMentionedMembers().get(0);
+                } catch(Exception e) {
+                    // there was no mentioned user, using second check
+                }
+
+                if(!executor.hasPermission(Permission.KICK_MEMBERS)) {
+                    event.getChannel().sendMessage("You do not have permission to do that!").queue();
+                    return true;
+                }
+
+
+                if(target==null) {
+                    try {
+                        target = event.getGuild().getMemberById(args[0]);
+                    } catch(Exception ignored) {}
+                }
+                if(target==null) {
+                    event.getChannel().sendMessage("Could not find user!").queue();
+                    return true;
+                }
+                if(executor.getUser().getId().equalsIgnoreCase(target.getUser().getId())) {
+                    event.getChannel().sendMessage("You can't kick yourself \uD83E\uDD26\u200D").queue();
+                    return true;
+                }
+                if(!executor.canInteract(target)) {
+                    event.getChannel().sendMessage("You can't kick that user!").queue();
+                    return true;
+                }
+
+                if(args.length==0) {
+                    event.getChannel().sendMessage("Please specify a user and reason!").queue();
+                    return true;
+                }
+
+                String reason = "Unspecified";
+
+                if(args.length>1) {
+                    reason = String.join(" ", args);
+                    reason = reason.substring(reason.indexOf(" "));
+                }
+
+                target.kick(reason).complete();
+
+                event.getChannel().sendMessage(new EmbedBuilder()
+                .setTitle("Success")
+                .setDescription("Successfully kicked <@!"+target.getUser().getId()+"> for reason `"+reason.replaceAll("`","")+"`").build()).queue();
+
+                return true;
+            }
+        }, new Command("ban", "Bans the specified user for specified reason", "{prefix}ban <user> (optional reason.. all args", Command.Category.STAFF) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                Member executor = event.getMember();
+                Member target = null;
+                try {
+                    target = event.getMessage().getMentionedMembers().get(0);
+                } catch(Exception e) {
+                    // there was no mentioned user, using second check
+                }
+
+                if(!executor.hasPermission(Permission.BAN_MEMBERS)) {
+                    event.getChannel().sendMessage("You do not have permission to do that!").queue();
+                    return true;
+                }
+
+
+                if(target==null) {
+                    try {
+                        target = event.getGuild().getMemberById(args[0]);
+                    } catch(Exception ignored) {}
+                }
+                if(target==null) {
+                    event.getChannel().sendMessage("Could not find user!").queue();
+                    return true;
+                }
+                if(executor.getUser().getId().equalsIgnoreCase(target.getUser().getId())) {
+                    event.getChannel().sendMessage("You can't ban yourself \uD83E\uDD26\u200D").queue();
+                    return true;
+                }
+                if(!executor.canInteract(target)) {
+                    event.getChannel().sendMessage("You can't ban that user!").queue();
+                    return true;
+                }
+
+                if(args.length==0) {
+                    event.getChannel().sendMessage("Please specify a user and reason!").queue();
+                    return true;
+                }
+
+                String reason = "Unspecified";
+
+                if(args.length>1) {
+                    reason = String.join(" ", args);
+                    reason = reason.substring(reason.indexOf(" "));
+                }
+
+                target.ban(0, reason).complete();
+
+                event.getChannel().sendMessage(new EmbedBuilder()
+                        .setTitle("Success")
+                        .setDescription("Successfully banned <@!"+target.getUser().getId()+"> for reason `"+reason.replaceAll("`","")+"`").build()).queue();
+
+                return true;
+            }
+        });
+
+        TechnoBot.getInstance().getRegistry().registerCommands(new Command("rank", "Displays your levels and rank", "{prefix}rank", Command.Category.LEVELS) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                for(Object o : LevelManager.getInstance().levelSave.getJson().getJSONArray("users")) {
+                    if(((JSONObject)o).getLong("id")==event.getAuthor().getIdLong()) {
+                        JSONObject player = (JSONObject)o;
+
+                        float percent = ( (float)(player.getInt("xp")*100) / (float)( (player.getInt("level")*300) ) );
+
+                        event.getChannel().sendMessage(new EmbedBuilder()
+                                .setTitle("Rank")
+                                .setColor(EMBED_COLOR)
+                                .addField("XP", player.getInt("xp")+" / "+(player.getInt("level")*300)+" | "+((percent+"").substring(0, 4))+"%", false)
+                                .addField("Level", player.getInt("level")+"", false)
+                                .addField("Nerd Stuff", "LastMessage: "+player.getLong("lastTalked"), false)
+                                .setFooter(event.getAuthor().getName(), event.getAuthor().getAvatarUrl())
+                                .build()).queue();
+                    }
+                }
+                return true;
+            }
+        }, new Command("leaderboard", "Shows the level Leaderboard", "{prefix}leaderboard", Command.Category.LEVELS) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                event.getChannel().sendMessage(":construction: Work in Progress :construction:").queue();
+
                 return true;
             }
         });
