@@ -264,17 +264,21 @@ public class CommandRegistry {
                             BufferedImage base = ImageIO.read(new File("data/rankCardBase.png"));
                             BufferedImage outline = ImageIO.read(new File("data/rankCardOutline.png"));
 
-                            //Edit
+                            //Add Outline
                             Graphics2D g = (Graphics2D) base.getGraphics();
                             g.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY));
                             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                             g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+                            float opacity = 0.5f;
+                            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
+                            g.setComposite(ac);
+                            g.drawImage(outline, 0, 0, null);
+                            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+
+                            //Text
                             g.setStroke(new BasicStroke(3));
                             g.setColor(Color.white);
                             g.setFont(new Font("Helvetica", Font.PLAIN, 52));
-                            g.drawImage(outline, 0, 0, null);
-                            
-                            //Text
                             g.drawLine(300, 140, 870, 140);
                             g.drawString(event.getAuthor().getName(), 300, 110);
                             g.setFont(new Font("Helvetica", Font.PLAIN, 35));
