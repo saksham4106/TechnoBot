@@ -255,53 +255,53 @@ public class CommandRegistry {
                     if(((JSONObject)o).getLong("id")==event.getAuthor().getIdLong()) {
                         JSONObject player = (JSONObject)o;
                         float percent = ( (float)(player.getInt("xp")*100) / (float)( (player.getInt("level")*300) ) );
-                        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.INFO, Float.toString(percent));
                         String percentStr = String.valueOf(percent).substring(0, Math.min(String.valueOf(percent).length(), 4));
                         try {
                             //Get Base Image
-                            String imagePath = "data/rankCardBase.png";
-                            BufferedImage myPicture = ImageIO.read(new File(imagePath));
+                            BufferedImage base = ImageIO.read(new File("data/rankCardBase.png"));
+                            BufferedImage outline = ImageIO.read(new File("data/rankCardOutline.png"));
 
                             //Edit
-                            Graphics2D g = (Graphics2D) myPicture.getGraphics();
+                            Graphics2D g = (Graphics2D) base.getGraphics();
+                            g.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY));
                             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                             g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
-                            g.setStroke(new BasicStroke(4));
+                            g.setStroke(new BasicStroke(3));
                             g.setColor(Color.white);
-                            g.setFont(new Font("Helvetica", Font.PLAIN, 22));
-
+                            g.setFont(new Font("Helvetica", Font.PLAIN, 52));
+                            g.drawImage(outline, 0, 0, null);
+                            
                             //Text
-                            g.drawString(event.getAuthor().getName(), 130, 40);
-                            g.setFont(new Font("Helvetica", Font.PLAIN, 15));
-                            g.drawString("Rank #24", 290, 40);
-                            g.drawString("Level " + player.getInt("level"), 130, 72);
-                            g.setFont(new Font("Helvetica", Font.PLAIN, 12));
-                            g.drawString(player.getInt("xp")+" / "+(player.getInt("level")*300), 300, 72);
-                            g.setStroke(new BasicStroke(1));
-                            g.drawLine(130, 50, 350, 50);
+                            g.drawLine(300, 140, 870, 140);
+                            g.drawString(event.getAuthor().getName(), 300, 110);
+                            g.setFont(new Font("Helvetica", Font.PLAIN, 35));
+                            g.drawString("Rank #24", 720, 110);
+                            g.drawString("Level " + player.getInt("level"), 300, 180);
+                            g.setFont(new Font("Helvetica", Font.PLAIN, 25));
+                            g.drawString(player.getInt("xp")+" / "+(player.getInt("level")*300), 750, 180);
 
                             //XP Bar
-                            g.drawRoundRect(130, 85, 220, 20, 8, 8);
+                            g.drawRoundRect(300, 210, 570, 35, 8, 8);
                             g.setColor(Color.CYAN);
-                            g.fillRoundRect(130, 85, (int) (220 * (percent * 0.01)), 20, 8, 8);
+                            g.fillRoundRect(300, 210, (int) (570 * (percent * 0.01)), 35, 8, 8);
                             g.setColor(Color.white);
-                            g.setFont(new Font("Helvetica", Font.PLAIN, 12));
-                            g.drawString(percentStr + "%", 230, 100);
+                            g.setFont(new Font("Helvetica", Font.PLAIN, 30));
+                            g.drawString(percentStr + "%", 550, 240);
 
                             //Add Avatar
-                            BufferedImage avatar = ImageProcessor.getAvatar(event.getAuthor().getAvatarUrl(), 0.70, 0.70);
+                            BufferedImage avatar = ImageProcessor.getAvatar(event.getAuthor().getAvatarUrl(), 1.62, 1.62);
                             g.setStroke(new BasicStroke(4));
                             int width = avatar.getWidth();
                             BufferedImage circleBuffer = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
                             Graphics2D g2 = circleBuffer.createGraphics();
-                            g2.setClip(new Ellipse2D.Float(0, 0, width-36, width-36));
+                            g2.setClip(new Ellipse2D.Float(0, 0, width, width));
                             g2.drawImage(avatar, 0, 0, width, width, null);
-                            g.drawImage(circleBuffer, 22, 13, null);
+                            g.drawImage(circleBuffer, 55, 38, null);
                             g.setColor(Color.darkGray);
-                            g.drawOval(22, 13, width-36, width-36);
+                            g.drawOval(55, 38, width, width);
 
                             //Save File
-                            File rankCard = ImageProcessor.saveImage("data/rankCard.png", myPicture);
+                            File rankCard = ImageProcessor.saveImage("data/rankCard.png", base);
                             event.getChannel().sendFile(rankCard, "rankCard.png").queue();
                         } catch (IOException e) {
                             e.printStackTrace();
