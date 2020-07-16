@@ -1,5 +1,6 @@
 package com.technovision.technobot.images;
 
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -11,8 +12,8 @@ import java.util.Objects;
 
 public class ImageProcessor {
 
-    public static BufferedImage getAvatar(String avatarLink, double scaleX, double scaleY) throws IOException  {
-        URL url = new URL(Objects.requireNonNull(avatarLink));
+    public static BufferedImage getAvatar(@Nonnull String avatarLink, double scaleX, double scaleY) throws IOException  {
+        URL url = new URL(avatarLink);
         BufferedImage addon = ImageIO.read(url);
         int w = addon.getWidth();
         int h = addon.getHeight();
