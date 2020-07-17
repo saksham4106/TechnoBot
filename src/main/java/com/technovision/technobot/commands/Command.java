@@ -2,6 +2,10 @@ package com.technovision.technobot.commands;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+/**
+ * Discord Executable Command
+ * @author Sparky
+ */
 public abstract class Command {
     public final String name;
     public final Category category;

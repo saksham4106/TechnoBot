@@ -9,6 +9,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Command Listener and Executor.
+ * @author TechnoVision
+ * @author Sparky
+ */
 public class CommandEventListener extends ListenerAdapter {
 
     public static final String PREFIX = "!";

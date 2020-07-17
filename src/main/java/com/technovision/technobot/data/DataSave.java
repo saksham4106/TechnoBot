@@ -2,6 +2,11 @@ package com.technovision.technobot.data;
 
 import org.json.JSONObject;
 
+/**
+ * Implementation details for saving, loading,
+ * and accessing a JSON configuration file.
+ * @author Sparky
+ */
 public interface DataSave {
 
     /**

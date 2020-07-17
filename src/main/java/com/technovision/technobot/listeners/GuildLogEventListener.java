@@ -25,6 +25,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import javax.annotation.Nonnull;
 import java.awt.*;
 
+/**
+ * Bot Log Handler.
+ * Listens to various actions and
+ * logs them to a specified channel.
+ * @author Sparky
+ */
 public class GuildLogEventListener extends ListenerAdapter {
     private final WebhookClient webhook = new WebhookClientBuilder(TechnoBot.getInstance().getBotConfig().getJson().getString("guildlogs-webhook")).build();
 

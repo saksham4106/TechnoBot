@@ -8,6 +8,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+/**
+ * Logs information to console.
+ * @author Sparky
+ */
 public class Logger {
     private static final WebhookClient client = new WebhookClientBuilder(TechnoBot.getInstance().getBotConfig().getJson().getString("logs-webhook")).build();
 

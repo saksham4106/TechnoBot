@@ -10,6 +10,10 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manager for member levels and ranks.
+ * @author Sparky
+ */
 public class LevelManager extends ListenerAdapter {
 
     public static String RANK_CHANNEL = "RANKS-AND-ROLES";

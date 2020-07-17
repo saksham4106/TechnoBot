@@ -25,6 +25,10 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.*;
 
+/**
+ * Manager for music controls
+ * @author Sparky
+ */
 public class MusicManager extends ListenerAdapter {
     public final Map<User, Message> djMessages = new HashMap<>();
     public final Map<Long, MusicSendHandler> handlers = new HashMap<Long, MusicSendHandler>();

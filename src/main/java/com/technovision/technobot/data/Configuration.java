@@ -5,6 +5,10 @@ import org.json.JSONObject;
 import java.io.*;
 import java.util.Scanner;
 
+/**
+ * JSON Configuration
+ * @author Sparky
+ */
 public class Configuration implements DataSave {
     /**
      * The cached JSON in this instance

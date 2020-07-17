@@ -9,6 +9,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Generates Discord avatars.
+ * @author TechnoVision
+ */
 public class ImageProcessor {
 
     public static BufferedImage getAvatar(@Nonnull String avatarLink, double scaleX, double scaleY) throws IOException  {

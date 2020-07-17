@@ -10,6 +10,10 @@ import javax.annotation.Nonnull;
 
 import static com.technovision.technobot.listeners.CommandEventListener.EMBED_COLOR;
 
+/**
+ * Member Event Listener.
+ * @author TechnoVision
+ */
 public class GuildMemberEvents extends ListenerAdapter {
 
     public static String JOIN_CHANNEL = "NEW-MEMBERS";

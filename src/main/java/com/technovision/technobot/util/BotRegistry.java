@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Bot registry maintaining listeners and commands.
+ * @author Sparky
+ */
 @Loggable(display = "BotRegistry")
 public class BotRegistry {
     private final Logger logger = new Logger(this);

@@ -28,7 +28,9 @@ import java.util.List;
 import static com.technovision.technobot.listeners.CommandEventListener.EMBED_COLOR;
 
 /**
- * Registers commands and their execution
+ * Registers commands and their execution.
+ * @author TechnoVision
+ * @author Sparky
  */
 public class CommandRegistry {
 

@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * Multi-Purpose Bot for TechnoVision Discord
+ * Multi-Purpose Bot for TechnoVision Discord.
  * @author TechnVision
  * @author Sparky
  * @version 0.3
@@ -93,6 +93,10 @@ public class TechnoBot {
         return jda;
     }
 
+    /**
+     * Accessor for the bot registry
+     * @return Bot registry
+     */
     public BotRegistry getRegistry() {
         return registry;
     }
