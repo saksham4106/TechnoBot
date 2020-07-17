@@ -1,10 +1,10 @@
 {"users": [
     {
         "color": "#8394eb",
-        "lastTalked": 1595013715498,
+        "lastTalked": 1595024090971,
         "level": 2,
         "background": "https://i.imgur.com/87kKRJj.jpg",
-        "xp": 52,
+        "xp": 125,
         "id": 595024631438508070,
         "opacity": 0.5,
         "accent": "#FFFFFF"
@@ -21,10 +21,10 @@
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1595013658356,
+        "lastTalked": 1595024104027,
         "level": 2,
         "background": "https://cdn.discordapp.com/attachments/733192165513232384/733764823858282659/planets.jpg",
-        "xp": 66,
+        "xp": 148,
         "id": 345713912945180674,
         "opacity": 0,
         "accent": "#FFFFFF"
