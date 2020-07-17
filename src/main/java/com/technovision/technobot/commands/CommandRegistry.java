@@ -256,7 +256,7 @@ public class CommandRegistry {
             }
         });
 
-        TechnoBot.getInstance().getRegistry().registerCommands(new Command("rank", "Displays your levels and rank", "{prefix}rank", Command.Category.LEVELS) {
+        TechnoBot.getInstance().getRegistry().registerCommands(new Command("rank", "Displays your levels and server rank", "{prefix}rank", Command.Category.LEVELS) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 for(Object o : LevelManager.getInstance().levelSave.getJson().getJSONArray("users")) {
@@ -441,7 +441,7 @@ public class CommandRegistry {
 
         TechnoBot.getInstance().getRegistry().registerCommands(new Command("join", "Joins your current voice channel", "{prefix}join", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
                     event.getChannel().sendMessage("You are not in a voice channel!").queue();
                     return true;
@@ -452,7 +452,7 @@ public class CommandRegistry {
             }
         }, new Command("leave", "Leaves the voice channel", "{prefix}join", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
                     event.getChannel().sendMessage("You are not in a voice channel!").queue();
                     return true;
@@ -463,7 +463,7 @@ public class CommandRegistry {
             }
         }, new Command("play", "Plays music in voice channel", "{prefix}play", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
                     event.getChannel().sendMessage("You are not in a voice channel!").queue();
                     return true;
@@ -479,7 +479,7 @@ public class CommandRegistry {
             }
         }, new Command("queue", "Displays a queue of songs", "{prefix}queue", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null) {
                     event.getChannel().sendMessage("Queue is empty.").queue();
                     return true;
@@ -517,7 +517,7 @@ public class CommandRegistry {
             }
         }, new Command("skip", "Skips the currently playing song", "{prefix}skip", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
                     event.getChannel().sendMessage("You are not in a voice channel!").queue();
                     return true;
@@ -537,7 +537,7 @@ public class CommandRegistry {
             }
         }, new Command("skipto", "Skips to song index in queue", "{prefix}skipto <number>", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
                     event.getChannel().sendMessage("There are no songs playing.").queue();
                     return true;
@@ -562,7 +562,7 @@ public class CommandRegistry {
             }
         }, new Command("np", "Displays the currently playing song and its duration/position", "{prefix}np", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
                     event.getChannel().sendMessage("There are no songs playing.").queue();
                     return true;
@@ -594,7 +594,7 @@ public class CommandRegistry {
             }
         }, new Command("seek", "Seek to a position in the currently playing song", "{prefix}seek <seconds>", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
                     event.getChannel().sendMessage("There are no songs playing.").queue();
                     return true;
@@ -613,7 +613,7 @@ public class CommandRegistry {
             }
         }, new Command("loop", "Loop currently playing song without removing other queued songs", "{prefix}loop", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
                     event.getChannel().sendMessage("There are no songs playing.").queue();
                     return true;
@@ -623,7 +623,7 @@ public class CommandRegistry {
             }
         }, new Command("pause", "Pauses the player", "{prefix}pause", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
                     event.getChannel().sendMessage("There are no songs playing.").queue();
                     return true;
@@ -635,7 +635,7 @@ public class CommandRegistry {
             }
         }, new Command("resume", "Resumes the player", "{prefix}resume", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
                     event.getChannel().sendMessage("There are no songs playing.").queue();
                     return true;
@@ -647,7 +647,7 @@ public class CommandRegistry {
             }
         }, new Command("dj", "Opens the DJ Panel", "{prefix}dj", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
                     event.getChannel().sendMessage("There are no songs playing.").queue();
                     return true;
@@ -672,7 +672,7 @@ public class CommandRegistry {
             }
         }, new Command("shuffle", "Shuffles queue", "{prefix}shuffle", Command.Category.MUSIC) {
             @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+            public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
                     event.getChannel().sendMessage("There are no songs playing.").queue();
                     return true;
