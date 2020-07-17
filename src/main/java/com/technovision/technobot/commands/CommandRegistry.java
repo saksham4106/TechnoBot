@@ -416,7 +416,15 @@ public class CommandRegistry {
                                         }
                                     }
                                     break;
-                                }
+                                case "DEFAULT":
+                                case "RESET":
+                                    player.put("opacity", 0.5);
+                                    player.put("color", "#8394eb");
+                                    player.put("accent", "#FFFFFF");
+                                    player.put("background", "");
+                                    event.getChannel().sendMessage("Reset your rank card to default settings!").queue();
+                                    break;
+                            }
                             return true;
                         }
                     }
@@ -426,7 +434,8 @@ public class CommandRegistry {
                 msg.addField("rankcard background [url]", "Sets the background of your level card.", false);
                 msg.addField("rankcard color <color>", "Sets the base color for your level card.", false);
                 msg.addField("rankcard accent <color>", "Sets the accent color for your level card.", false);
-                msg.addField("rankcard opacity <opacity>", "Sets the opacity for your level card", false);
+                msg.addField("rankcard opacity <opacity>", "Sets the opacity for your level card.", false);
+                msg.addField("rankcard reset", "Resets customization to default settings.", false);
                 event.getChannel().sendMessage(msg.build()).queue();
                 return true;
             }
