@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.json.JSONObject;
 
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -342,7 +343,9 @@ public class CommandRegistry {
                                     BufferedImage rectBuffer = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB);
                                     Graphics2D g2 = rectBuffer.createGraphics();
                                     g2.setClip(new Rectangle2D.Float(0, 0, base.getWidth(), base.getHeight()));
-                                    g2.drawImage(background, 0 ,0, base.getWidth(), base.getHeight(), null);
+                                    int x = base.getWidth() - background.getWidth();
+                                    int y = base.getHeight() - background.getHeight();
+                                    g2.drawImage(background, x, y, null);
                                     g.drawImage(rectBuffer, 0, 0, base.getWidth(), base.getHeight(), null);
                                 }
 
