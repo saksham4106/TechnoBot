@@ -84,7 +84,7 @@ public class TechnoBot {
         getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
 
         new CommandRegistry();
-        getInstance().getRegistry().registerEventListeners(new MusicManager(), new GuildLogEventListener(), new LevelManager(), new CommandEventListener(), new GuildMemberEvents());
+        getInstance().getRegistry().registerEventListeners(new WebResponseListener(), new MusicManager(), new GuildLogEventListener(), new LevelManager(), new CommandEventListener(), new GuildMemberEvents());
         getInstance().getRegistry().addListeners(getInstance().getJDA());
     }
 }
