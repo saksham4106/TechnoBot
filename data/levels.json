@@ -1,38 +1,62 @@
 {"users": [
     {
-        "lastTalked": 1594875900174,
-        "level": 1,
-        "xp": 238,
-        "id": 732842144213106689
+        "color": "#8394eb",
+        "lastTalked": 1595013715498,
+        "level": 2,
+        "background": "https://i.imgur.com/87kKRJj.jpg",
+        "xp": 52,
+        "id": 595024631438508070,
+        "opacity": 0.5,
+        "accent": "#FFFFFF"
     },
     {
-        "lastTalked": 1594875907212,
-        "level": 11,
-        "xp": 197,
-        "id": 345713912945180674
+        "color": "#8394eb",
+        "lastTalked": 1595012260087,
+        "level": 1,
+        "background": "https://i.imgur.com/xyRMi0t.png",
+        "xp": 94,
+        "id": 503638256026648576,
+        "opacity": 0.5,
+        "accent": "#00A6FF"
     },
     {
-        "lastTalked": 1594875908739,
-        "level": 1,
-        "xp": 271,
-        "id": 732789223639220305
+        "color": "#8394eb",
+        "lastTalked": 1595013658356,
+        "level": 2,
+        "background": "https://cdn.discordapp.com/attachments/733192165513232384/733764823858282659/planets.jpg",
+        "xp": 66,
+        "id": 345713912945180674,
+        "opacity": 0,
+        "accent": "#FFFFFF"
     },
     {
-        "lastTalked": 1594863930987,
+        "color": "#8394eb",
+        "lastTalked": 1595013182933,
         "level": 1,
-        "xp": 141,
-        "id": 332600665412993045
+        "background": "https://lh3.googleusercontent.com/9h6vZcjigz_E6Zh1Hbjpr6NTrsKg5_UX-Pr0nKi2K029nCjIXnVsjFJ3pUk_7isGY76-Cbsmiw=w640-h400-e365",
+        "xp": 128,
+        "id": 391648676650549248,
+        "opacity": 0.5,
+        "accent": "#00A6FF"
     },
     {
-        "lastTalked": 1594866005396,
+        "color": "#8394eb",
+        "lastTalked": 1595013211484,
         "level": 1,
-        "xp": 5,
-        "id": 503638256026648576
+        "background": "",
+        "xp": 40,
+        "id": 332600665412993045,
+        "opacity": 0.5,
+        "accent": "#FFFFFF"
     },
     {
-        "lastTalked": 1594875904230,
+        "color": "#8394eb",
+        "lastTalked": 1595010641908,
         "level": 1,
-        "xp": 4,
-        "id": 595024631438508070
+        "background": "",
+        "xp": 25,
+        "id": 461693890022473730,
+        "opacity": 0.5,
+        "accent": "#FFFFFF"
     }
 ]}
