@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.json.JSONObject;
 
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -23,6 +24,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 
@@ -307,20 +310,43 @@ public class CommandRegistry {
                                         }
                                     }
                                     break;
+                                case "BG":
+                                case "BACKGROUND":
+                                    if (args.length > 1) {
+                                        try {
+                                            URL url = new URL(args[1]);
+                                            ImageIO.read(url);
+                                            player.put("background", args[1]);
+                                            event.getChannel().sendMessage("Updated your background!").queue();
+                                        } catch (IOException e) {
+                                            event.getChannel().sendMessage("Could not change to that background.").queue();
+                                        }
+                                    }
+                                    break;
                             }
                         } else {
                             float percent = ((float) (player.getInt("xp") * 100) / (float) ((player.getInt("level") * 300)));
                             String percentStr = String.valueOf((int) percent);
                             try {
-                                //Get Base Image
-                                BufferedImage base = ImageIO.read(new File("data/rankCardBase.png"));
-                                BufferedImage outline = ImageIO.read(new File("data/rankCardOutline.png"));
-
-                                //Add Outline
+                                //Get Graphics
+                                BufferedImage base = ImageIO.read(new File("data/images/rankCardBase.png"));
+                                BufferedImage outline = ImageIO.read(new File("data/images/rankCardOutline.png"));
                                 Graphics2D g = (Graphics2D) base.getGraphics();
                                 g.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
                                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                 g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+
+                                //Add Custom Background
+                                if (!player.getString("background").isEmpty()) {
+                                    BufferedImage background = ImageIO.read(new URL(player.getString("background")));
+                                    BufferedImage rectBuffer = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                                    Graphics2D g2 = rectBuffer.createGraphics();
+                                    g2.setClip(new Rectangle2D.Float(0, 0, base.getWidth(), base.getHeight()));
+                                    g2.drawImage(background, 0 ,0, base.getWidth(), base.getHeight(), null);
+                                    g.drawImage(rectBuffer, 0, 0, base.getWidth(), base.getHeight(), null);
+                                }
+
+                                //Add Outline
                                 float opacity = player.getFloat("opacity");
                                 AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
                                 g.setComposite(ac);
@@ -340,14 +366,14 @@ public class CommandRegistry {
                                 g.drawString(player.getInt("xp") + " / " + (player.getInt("level") * 300), 750, 180);
 
                                 //XP Bar
-                                g.drawRoundRect(300, 210, 570, 40, 20, 20);
+                                g.drawRoundRect(300, 200, 570, 40, 20, 20);
                                 g.setColor(Color.decode("#101636"));
-                                g.fillRoundRect(300, 210, 570, 40, 20, 20);
+                                g.fillRoundRect(300, 200, 570, 40, 20, 20);
                                 g.setColor(Color.decode(player.getString("color")));
-                                g.fillRoundRect(300, 210, (int) (570 * (percent * 0.01)), 40, 20, 20);
+                                g.fillRoundRect(300, 200, (int) (570 * (percent * 0.01)), 40, 20, 20);
                                 g.setColor(Color.decode(player.getString("accent")));
                                 g.setFont(new Font("Helvetica", Font.PLAIN, 30));
-                                g.drawString(percentStr + "%", 560, 240);
+                                g.drawString(percentStr + "%", 560, 230);
 
                                 //Add Avatar
                                 BufferedImage avatar = ImageProcessor.getAvatar(event.getAuthor().getAvatarUrl(), 1.62, 1.62);
@@ -362,7 +388,7 @@ public class CommandRegistry {
                                 g.drawOval(55, 38, width, width);
 
                                 //Save File
-                                File rankCard = ImageProcessor.saveImage("data/rankCard.png", base);
+                                File rankCard = ImageProcessor.saveImage("data/images/rankCard.png", base);
                                 event.getChannel().sendFile(rankCard, "rankCard.png").queue();
                             } catch (IOException e) {
                                 e.printStackTrace();
