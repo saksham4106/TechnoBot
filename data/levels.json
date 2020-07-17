@@ -1,10 +1,10 @@
 {"users": [
     {
         "color": "#8394eb",
-        "lastTalked": 1595007621723,
+        "lastTalked": 1595009114767,
         "level": 1,
-        "background": "https://i.imgur.com/i0BiZFh.jpg",
-        "xp": 134,
+        "background": "https://i.imgur.com/xyRMi0t.png",
+        "xp": 158,
         "id": 595024631438508070,
         "opacity": 0.5,
         "accent": "#FFFFFF"
@@ -21,10 +21,10 @@
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1595007667616,
+        "lastTalked": 1595009198740,
         "level": 1,
-        "background": "https://cdn.discordapp.com/attachments/558371806655021108/733489277031153764/image0.jpg",
-        "xp": 47,
+        "background": "https://cdn.vox-cdn.com/thumbor/E9RM8-qg-iyLEAzP4d7tobqI09o=/0x0:2012x1341/1400x933/filters:focal(0x0:2012x1341):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg",
+        "xp": 112,
         "id": 345713912945180674,
         "opacity": 0,
         "accent": "#FFFFFF"

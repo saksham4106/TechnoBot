@@ -346,7 +346,7 @@ public class CommandRegistry {
                                     g2.setClip(new Rectangle2D.Float(0, 0, base.getWidth(), base.getHeight()));
                                     int x = base.getWidth() - background.getWidth();
                                     int y = base.getHeight() - background.getHeight();
-                                    g2.drawImage(background, x, y, null);
+                                    g2.drawImage(background, x/2, y/2, null);
                                     g.drawImage(rectBuffer, 0, 0, base.getWidth(), base.getHeight(), null);
                                 }
 
