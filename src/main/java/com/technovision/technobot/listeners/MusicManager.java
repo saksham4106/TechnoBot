@@ -75,6 +75,8 @@ public class MusicManager extends ListenerAdapter {
                 handlers.get(event.getGuild().getIdLong()).trackScheduler.skip();
             } else if(event.getReaction().getReactionEmote().getEmoji().equalsIgnoreCase("\uD83D\uDD01")) {
                 handlers.get(event.getGuild().getIdLong()).trackScheduler.toggleLoopQueue(null);
+            } else if(event.getReaction().getReactionEmote().getEmoji().equalsIgnoreCase("\uD83D\uDD00")) {
+                handlers.get(event.getGuild().getIdLong()).trackScheduler.shuffle();
             }
         }
 
@@ -315,5 +317,8 @@ public class MusicManager extends ListenerAdapter {
         }
 
 
+        public void shuffle() {
+            Collections.shuffle(trackQueue.subList(1,trackQueue.size()));
+        }
     }
 }
