@@ -112,6 +112,7 @@ public class GuildLogEventListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageUpdate(@Nonnull GuildMessageUpdateEvent event) {
+        if(event.getMessage().getContentRaw().startsWith("!")||event.getAuthor().isBot()) return;
         webhook.send(new WebhookEmbedBuilder() {{
             setTitle(new WebhookEmbed.EmbedTitle("Message Edited",null));
             setColor(0x0000FF);
@@ -263,7 +264,6 @@ public class GuildLogEventListener extends ListenerAdapter {
 
     @Override
     public void onRoleUpdatePermissions(@Nonnull RoleUpdatePermissionsEvent event) {
-        // TODO: 7/16/2020 Fix Method. Permissions do not get read properly, and message is not sent to webhook
         String[] oldPerms = new String[event.getOldPermissions().size()];
         for(int i = 0; i < event.getOldPermissions().size(); i++) {
             oldPerms[i] = ((Permission)event.getOldPermissions().toArray()[i]).getName();

@@ -1,30 +1,30 @@
 {"users": [
     {
         "color": "#8394eb",
-        "lastTalked": 1594974494463,
-        "level": 1,
+        "lastTalked": 1595006646050,
+        "level": 2,
         "background": "https://lh3.googleusercontent.com/9h6vZcjigz_E6Zh1Hbjpr6NTrsKg5_UX-Pr0nKi2K029nCjIXnVsjFJ3pUk_7isGY76-Cbsmiw=w640-h400-e365",
-        "xp": 281,
+        "xp": 6,
         "id": 595024631438508070,
         "opacity": 0.5,
         "accent": "#FFFFFF"
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1594965799846,
+        "lastTalked": 1595004866907,
         "level": 1,
         "background": "https://i.imgur.com/xyRMi0t.png",
-        "xp": 70,
+        "xp": 130,
         "id": 503638256026648576,
         "opacity": 0.5,
         "accent": "#00A6FF"
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1594981185974,
-        "level": 2,
+        "lastTalked": 1595006711307,
+        "level": 3,
         "background": "https://cdn.discordapp.com/attachments/733192165513232384/733599283906871326/unknown.png",
-        "xp": 457,
+        "xp": 118,
         "id": 345713912945180674,
         "opacity": 0,
         "accent": "#FFFFFF"
@@ -41,11 +41,31 @@
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1594981108668,
+        "lastTalked": 1595002140592,
         "level": 2,
         "background": "https://i.imgur.com/6jXHHUt.jpg",
-        "xp": 46,
+        "xp": 97,
         "id": 461693890022473730,
+        "opacity": 0.5,
+        "accent": "#FFFFFF"
+    },
+    {
+        "color": "#8394eb",
+        "lastTalked": 1594999744922,
+        "level": 1,
+        "background": "",
+        "xp": 1,
+        "id": 332600665412993045,
+        "opacity": 0.5,
+        "accent": "#FFFFFF"
+    },
+    {
+        "color": "#8394eb",
+        "lastTalked": 1595006197425,
+        "level": 1,
+        "background": "",
+        "xp": 47,
+        "id": 514116985576095755,
         "opacity": 0.5,
         "accent": "#FFFFFF"
     }

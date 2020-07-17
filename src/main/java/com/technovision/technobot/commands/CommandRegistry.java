@@ -440,6 +440,7 @@ public class CommandRegistry {
                 MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
                 try {
                     MusicManager.getInstance().addTrack(args[0], event.getChannel(), event.getGuild());
+                    MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.setPaused(false);
                 } catch(IndexOutOfBoundsException e) {
                     event.getChannel().sendMessage("What do you want me to play?").queue();
                 }
@@ -465,10 +466,20 @@ public class CommandRegistry {
                 tracks.remove(0);
                 builder.addField("All Songs","All Songs in queue listed below.",false);
                 int c = 1;
+                int fulltime = 0;
                 for(AudioTrack track : tracks) {
+                    if(c<=20)
                     builder.addField(c+". "+track.getInfo().title, track.getInfo().uri, false);
                     c++;
+                    fulltime += track.getInfo().length;
                 }
+
+                int minTime = fulltime / 60000;
+                fulltime %= 60000;
+                int secTime = fulltime / 1000;
+
+
+                builder.addField("...and "+(c-20)+" more songs", "Left in queue: "+minTime+":"+((secTime<10)?"0"+secTime:secTime), false);
 
                 event.getChannel().sendMessage(builder.build()).queue();
                 return true;
@@ -577,6 +588,54 @@ public class CommandRegistry {
                     return true;
                 }
                 MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.toggleLoop(event.getChannel());
+                return true;
+            }
+        }, new Command("pause", "Pauses the player", "{prefix}pause", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+                    event.getChannel().sendMessage("There are no songs playing.").queue();
+                    return true;
+                }
+                MusicManager.TrackScheduler sch = MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler;
+                sch.setPaused(true);
+                event.getChannel().sendMessage(":pause_button: Paused the Player!").queue();
+                return true;
+            }
+        }, new Command("resume", "Resumes the player", "{prefix}resume", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+                    event.getChannel().sendMessage("There are no songs playing.").queue();
+                    return true;
+                }
+                MusicManager.TrackScheduler sch = MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler;
+                sch.setPaused(false);
+                event.getChannel().sendMessage(":arrow_forward: Unpaused the Player!").queue();
+                return true;
+            }
+        }, new Command("dj", "Opens the DJ Panel", "{prefix}dj", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+                    event.getChannel().sendMessage("There are no songs playing.").queue();
+                    return true;
+                }
+                MusicManager.TrackScheduler sch = MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler;
+                EmbedBuilder emb = new EmbedBuilder()
+                        .setTitle("DJ Panel")
+                        .setDescription("<@!"+event.getAuthor().getId()+">'s DJ Panel")
+                        .setColor(EMBED_COLOR);
+                emb = MusicManager.getInstance().assembleEmbed(emb.build(), sch);
+                event.getMessage().delete().complete();
+                if(MusicManager.getInstance().djMessages.containsKey(event.getAuthor())) MusicManager.getInstance().djMessages.get(event.getAuthor()).delete().complete();
+                Message msg = event.getChannel().sendMessage(emb.build()).complete();
+                msg.addReaction("⏯").queue();
+                msg.addReaction("\uD83D\uDD02").queue();
+                msg.addReaction("⏭").queue();
+                msg.addReaction("\uD83D\uDD01").queue();
+
+                MusicManager.getInstance().djMessages.put(event.getAuthor(), msg);
                 return true;
             }
         });
