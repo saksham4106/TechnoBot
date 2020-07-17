@@ -415,7 +415,7 @@ public class CommandRegistry {
                     event.getChannel().sendMessage("You are not in a voice channel!").queue();
                     return true;
                 }
-                MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel());
+                MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
                 event.getChannel().sendMessage("Joined `"+event.getMember().getVoiceState().getChannel().getName()+"`").queue();
                 return true;
             }
@@ -437,8 +437,12 @@ public class CommandRegistry {
                     event.getChannel().sendMessage("You are not in a voice channel!").queue();
                     return true;
                 }
-                MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel());
-                MusicManager.getInstance().addTrack(args[0], event.getChannel(), event.getGuild());
+                MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
+                try {
+                    MusicManager.getInstance().addTrack(args[0], event.getChannel(), event.getGuild());
+                } catch(IndexOutOfBoundsException e) {
+                    event.getChannel().sendMessage("What do you want me to play?").queue();
+                }
                 return true;
             }
         }, new Command("queue", "Displays a queue of songs", "{prefix}queue", Command.Category.MUSIC) {
@@ -449,7 +453,7 @@ public class CommandRegistry {
                     return true;
                 }
                 List<AudioTrack> tracks = MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy();
-                if(tracks.size()==0) {
+                if(tracks.size()==0||tracks.get(0)==null) {
                     event.getChannel().sendMessage("Queue is empty.").queue();
                     return true;
                 }
@@ -460,8 +464,10 @@ public class CommandRegistry {
                         .addField("Now Playing :musical_note:", "["+tracks.get(0).getInfo().title+"]("+tracks.get(0).getInfo().uri+")\nBy: "+tracks.get(0).getInfo().author, false);
                 tracks.remove(0);
                 builder.addField("All Songs","All Songs in queue listed below.",false);
+                int c = 1;
                 for(AudioTrack track : tracks) {
-                    builder.addField(track.getInfo().title, track.getInfo().uri, false);
+                    builder.addField(c+". "+track.getInfo().title, track.getInfo().uri, false);
+                    c++;
                 }
 
                 event.getChannel().sendMessage(builder.build()).queue();
@@ -487,6 +493,31 @@ public class CommandRegistry {
                 MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.skip();
                 return true;
             }
+        }, new Command("skipto", "Skips to song index in queue", "{prefix}skipto <number>", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+                    event.getChannel().sendMessage("There are no songs playing.").queue();
+                    return true;
+                }
+
+                try {
+                    MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.skipTo(Math.min(Integer.parseInt(args[0]), MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()));
+                } catch(IndexOutOfBoundsException e) {
+                    event.getChannel().sendMessage("Please specify a position to skip to!").queue();
+                } catch(NumberFormatException e) {
+                    event.getChannel().sendMessage("That is not a number!").queue();
+                }
+
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        event.getChannel().sendMessage("Skipped to "+MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().get(0).getInfo().title).queue();
+                    }
+                }, 1000L);
+
+                return true;
+            }
         }, new Command("np", "Displays the currently playing song and its duration/position", "{prefix}np", Command.Category.MUSIC) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
@@ -495,9 +526,9 @@ public class CommandRegistry {
                     return true;
                 }
                 AudioTrack currentPlaying = MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().get(0);
-                String[] posString = new String[] {"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"};
+                String[] posString = new String[] {"⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯","⎯",};
                 try {
-                    posString[(int) Math.floor((float) currentPlaying.getPosition() / (float) currentPlaying.getDuration() * 20F)] = "☼";
+                    posString[(int) Math.floor((float) currentPlaying.getPosition() / (float) currentPlaying.getDuration() * 30F)] = "~~◉~~";
                 } catch(Exception e) {e.printStackTrace();}
 
                 long msPos = currentPlaying.getPosition();
@@ -511,7 +542,7 @@ public class CommandRegistry {
                 int secDur = (int) Math.floor((float)msDur/1000f);
 
                 EmbedBuilder builder = new EmbedBuilder()
-                        .setTitle("Now Playing", currentPlaying.getInfo().uri)
+                        .setTitle("Now Playing :musical_note:", currentPlaying.getInfo().uri)
                         .setDescription(currentPlaying.getInfo().title)
                         .setColor(0x00FFFF)
                         .addField("Position", String.join("",posString),false)
@@ -541,14 +572,12 @@ public class CommandRegistry {
         }, new Command("loop", "Loop currently playing song without removing other queued songs", "{prefix}loop", Command.Category.MUSIC) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
-                event.getChannel().sendMessage("Work in Progress!").queue();
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+                    event.getChannel().sendMessage("There are no songs playing.").queue();
+                    return true;
+                }
+                MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.toggleLoop(event.getChannel());
                 return true;
-                //if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
-                //    event.getChannel().sendMessage("There are no songs playing.").queue();
-                //    return true;
-                //}
-                //MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.toggleLoop(event.getChannel());
-                //return true;
             }
         });
     }

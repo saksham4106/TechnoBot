@@ -276,8 +276,8 @@ public class GuildLogEventListener extends ListenerAdapter {
             setTitle(new WebhookEmbed.EmbedTitle("Role Updated", null));
             setColor(0x0000FF);
             addField(new WebhookEmbed.EmbedField(false, "Role", "<@&"+event.getRole().getId()+">"));
-            addField(new WebhookEmbed.EmbedField(true, "Old Permissions", String.join("\n- "+oldPerms)));
-            addField(new WebhookEmbed.EmbedField(true, "New Permissions", String.join("\n- "+perms)));
+            addField(new WebhookEmbed.EmbedField(true, "Old Permissions", "- "+String.join("\n- ",oldPerms)));
+            addField(new WebhookEmbed.EmbedField(true, "New Permissions", "- "+String.join("\n- ",perms)));
         }}.build());
     }
 
