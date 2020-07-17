@@ -19,22 +19,21 @@ import javax.security.auth.login.LoginException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Multi-purpose bot for TechnoVision Discord
+ * Multi-Purpose Bot for TechnoVision Discord
  * @author TechnVision
  * @author Sparky
- * @version 1.0
+ * @version 0.3
  */
 @Loggable(display = "TechnoBot")
 public class TechnoBot {
 
     private static TechnoBot instance;
 
-    private JDA jda;
     private Logger logger;
+    private final JDA jda;
     private final BotRegistry registry;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
         @Override
@@ -46,31 +45,50 @@ public class TechnoBot {
         }
     };
 
+    /**
+     * Public TechnoBot Constructor.
+     * Initializes the JDABuilder and Bot Registry.
+     * @throws LoginException Malformed bot token.
+     */
+    public TechnoBot() throws LoginException {
+        instance = this;
+        registry = new BotRegistry();
+
+        JDABuilder builder = JDABuilder.createDefault(getToken());
+        builder.setStatus(OnlineStatus.ONLINE).setActivity(Activity.watching("TechnoVisionTV"));
+        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES);
+        jda = builder.build();
+    }
+
+    /**
+     * Accessor for instance of the bot.
+     * @return instance of TechnoBot.
+     */
     public static TechnoBot getInstance() {
         return instance;
     }
 
-    public TechnoBot() throws LoginException {
-        instance = this;
-
-        JDABuilder builder = JDABuilder.createDefault(getToken());
-        builder.setStatus(OnlineStatus.ONLINE)
-        .setActivity(Activity.watching("TechnoVisionTV"));
-        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
-        builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES);
-        jda = builder.build();
-
-        registry = new BotRegistry();
-    }
-
+    /**
+     * Accessor for the bot's JSON configuration file.
+     * @return JSON config file.
+     */
     public Configuration getBotConfig() {
         return config;
     }
 
+    /**
+     * Accessor for the console logger.
+     * @return logger.
+     */
     public Logger getLogger() {
         return logger;
     }
 
+    /**
+     * Accessor for the JDA API instance.
+     * @return JDA API instance.
+     */
     public JDA getJDA() {
         return jda;
     }
@@ -79,22 +97,15 @@ public class TechnoBot {
         return registry;
     }
 
-    private String getToken() { return getInstance().getBotConfig().getJson().getString("token"); }
-
-    public static void main(String[] args) throws MalformedURLException {
-        try {
-            TechnoBot bot = new TechnoBot();
-            getInstance().logger = new Logger(bot);
-        } catch(LoginException e) { throw new RuntimeException(e); }
-
-        getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
-        TechnoBot.getInstance().setupImages();
-
-        new CommandRegistry();
-        getInstance().getRegistry().registerEventListeners(new MusicManager(), new GuildLogEventListener(), new LevelManager(), new CommandEventListener(), new GuildMemberEvents());
-        getInstance().getRegistry().addListeners(getInstance().getJDA());
+    /**
+     * Accessor for the securely stored bot token
+     * @return Bot token
+     */
+    private String getToken() {
+        return getInstance().getBotConfig().getJson().getString("token");
     }
 
+    /** Download and store images needed for rank-card creation */
     private void setupImages() {
         try {
             System.setProperty("http.agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2");
@@ -111,5 +122,23 @@ public class TechnoBot {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * initialize bot and register listeners.
+     * @param args ignored
+     */
+    public static void main(String[] args)  {
+        try {
+            TechnoBot bot = new TechnoBot();
+            getInstance().logger = new Logger(bot);
+        } catch(LoginException e) { throw new RuntimeException(e); }
+
+        getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
+        TechnoBot.getInstance().setupImages();
+
+        new CommandRegistry();
+        getInstance().getRegistry().registerEventListeners(new MusicManager(), new GuildLogEventListener(), new LevelManager(), new CommandEventListener(), new GuildMemberEvents());
+        getInstance().getRegistry().addListeners(getInstance().getJDA());
     }
 }
