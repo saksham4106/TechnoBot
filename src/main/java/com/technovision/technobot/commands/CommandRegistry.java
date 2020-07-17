@@ -257,61 +257,116 @@ public class CommandRegistry {
                 for(Object o : LevelManager.getInstance().levelSave.getJson().getJSONArray("users")) {
                     if(((JSONObject)o).getLong("id")==event.getAuthor().getIdLong()) {
                         JSONObject player = (JSONObject)o;
-                        float percent = ( (float)(player.getInt("xp")*100) / (float)( (player.getInt("level")*300) ) );
-                        String percentStr = String.valueOf(percent).substring(0, Math.min(String.valueOf(percent).length(), 4));
-                        try {
-                            //Get Base Image
-                            BufferedImage base = ImageIO.read(new File("data/rankCardBase.png"));
-                            BufferedImage outline = ImageIO.read(new File("data/rankCardOutline.png"));
+                        if (args.length > 0) {
+                            switch (args[0].toUpperCase()) {
+                                case "OPACITY":
+                                    if (args.length > 1) {
+                                        try {
+                                            double opacity = Double.parseDouble(args[1]);
+                                            if (opacity >= 0 && opacity <= 100) {
+                                                if (opacity > 1) {
+                                                    opacity *= 0.01;
+                                                }
+                                                player.put("opacity", opacity);
+                                                event.getChannel().sendMessage("Opacity updated!").queue();
+                                            } else {
+                                                event.getChannel().sendMessage("Invalid value! Either provide a float [0, 1] or percentage [0, 100]").queue();
+                                            }
+                                        } catch (NumberFormatException e) {
+                                            event.getChannel().sendMessage("Invalid value! Either provide a float [0, 1] or percentage [0, 100]").queue();
+                                        }
+                                    }
+                                    break;
+                                case "ACCENT":
+                                    if (args.length > 1) {
+                                        try {
+                                            String accent = args[1];
+                                            if (!accent.startsWith("#")) {
+                                                accent = "#" + accent;
+                                            }
+                                            Color.decode(accent);
+                                            player.put("accent", accent);
+                                            event.getChannel().sendMessage("Accent color updated!").queue();
+                                        } catch (NumberFormatException e) {
+                                            event.getChannel().sendMessage("That is not a valid hex code, please redo the command and pass a valid color.").queue();
+                                        }
+                                    }
+                                    break;
+                                case "COLOR":
+                                    if (args.length > 1) {
+                                        try {
+                                            String color = args[1];
+                                            if (!color.startsWith("#")) {
+                                                color = "#" + color;
+                                            }
+                                            Color.decode(color);
+                                            player.put("color", color);
+                                            event.getChannel().sendMessage("Color updated!").queue();
+                                        } catch (NumberFormatException e) {
+                                            event.getChannel().sendMessage("That is not a valid hex code, please redo the command and pass a valid color.").queue();
+                                        }
+                                    }
+                                    break;
+                            }
+                        } else {
+                            float percent = ((float) (player.getInt("xp") * 100) / (float) ((player.getInt("level") * 300)));
+                            String percentStr = String.valueOf((int) percent);
+                            try {
+                                //Get Base Image
+                                BufferedImage base = ImageIO.read(new File("data/rankCardBase.png"));
+                                BufferedImage outline = ImageIO.read(new File("data/rankCardOutline.png"));
 
-                            //Add Outline
-                            Graphics2D g = (Graphics2D) base.getGraphics();
-                            g.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY));
-                            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                            g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
-                            float opacity = 0.5f;
-                            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
-                            g.setComposite(ac);
-                            g.drawImage(outline, 0, 0, null);
-                            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+                                //Add Outline
+                                Graphics2D g = (Graphics2D) base.getGraphics();
+                                g.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+                                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+                                float opacity = player.getFloat("opacity");
+                                AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
+                                g.setComposite(ac);
+                                g.drawImage(outline, 0, 0, null);
+                                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 
-                            //Text
-                            g.setStroke(new BasicStroke(3));
-                            g.setColor(Color.white);
-                            g.setFont(new Font("Helvetica", Font.PLAIN, 52));
-                            g.drawLine(300, 140, 870, 140);
-                            g.drawString(event.getAuthor().getName(), 300, 110);
-                            g.setFont(new Font("Helvetica", Font.PLAIN, 35));
-                            g.drawString("Rank #24", 720, 110);
-                            g.drawString("Level " + player.getInt("level"), 300, 180);
-                            g.setFont(new Font("Helvetica", Font.PLAIN, 25));
-                            g.drawString(player.getInt("xp")+" / "+(player.getInt("level")*300), 750, 180);
+                                //Text
+                                g.setStroke(new BasicStroke(3));
+                                g.setColor(Color.decode(player.getString("accent")));
+                                g.setFont(new Font("Helvetica", Font.PLAIN, 52));
+                                g.drawLine(300, 140, 870, 140);
+                                g.drawString(event.getAuthor().getName(), 300, 110);
+                                g.setFont(new Font("Helvetica", Font.PLAIN, 35));
+                                g.drawString("Rank #24", 720, 110);
+                                g.drawString("Level " + player.getInt("level"), 300, 180);
+                                g.setFont(new Font("Helvetica", Font.PLAIN, 25));
+                                g.drawString(player.getInt("xp") + " / " + (player.getInt("level") * 300), 750, 180);
 
-                            //XP Bar
-                            g.drawRoundRect(300, 210, 570, 35, 8, 8);
-                            g.setColor(Color.CYAN);
-                            g.fillRoundRect(300, 210, (int) (570 * (percent * 0.01)), 35, 8, 8);
-                            g.setColor(Color.white);
-                            g.setFont(new Font("Helvetica", Font.PLAIN, 30));
-                            g.drawString(percentStr + "%", 550, 240);
+                                //XP Bar
+                                g.drawRoundRect(300, 210, 570, 40, 20, 20);
+                                g.setColor(Color.decode("#101636"));
+                                g.fillRoundRect(300, 210, 570, 40, 20, 20);
+                                g.setColor(Color.decode(player.getString("color")));
+                                g.fillRoundRect(300, 210, (int) (570 * (percent * 0.01)), 40, 20, 20);
+                                g.setColor(Color.decode(player.getString("accent")));
+                                g.setFont(new Font("Helvetica", Font.PLAIN, 30));
+                                g.drawString(percentStr + "%", 560, 240);
 
-                            //Add Avatar
-                            BufferedImage avatar = ImageProcessor.getAvatar(event.getAuthor().getAvatarUrl(), 1.62, 1.62);
-                            g.setStroke(new BasicStroke(4));
-                            int width = avatar.getWidth();
-                            BufferedImage circleBuffer = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
-                            Graphics2D g2 = circleBuffer.createGraphics();
-                            g2.setClip(new Ellipse2D.Float(0, 0, width, width));
-                            g2.drawImage(avatar, 0, 0, width, width, null);
-                            g.drawImage(circleBuffer, 55, 38, null);
-                            g.setColor(Color.darkGray);
-                            g.drawOval(55, 38, width, width);
+                                //Add Avatar
+                                BufferedImage avatar = ImageProcessor.getAvatar(event.getAuthor().getAvatarUrl(), 1.62, 1.62);
+                                g.setStroke(new BasicStroke(4));
+                                int width = avatar.getWidth();
+                                BufferedImage circleBuffer = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
+                                Graphics2D g2 = circleBuffer.createGraphics();
+                                g2.setClip(new Ellipse2D.Float(0, 0, width, width));
+                                g2.drawImage(avatar, 0, 0, width, width, null);
+                                g.drawImage(circleBuffer, 55, 38, null);
+                                g.setColor(Color.decode(player.getString("color")));
+                                g.drawOval(55, 38, width, width);
 
-                            //Save File
-                            File rankCard = ImageProcessor.saveImage("data/rankCard.png", base);
-                            event.getChannel().sendFile(rankCard, "rankCard.png").queue();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                                //Save File
+                                File rankCard = ImageProcessor.saveImage("data/rankCard.png", base);
+                                event.getChannel().sendFile(rankCard, "rankCard.png").queue();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }

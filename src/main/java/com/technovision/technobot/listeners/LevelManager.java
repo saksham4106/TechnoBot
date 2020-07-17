@@ -52,6 +52,9 @@ public class LevelManager extends ListenerAdapter {
                 put("lastTalked", 0L);
                 put("xp", 0);
                 put("level", 1);
+                put("opacity", 0.5);
+                put("color", "#8394eb");
+                put("accent", "#FFFFFF");
 
                 lastTalked.putIfAbsent(event.getAuthor().getIdLong(), 0L);
             }});
