@@ -338,17 +338,25 @@ public class CommandRegistry {
                                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                 g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
 
-                                //Add Custom Background
-                                if (!player.getString("background").isEmpty()) {
-                                    BufferedImage background = ImageIO.read(new URL(player.getString("background")));
-                                    BufferedImage rectBuffer = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB);
-                                    Graphics2D g2 = rectBuffer.createGraphics();
-                                    g2.setClip(new Rectangle2D.Float(0, 0, base.getWidth(), base.getHeight()));
-                                    int x = base.getWidth() - background.getWidth();
-                                    int y = base.getHeight() - background.getHeight();
-                                    g2.drawImage(background, x/2, y/2, null);
-                                    g.drawImage(rectBuffer, 0, 0, base.getWidth(), base.getHeight(), null);
+                                //Add Background
+                                BufferedImage background;
+                                if (player.getString("background").isEmpty()) {
+                                    background = ImageIO.read(new File("data/images/rankCardBackground.png"));
+                                } else {
+                                    background = ImageIO.read(new URL(player.getString("background")));
                                 }
+                                BufferedImage rectBuffer = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                                Graphics2D g2 = rectBuffer.createGraphics();
+                                g2.setClip(new Rectangle2D.Float(0, 0, base.getWidth(), base.getHeight()));
+                                int x = base.getWidth() - background.getWidth();
+                                int y = base.getHeight() - background.getHeight();
+                                if (background.getWidth() >= 934 && background.getHeight() >= 282) {
+                                    g2.drawImage(background, x / 2, y / 2, null);
+                                } else {
+                                    g2.drawImage(background, 0, 0, base.getWidth(), base.getHeight(), null);
+                                }
+                                g2.dispose();
+                                g.drawImage(rectBuffer, 0, 0, base.getWidth(), base.getHeight(), null);
 
                                 //Add Outline
                                 float opacity = player.getFloat("opacity");
@@ -384,12 +392,14 @@ public class CommandRegistry {
                                 g.setStroke(new BasicStroke(4));
                                 int width = avatar.getWidth();
                                 BufferedImage circleBuffer = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
-                                Graphics2D g2 = circleBuffer.createGraphics();
-                                g2.setClip(new Ellipse2D.Float(0, 0, width, width));
-                                g2.drawImage(avatar, 0, 0, width, width, null);
+                                Graphics2D g3 = circleBuffer.createGraphics();
+                                g3.setClip(new Ellipse2D.Float(0, 0, width, width));
+                                g3.drawImage(avatar, 0, 0, width, width, null);
+                                g3.dispose();
                                 g.drawImage(circleBuffer, 55, 38, null);
                                 g.setColor(Color.decode(player.getString("color")));
                                 g.drawOval(55, 38, width, width);
+                                g.dispose();
 
                                 //Save File
                                 File rankCard = ImageProcessor.saveImage("data/images/rankCard.png", base);

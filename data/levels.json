@@ -1,51 +1,61 @@
 {"users": [
     {
         "color": "#8394eb",
-        "lastTalked": 1595009114767,
-        "level": 1,
-        "background": "https://i.imgur.com/xyRMi0t.png",
-        "xp": 158,
+        "lastTalked": 1595013715498,
+        "level": 2,
+        "background": "https://i.imgur.com/87kKRJj.jpg",
+        "xp": 52,
         "id": 595024631438508070,
         "opacity": 0.5,
         "accent": "#FFFFFF"
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1594948584184,
+        "lastTalked": 1595012260087,
         "level": 1,
         "background": "https://i.imgur.com/xyRMi0t.png",
-        "xp": 51,
+        "xp": 94,
         "id": 503638256026648576,
         "opacity": 0.5,
         "accent": "#00A6FF"
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1595009198740,
-        "level": 1,
-        "background": "https://cdn.vox-cdn.com/thumbor/E9RM8-qg-iyLEAzP4d7tobqI09o=/0x0:2012x1341/1400x933/filters:focal(0x0:2012x1341):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg",
-        "xp": 112,
+        "lastTalked": 1595013658356,
+        "level": 2,
+        "background": "https://cdn.discordapp.com/attachments/733192165513232384/733764823858282659/planets.jpg",
+        "xp": 66,
         "id": 345713912945180674,
         "opacity": 0,
         "accent": "#FFFFFF"
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1595007618702,
+        "lastTalked": 1595013182933,
         "level": 1,
         "background": "https://lh3.googleusercontent.com/9h6vZcjigz_E6Zh1Hbjpr6NTrsKg5_UX-Pr0nKi2K029nCjIXnVsjFJ3pUk_7isGY76-Cbsmiw=w640-h400-e365",
-        "xp": 32,
+        "xp": 128,
         "id": 391648676650549248,
         "opacity": 0.5,
         "accent": "#00A6FF"
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1595007597458,
+        "lastTalked": 1595013211484,
         "level": 1,
         "background": "",
-        "xp": 8,
+        "xp": 40,
         "id": 332600665412993045,
+        "opacity": 0.5,
+        "accent": "#FFFFFF"
+    },
+    {
+        "color": "#8394eb",
+        "lastTalked": 1595010641908,
+        "level": 1,
+        "background": "",
+        "xp": 25,
+        "id": 461693890022473730,
         "opacity": 0.5,
         "accent": "#FFFFFF"
     }

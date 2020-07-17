@@ -101,12 +101,14 @@ public class TechnoBot {
             System.setProperty("http.agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2");
             BufferedImage base = ImageIO.read(new URL("https://i.imgur.com/HktDs1Y.png"));
             BufferedImage outline = ImageIO.read(new URL("https://i.imgur.com/oQhl6yW.png"));
+            BufferedImage background = ImageIO.read(new URL("https://i.imgur.com/vGmvhZg.jpg"));
             File file = new File("data/images/rankCardOutline.png");
             if (!file.exists()) {
                 file.mkdirs();
             }
             ImageProcessor.saveImage("data/images/rankCardBase.png", base);
             ImageProcessor.saveImage("data/images/rankCardOutline.png", outline);
+            ImageProcessor.saveImage("data/images/rankCardBackground.png", background);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
