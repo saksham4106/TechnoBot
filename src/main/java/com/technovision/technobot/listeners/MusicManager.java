@@ -46,6 +46,7 @@ public class MusicManager extends ListenerAdapter {
             @Override
             public void run() {
                 handlers.forEach((gId,handler) -> {
+                    if(handler.trackScheduler.getQueueCopy().size()==0) return;
                     djMessages.forEach((user, message) -> {message.editMessage(assembleEmbed(message.getEmbeds().get(0),handlers.get(gId).trackScheduler).build()).queue();});
                 });
 
