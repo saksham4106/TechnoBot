@@ -24,8 +24,12 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+<<<<<<< Updated upstream
 import java.net.MalformedURLException;
 import java.net.URL;
+=======
+import java.text.SimpleDateFormat;
+>>>>>>> Stashed changes
 import java.util.*;
 import java.util.List;
 
@@ -415,6 +419,18 @@ public class CommandRegistry {
                     return true;
                 }
                 MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel());
+                event.getChannel().sendMessage("Joined `"+event.getMember().getVoiceState().getChannel().getName()+"`").queue();
+                return true;
+            }
+        }, new Command("leave", "Leaves the voice channel", "{prefix}join", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
+                    event.getChannel().sendMessage("You are not in a voice channel!").queue();
+                    return true;
+                }
+                MusicManager.getInstance().leaveVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel());
+                event.getChannel().sendMessage("Left voice channel!").queue();
                 return true;
             }
         }, new Command("play", "Plays music in voice channel", "{prefix}play", Command.Category.MUSIC) {
@@ -424,6 +440,7 @@ public class CommandRegistry {
                     event.getChannel().sendMessage("You are not in a voice channel!").queue();
                     return true;
                 }
+                MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel());
                 MusicManager.getInstance().addTrack(args[0], event.getChannel(), event.getGuild());
                 return true;
             }
@@ -452,6 +469,89 @@ public class CommandRegistry {
 
                 event.getChannel().sendMessage(builder.build()).queue();
                 return true;
+            }
+        }, new Command("skip", "Skips the currently playing song", "{prefix}skip", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
+                    event.getChannel().sendMessage("You are not in a voice channel!").queue();
+                    return true;
+                }
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null) {
+                    event.getChannel().sendMessage("Please use `!join` first!").queue();
+                    return true;
+                }
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+                    event.getChannel().sendMessage("There are no songs playing.").queue();
+                    return true;
+                }
+                event.getChannel().sendMessage("Skipping...").queue();
+
+                MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.skip();
+                return true;
+            }
+        }, new Command("np", "Displays the currently playing song and its duration/position", "{prefix}np", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+                    event.getChannel().sendMessage("There are no songs playing.").queue();
+                    return true;
+                }
+                AudioTrack currentPlaying = MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().get(0);
+                String[] posString = new String[] {"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"};
+                try {
+                    posString[(int) Math.floor((float) currentPlaying.getPosition() / (float) currentPlaying.getDuration() * 20F)] = "☼";
+                } catch(Exception e) {e.printStackTrace();}
+
+                long msPos = currentPlaying.getPosition();
+                long minPos = msPos/60000;
+                msPos = msPos%60000;
+                int secPos = (int) Math.floor((float)msPos/1000f);
+
+                long msDur = currentPlaying.getDuration();
+                long minDur = msDur/60000;
+                msDur = msDur%60000;
+                int secDur = (int) Math.floor((float)msDur/1000f);
+
+                EmbedBuilder builder = new EmbedBuilder()
+                        .setTitle("Now Playing", currentPlaying.getInfo().uri)
+                        .setDescription(currentPlaying.getInfo().title)
+                        .setColor(0x00FFFF)
+                        .addField("Position", String.join("",posString),false)
+                        .addField("Progress", minPos+":"+((secPos<10)?"0"+secPos:secPos)+" / "+minDur+":"+((secDur<10)?"0"+secDur:secDur), false);
+                event.getChannel().sendMessage(builder.build()).queue();
+                return true;
+            }
+        }, new Command("seek", "Seek to a position in the currently playing song", "{prefix}seek <seconds>", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+                    event.getChannel().sendMessage("There are no songs playing.").queue();
+                    return true;
+                }
+                try {
+                    MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().get(0).setPosition(Math.min(Integer.parseInt(args[0]) * 1000, MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().get(0).getDuration()));
+                } catch(IndexOutOfBoundsException e) {
+                    event.getChannel().sendMessage("Please specify a time to seek to!").queue();
+                    return true;
+                } catch(NumberFormatException e) {
+                    event.getChannel().sendMessage("Please specify a *number*!").queue();
+                    return true;
+                }
+                event.getChannel().sendMessage("Seeked to "+args[0]+" seconds on song `"+MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().get(0).getInfo().title+"`!").queue();
+                return true;
+            }
+        }, new Command("loop", "Loop currently playing song without removing other queued songs", "{prefix}loop", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+                event.getChannel().sendMessage("Work in Progress!").queue();
+                return true;
+                //if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+                //    event.getChannel().sendMessage("There are no songs playing.").queue();
+                //    return true;
+                //}
+                //MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.toggleLoop(event.getChannel());
+                //return true;
             }
         });
     }

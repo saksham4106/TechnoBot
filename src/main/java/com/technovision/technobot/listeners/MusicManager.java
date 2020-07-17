@@ -52,6 +52,10 @@ public class MusicManager extends ListenerAdapter {
         manager.openAudioConnection(channel);
     }
 
+    public void leaveVoiceChannel(Guild guild, VoiceChannel channel) {
+        guild.getAudioManager().closeAudioConnection();
+    }
+
     public void addTrack(String name, MessageChannel channel, Guild guild) {
         playerManager.loadItem(name, new AudioLoadResultHandler() {
             @Override
@@ -79,6 +83,10 @@ public class MusicManager extends ListenerAdapter {
                 TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, e.getMessage());
             }
         });
+    }
+
+    private void addTrack(String name) {
+
     }
 
     public static class MusicSendHandler implements AudioSendHandler {
@@ -113,6 +121,7 @@ public class MusicManager extends ListenerAdapter {
     public static class TrackScheduler extends AudioEventAdapter {
         private final List<AudioTrack> trackQueue = new ArrayList<>();
         private final AudioPlayer player;
+        private boolean loop = false;
 
         public List<AudioTrack> getQueueCopy() {
             return new ArrayList<>(trackQueue);
@@ -130,7 +139,22 @@ public class MusicManager extends ListenerAdapter {
         @Override
         public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
             trackQueue.remove(track);
+            if(loop) {track.setPosition(0);}
             if(endReason.mayStartNext&&trackQueue.size()>0) player.playTrack(trackQueue.get(0));
+        }
+
+        public void skip() {
+            player.getPlayingTrack().setPosition(player.getPlayingTrack().getDuration());
+        }
+
+        public void toggleLoop(MessageChannel channel) {
+            if(!loop) {
+                loop = true;
+                channel.sendMessage(":repeat_one: Loop Enabled!").queue();
+            } else {
+                loop = false;
+                channel.sendMessage(":x: Loop Disabled!").queue();
+            }
         }
     }
 }
