@@ -6,33 +6,26 @@ import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.LevelManager;
 import com.technovision.technobot.listeners.MusicManager;
-import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.json.JSONObject;
 
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
 import static com.technovision.technobot.listeners.CommandEventListener.EMBED_COLOR;
-import static com.technovision.technobot.listeners.CommandEventListener.PREFIX;
 
 /**
  * Registers commands and their execution
@@ -61,7 +54,7 @@ public class CommandRegistry {
                 Map<Category, List<Command>> categories = new HashMap<Category,List<Command>>();
 
                 for(Category c : Category.values()) {
-                    categories.put(c, new ArrayList<Command>());
+                    categories.put(c, new ArrayList<>());
                 }
                 for(Command c : TechnoBot.getInstance().getRegistry().getCommands()) {
                     categories.get(c.category).add(c);
@@ -72,7 +65,6 @@ public class CommandRegistry {
                         setTitle(":robot: TechnoBot Commands");
                         setColor(EMBED_COLOR);
                         setThumbnail("https://cdn.discordapp.com/avatars/595024631438508070/08e21a9478909deacd7bebb29e98a329.png");
-                        setFooter(event.getAuthor().getAsTag(), event.getAuthor().getAvatarUrl());
                         categories.forEach((category, commands) -> {
                             addField((category.name().charAt(0) + "").toUpperCase() + category.name().substring(1).toLowerCase(), commands.size() + " commands in category | `" + CommandEventListener.PREFIX + "help " + category.name().toLowerCase() + "`", false);
                         });

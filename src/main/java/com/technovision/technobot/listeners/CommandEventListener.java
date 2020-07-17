@@ -2,17 +2,12 @@ package com.technovision.technobot.listeners;
 
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
+import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.BotRegistry;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.internal.requests.Route;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 
 public class CommandEventListener extends ListenerAdapter {
 
@@ -34,12 +29,8 @@ public class CommandEventListener extends ListenerAdapter {
 
             for (Command cmd : registry.getCommands()) {
                 if ((PREFIX + cmd.name).equalsIgnoreCase(command)) {
-                    try {
-                        if (!cmd.execute(event, args)) {
-                            // do something, idk (the command failed to execute in this situation)
-                        }
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
+                    if (!cmd.execute(event, args)) {
+                        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, "Command failed to execute!");
                     }
                     return;
                 }

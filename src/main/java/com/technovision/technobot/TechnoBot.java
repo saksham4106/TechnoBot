@@ -16,7 +16,6 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import javax.imageio.ImageIO;
 import javax.security.auth.login.LoginException;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

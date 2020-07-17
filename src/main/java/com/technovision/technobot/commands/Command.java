@@ -1,9 +1,6 @@
 package com.technovision.technobot.commands;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-
-import java.io.IOException;
 
 public abstract class Command {
     public final String name;
@@ -18,7 +15,7 @@ public abstract class Command {
         this.usage = usage;
     }
 
-    public boolean execute(MessageReceivedEvent event, String[] args) throws IOException {
+    public boolean execute(MessageReceivedEvent event, String[] args) {
         return false;
     }
 
