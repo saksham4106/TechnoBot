@@ -24,12 +24,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-<<<<<<< Updated upstream
 import java.net.MalformedURLException;
 import java.net.URL;
-=======
 import java.text.SimpleDateFormat;
->>>>>>> Stashed changes
 import java.util.*;
 import java.util.List;
 
