@@ -1,15 +1,12 @@
 package com.technovision.technobot.commands;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sun.media.jfxmedia.events.PlayerEvent;
 import com.technovision.technobot.TechnoBot;
-import com.technovision.technobot.data.Player;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.LevelManager;
 import com.technovision.technobot.listeners.MusicManager;
 import com.technovision.technobot.util.Tuple;
-import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -17,9 +14,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.json.JSONObject;
-import sun.rmi.runtime.Log;
 
 import java.awt.geom.Rectangle2D;
 import java.io.File;
