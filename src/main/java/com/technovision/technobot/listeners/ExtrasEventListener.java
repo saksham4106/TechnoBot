@@ -15,6 +15,8 @@ public class ExtrasEventListener extends ListenerAdapter {
             event.getChannel().sendMessage("Please explain your issue. 'why no work' doesnt help!").queue();
         } else if(event.getMessage().getContentRaw().toLowerCase().contains("will this work")) {
             event.getChannel().sendMessage("https://tryitands.ee/").queue();
-        } else if(event.getMessage().getContentRaw().toLowerCase().startsWith("i need help"))
+        } else if(event.getMessage().getContentRaw().toLowerCase().startsWith("i need help")&&event.getMessage().getContentRaw().split(" ").length<7) {
+            event.getChannel().sendMessage("https://dontasktoask.com/").queue();
+        }
     }
 }
