@@ -308,7 +308,7 @@ public class CommandRegistry {
                             g.drawLine(300, 140, 870, 140);
                             g.drawString(event.getAuthor().getName(), 300, 110);
                             g.setFont(new Font("Helvetica", Font.PLAIN, 35));
-                            g.drawString("Rank #" + String.valueOf(LevelManager.getInstance().userList.indexOf(event.getAuthor())+1), 720, 110);
+                            g.drawString("Rank #" + (LevelManager.getInstance().userList.indexOf(event.getAuthor()) + 1), 720, 110);
                             g.drawString("Level " + player.getInt("level"), 300, 180);
                             g.setFont(new Font("Helvetica", Font.PLAIN, 25));
                             g.drawString(player.getInt("xp") + " / " + (player.getInt("level") * 300), 750, 180);
@@ -444,20 +444,20 @@ public class CommandRegistry {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
 
+                int i = 1;
+                String msg = "";
+                for(Tuple<Integer,Integer> tup : LevelManager.getInstance().tupleList) {
+                    User u = LevelManager.getInstance().userList.get(LevelManager.getInstance().tupleList.indexOf(tup));
+                    msg += i + ". <@!"+u.getId()+"> " + tup.value + "xp " + "lvl " + tup.key + "\n";
+                    i++;
+                }
 
-                event.getChannel().sendMessage(new EmbedBuilder() {{
-                    int i = 1;
-                    for(Tuple<Integer,Integer> tup : LevelManager.getInstance().tupleList) {
-                        User u = LevelManager.getInstance().userList.get(LevelManager.getInstance().tupleList.indexOf(tup));
-
-                        addField(((i==1)?"🏆":((i==2)?"🥈":((i==3)?"🥉":"")))+"Rank "+i, "<@!"+u.getId()+">\nLevel "+tup.key+"\nXP: "+tup.value+" / "+(tup.key*300), false);
-                        i++;
-                    }
-                }}
-                        .setTitle("Leaderboard")
-                        .setColor(EMBED_COLOR)
-
-                        .build()).queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setTitle("Rank Leaderboard");
+                builder.setColor(EMBED_COLOR);
+                builder.setDescription(msg);
+                builder.setFooter("Page 1/1");
+                event.getChannel().sendMessage(builder.build()).queue();
                 return true;
             }
         });
