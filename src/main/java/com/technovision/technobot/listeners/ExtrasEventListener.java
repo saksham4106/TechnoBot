@@ -10,18 +10,16 @@ public class ExtrasEventListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         if(event.getAuthor().isBot()) return;
-        if(event.getMessage().getContentRaw().toLowerCase().contains("@everyone")) {
-            event.getChannel().sendMessage("Did you really, actually think that would work??").queue();
-        } else if(event.getMessage().getContentRaw().contains("<@!595024631438508070>")) {
-            event.getChannel().sendMessage("Don't ping techno. It is against rule 2!\n\nPlease go read the rules now, before you break more.").queue();
+        if(event.getMessage().getContentRaw().contains("<@!595024631438508070>")) {
+            event.getChannel().sendMessage("Do not @ TechnoVision, he is very busy! (Refer to #rules number 2)").queue();
         } else if(event.getMessage().getContentRaw().toLowerCase().contains("why no work")) {
-            event.getChannel().sendMessage("Please explain your issue. 'why no work' doesnt help!").queue();
+            event.getChannel().sendMessage("Please explain your issue. 'why no work' doesn't help!").queue();
         } else if(event.getMessage().getContentRaw().toLowerCase().contains("will this work")) {
             event.getChannel().sendMessage("https://tryitands.ee/").queue();
         } else if(event.getMessage().getContentRaw().toLowerCase().startsWith("i need help")&&event.getMessage().getContentRaw().split(" ").length<7) {
             event.getChannel().sendMessage("https://dontasktoask.com/").queue();
-        } else if(event.getMessage().getContentRaw().toLowerCase().contains("1.12")) {
-            event.getChannel().sendMessage("1.12.x is not supported here. Please upgrade to 1.14+ if you want support here!").queue();
+        } else if(event.getMessage().getContentRaw().toLowerCase().contains("@everyone")) {
+            event.getChannel().sendMessage("<@!"+event.getMember().getUser().getId()+">, did you *really* think that would work?").queue();
         }
     }
 }
