@@ -78,7 +78,7 @@ public class LevelManager extends ListenerAdapter {
                     userList.add(ind, TechnoBot.getInstance().getJDA().retrieveUserById(jsonUser.getLong("id")).complete());
                 }
             }
-        },5000L,30000L);
+        },5000L,120000L);
     }
 
     @Override

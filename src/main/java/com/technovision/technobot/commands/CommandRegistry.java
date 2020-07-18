@@ -308,7 +308,7 @@ public class CommandRegistry {
                             g.drawLine(300, 140, 870, 140);
                             g.drawString(event.getAuthor().getName(), 300, 110);
                             g.setFont(new Font("Helvetica", Font.PLAIN, 35));
-                            g.drawString("Rank #" + String.valueOf(player.getInt("rank")), 720, 110);
+                            g.drawString("Rank #" + String.valueOf(LevelManager.getInstance().userList.indexOf(event.getAuthor())+1), 720, 110);
                             g.drawString("Level " + player.getInt("level"), 300, 180);
                             g.setFont(new Font("Helvetica", Font.PLAIN, 25));
                             g.drawString(player.getInt("xp") + " / " + (player.getInt("level") * 300), 750, 180);
@@ -533,7 +533,7 @@ public class CommandRegistry {
                 int secTime = fulltime / 1000;
 
 
-                builder.addField("...and "+(c-20)+" more songs", "Left in queue: "+minTime+":"+((secTime<10)?"0"+secTime:secTime), false);
+                builder.addField("...and "+Math.max(c-20,0)+" more songs", "Left in queue: "+minTime+":"+((secTime<10)?"0"+secTime:secTime), false);
 
                 event.getChannel().sendMessage(builder.build()).queue();
                 return true;
@@ -704,6 +704,25 @@ public class CommandRegistry {
                 MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.shuffle();
                 event.getChannel().sendMessage("\uD83D\uDD00 Shuffled Queue!").queue();
 
+                return true;
+            }
+        }, new Command("volume", "Change volume of music", "{prefix}volume <volume>", Command.Category.MUSIC) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+                    event.getChannel().sendMessage("There are no songs playing.").queue();
+                    return true;
+                }
+
+                try {
+                    MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.setVolume(Integer.parseInt(args[0]));
+                } catch(IndexOutOfBoundsException e) {
+                    event.getChannel().sendMessage("Please specify a volume!").queue();
+                } catch(NumberFormatException e) {
+                    event.getChannel().sendMessage("That is not a number!").queue();
+                }
+
+                event.getChannel().sendMessage("🔈 Set volume to "+args[0]+"!").queue();
                 return true;
             }
         });

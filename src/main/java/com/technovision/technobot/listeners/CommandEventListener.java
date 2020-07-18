@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
  */
 public class CommandEventListener extends ListenerAdapter {
 
-    public static final String PREFIX = "!";
+    public static final String PREFIX = "-";
     public static final int EMBED_COLOR = 0xd256e8;
 
     @Override
