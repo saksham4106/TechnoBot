@@ -448,8 +448,14 @@ public class CommandRegistry {
                 while (!players.isEmpty()) {
                     Player maxPlayer = players.get(0);
                     for (Player player : players) {
-                        if (player.getLevel() > maxPlayer.getLevel()) {
-                            maxPlayer = player;
+                        if (player.getLevel() >= maxPlayer.getLevel()) {
+                            if (player.getLevel() == maxPlayer.getLevel()) {
+                                if (player.getXP() > maxPlayer.getXP()) {
+                                    maxPlayer = player;
+                                }
+                            } else {
+                                maxPlayer = player;
+                            }
                         }
                     }
                     leaderboard.add(maxPlayer);
