@@ -1,7 +1,9 @@
 package com.technovision.technobot.commands;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sun.media.jfxmedia.events.PlayerEvent;
 import com.technovision.technobot.TechnoBot;
+import com.technovision.technobot.data.Player;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.LevelManager;
@@ -301,7 +303,7 @@ public class CommandRegistry {
                             g.drawLine(300, 140, 870, 140);
                             g.drawString(event.getAuthor().getName(), 300, 110);
                             g.setFont(new Font("Helvetica", Font.PLAIN, 35));
-                            g.drawString("Rank #24", 720, 110);
+                            g.drawString("Rank #" + String.valueOf(player.getInt("rank")), 720, 110);
                             g.drawString("Level " + player.getInt("level"), 300, 180);
                             g.setFont(new Font("Helvetica", Font.PLAIN, 25));
                             g.drawString(player.getInt("xp") + " / " + (player.getInt("level") * 300), 750, 180);
@@ -436,8 +438,37 @@ public class CommandRegistry {
         }, new Command("leaderboard", "Shows the level Leaderboard", "{prefix}leaderboard", Command.Category.LEVELS) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
-                event.getChannel().sendMessage(":construction: Work in Progress :construction:").queue();
+                List<Player> players = new ArrayList<>();
+                for (Object o : LevelManager.getInstance().levelSave.getJson().getJSONArray("users")) {
+                    JSONObject object = (JSONObject) o;
+                    players.add(new Player(object.getLong("id"), object.getInt("level"), object.getInt("xp")));
+                }
 
+                Queue<Player> leaderboard = new LinkedList<>();
+                while (!players.isEmpty()) {
+                    Player maxPlayer = players.get(0);
+                    for (Player player : players) {
+                        if (player.getLevel() > maxPlayer.getLevel()) {
+                            maxPlayer = player;
+                        }
+                    }
+                    leaderboard.add(maxPlayer);
+                    players.remove(maxPlayer);
+                }
+
+                StringBuilder board = new StringBuilder();
+                for (int i = 0; i < leaderboard.size(); i++) {
+                    Player player = leaderboard.remove();
+                    Member member = event.getGuild().getMemberById(player.getId()); //Exception gets thrown here
+                    board.append(i + 1).append(". ").append("<@!").append(member.getUser().getId()).append("> ")
+                            .append(player.getXP()).append("xp ").append("lvl ").append(player.getLevel()).append("\n");
+                }
+
+                EmbedBuilder msg = new EmbedBuilder();
+                msg.setTitle("Rank Leaderboard");
+                msg.setDescription(board);
+                msg.setFooter("Page #");
+                event.getChannel().sendMessage(msg.build()).queue();
                 return true;
             }
         });

@@ -1,10 +1,11 @@
 {"users": [
     {
         "color": "#8394eb",
-        "lastTalked": 1595024090971,
+        "lastTalked": 1595057414864,
         "level": 2,
         "background": "https://i.imgur.com/87kKRJj.jpg",
-        "xp": 125,
+        "xp": 222,
+        "rank": 1,
         "id": 595024631438508070,
         "opacity": 0.5,
         "accent": "#FFFFFF"
@@ -15,16 +16,18 @@
         "level": 1,
         "background": "https://i.imgur.com/xyRMi0t.png",
         "xp": 94,
+        "rank": 2,
         "id": 503638256026648576,
         "opacity": 0.5,
         "accent": "#00A6FF"
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1595024104027,
+        "lastTalked": 1595057447049,
         "level": 2,
         "background": "https://cdn.discordapp.com/attachments/733192165513232384/733764823858282659/planets.jpg",
-        "xp": 148,
+        "xp": 226,
+        "rank": 4,
         "id": 345713912945180674,
         "opacity": 0,
         "accent": "#FFFFFF"
@@ -35,6 +38,7 @@
         "level": 1,
         "background": "https://lh3.googleusercontent.com/9h6vZcjigz_E6Zh1Hbjpr6NTrsKg5_UX-Pr0nKi2K029nCjIXnVsjFJ3pUk_7isGY76-Cbsmiw=w640-h400-e365",
         "xp": 128,
+        "rank": 3,
         "id": 391648676650549248,
         "opacity": 0.5,
         "accent": "#00A6FF"
@@ -45,6 +49,7 @@
         "level": 1,
         "background": "",
         "xp": 40,
+        "rank": 6,
         "id": 332600665412993045,
         "opacity": 0.5,
         "accent": "#FFFFFF"
@@ -55,6 +60,7 @@
         "level": 1,
         "background": "",
         "xp": 25,
+        "rank": 5,
         "id": 461693890022473730,
         "opacity": 0.5,
         "accent": "#FFFFFF"

@@ -16,16 +16,16 @@ import java.util.Map;
  */
 public class LevelManager extends ListenerAdapter {
 
-    public static String RANK_CHANNEL = "RANKS-AND-ROLES";
-
+    public static final String RANK_CHANNEL = "RANKS-AND-ROLES";
     private static LevelManager instance;
+
     private final Map<Long, Long> lastTalked = new HashMap<Long, Long>();
     public final Configuration levelSave = new Configuration("data/","levels.json") {
         @Override
         public void load() {
             super.load();
 
-            if(!getJson().has("users")) getJson().put("users", new JSONArray());
+            if (!getJson().has("users")) getJson().put("users", new JSONArray());
         }
     };
 
@@ -46,16 +46,17 @@ public class LevelManager extends ListenerAdapter {
 
         boolean exists = false;
 
-        for(Object o : levelSave.getJson().getJSONArray("users")) {
+        for (Object o : levelSave.getJson().getJSONArray("users")) {
             if(((JSONObject)o).getLong("id")==event.getAuthor().getIdLong()) exists = true;
         }
 
-        if(!exists) {
+        if (!exists) {
             levelSave.getJson().getJSONArray("users").put(new JSONObject() {{
                 put("id", event.getAuthor().getIdLong());
                 put("lastTalked", 0L);
                 put("xp", 0);
                 put("level", 1);
+                put("rank", event.getGuild().getMembers().size());
                 put("opacity", 0.5);
                 put("color", "#8394eb");
                 put("accent", "#FFFFFF");
@@ -65,12 +66,12 @@ public class LevelManager extends ListenerAdapter {
             }});
         }
 
-        for(Object o : levelSave.getJson().getJSONArray("users")) {
+        for (Object o : levelSave.getJson().getJSONArray("users")) {
             if(((JSONObject)o).getLong("id")==event.getAuthor().getIdLong())
                 lastTalked.putIfAbsent(event.getAuthor().getIdLong(), ((JSONObject)o).getLong("lastTalked"));
         }
 
-        if(exactMilli-60000 > lastTalked.get(event.getAuthor().getIdLong())) {
+        if (exactMilli-60000 > lastTalked.get(event.getAuthor().getIdLong())) {
             lastTalked.put(event.getAuthor().getIdLong(), exactMilli);
 
             for(Object o : levelSave.getJson().getJSONArray("users")) {
