@@ -1,10 +1,10 @@
 {"users": [
     {
         "color": "#8394eb",
-        "lastTalked": 1595111997649,
+        "lastTalked": 1595112625812,
         "level": 2,
         "background": "https://i.imgur.com/87kKRJj.jpg",
-        "xp": 512,
+        "xp": 545,
         "rank": 1,
         "id": 595024631438508070,
         "opacity": 0.5,
@@ -12,10 +12,10 @@
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1595110412346,
+        "lastTalked": 1595112619184,
         "level": 1,
         "background": "https://i.imgur.com/xyRMi0t.png",
-        "xp": 227,
+        "xp": 265,
         "rank": 2,
         "id": 503638256026648576,
         "opacity": 0.5,
@@ -23,10 +23,10 @@
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1595110404405,
+        "lastTalked": 1595112626976,
         "level": 3,
         "background": "https://cdn.discordapp.com/attachments/733192165513232384/733764823858282659/planets.jpg",
-        "xp": 98,
+        "xp": 134,
         "rank": 4,
         "id": 345713912945180674,
         "opacity": 0,
@@ -45,10 +45,10 @@
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1595110192599,
+        "lastTalked": 1595112539941,
         "level": 1,
         "background": "",
-        "xp": 166,
+        "xp": 203,
         "rank": 6,
         "id": 332600665412993045,
         "opacity": 0.5,
@@ -100,10 +100,10 @@
     },
     {
         "color": "#000000",
-        "lastTalked": 1595110410984,
-        "level": 1,
+        "lastTalked": 1595112640381,
+        "level": 2,
         "background": "",
-        "xp": 276,
+        "xp": 18,
         "rank": 9,
         "id": 224295525090983938,
         "opacity": 1,
@@ -172,6 +172,17 @@
         "xp": 32,
         "rank": 14,
         "id": 578055504362864661,
+        "opacity": 0.5,
+        "accent": "#FFFFFF"
+    },
+    {
+        "color": "#8394eb",
+        "lastTalked": 1595112664938,
+        "level": 1,
+        "background": "",
+        "xp": 44,
+        "rank": 7,
+        "id": 310362192862248961,
         "opacity": 0.5,
         "accent": "#FFFFFF"
     }
