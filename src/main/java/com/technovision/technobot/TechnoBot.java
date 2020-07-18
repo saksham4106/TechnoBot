@@ -143,7 +143,7 @@ public class TechnoBot {
         TechnoBot.getInstance().setupImages();
 
         new CommandRegistry();
-        getInstance().getRegistry().registerEventListeners(new MusicManager(), new GuildLogEventListener(), new LevelManager(), new CommandEventListener(), new GuildMemberEvents());
+        getInstance().getRegistry().registerEventListeners(new ExtrasEventListener(), new MusicManager(), new GuildLogEventListener(), new LevelManager(), new CommandEventListener(), new GuildMemberEvents());
         getInstance().getRegistry().addListeners(getInstance().getJDA());
     }
 }
