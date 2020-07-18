@@ -1,20 +1,25 @@
 package com.technovision.technobot.listeners;
 
+import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.data.Configuration;
+import com.technovision.technobot.util.Tuple;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Manager for member levels and ranks.
  * @author Sparky
  */
 public class LevelManager extends ListenerAdapter {
+
+    public final List<Tuple<Integer,Integer>> tupleList = new ArrayList<>();
+    public final List<User> userList = new ArrayList<>();
 
     public static final String RANK_CHANNEL = "RANKS-AND-ROLES";
     private static LevelManager instance;
@@ -35,6 +40,45 @@ public class LevelManager extends ListenerAdapter {
 
     public LevelManager() {
         instance = this;
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                tupleList.clear();
+                userList.clear();
+
+                for(Object o : LevelManager.getInstance().levelSave.getJson().getJSONArray("users")) {
+                    JSONObject jsonUser = (JSONObject) o;
+
+                    int ind = 0;
+                    for(Tuple<Integer, Integer> tup : tupleList) {
+                        int realXpValue = 0;
+                        for(int a = 0; a < jsonUser.getInt("level");a++) {
+                            realXpValue += (a)*300;
+                        }
+                        realXpValue += jsonUser.getInt("xp");
+
+                        int realXpValueFromTuple = 0;
+                        for(int a = 0; a < tup.key; a++) {
+                            realXpValueFromTuple += (a)*300;
+                        }
+                        realXpValueFromTuple += tup.value;
+
+                        if(realXpValue>realXpValueFromTuple) {
+                            ind = tupleList.indexOf(tup);
+                            break;
+                        } else {
+                            ind = tupleList.indexOf(tup)+1;
+                        }
+
+                    }
+
+
+
+                    tupleList.add(ind, new Tuple<>(jsonUser.getInt("level"),jsonUser.getInt("xp")));
+                    userList.add(ind, TechnoBot.getInstance().getJDA().retrieveUserById(jsonUser.getLong("id")).complete());
+                }
+            }
+        },5000L,30000L);
     }
 
     @Override

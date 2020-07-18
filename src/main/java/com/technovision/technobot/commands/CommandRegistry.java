@@ -8,11 +8,13 @@ import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.LevelManager;
 import com.technovision.technobot.listeners.MusicManager;
+import com.technovision.technobot.util.Tuple;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
 
@@ -438,37 +440,21 @@ public class CommandRegistry {
         }, new Command("leaderboard", "Shows the level Leaderboard", "{prefix}leaderboard", Command.Category.LEVELS) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
-                List<Player> players = new ArrayList<>();
-                for (Object o : LevelManager.getInstance().levelSave.getJson().getJSONArray("users")) {
-                    JSONObject object = (JSONObject) o;
-                    players.add(new Player(object.getLong("id"), object.getInt("level"), object.getInt("xp")));
-                }
 
-                Queue<Player> leaderboard = new LinkedList<>();
-                while (!players.isEmpty()) {
-                    Player maxPlayer = players.get(0);
-                    for (Player player : players) {
-                        if (player.getLevel() > maxPlayer.getLevel()) {
-                            maxPlayer = player;
-                        }
+
+                event.getChannel().sendMessage(new EmbedBuilder() {{
+                    int i = 1;
+                    for(Tuple<Integer,Integer> tup : LevelManager.getInstance().tupleList) {
+                        User u = LevelManager.getInstance().userList.get(LevelManager.getInstance().tupleList.indexOf(tup));
+
+                        addField(((i==1)?"🏆":((i==2)?"🥈":((i==3)?"🥉":"")))+"Rank "+i, "<@!"+u.getId()+">\nLevel "+tup.key+"\nXP: "+tup.value+" / "+(tup.key*300), false);
+                        i++;
                     }
-                    leaderboard.add(maxPlayer);
-                    players.remove(maxPlayer);
-                }
+                }}
+                        .setTitle("Leaderboard")
+                        .setColor(EMBED_COLOR)
 
-                StringBuilder board = new StringBuilder();
-                for (int i = 0; i < leaderboard.size(); i++) {
-                    Player player = leaderboard.remove();
-                    Member member = event.getGuild().getMemberById(player.getId()); //Exception gets thrown here
-                    board.append(i + 1).append(". ").append("<@!").append(member.getUser().getId()).append("> ")
-                            .append(player.getXP()).append("xp ").append("lvl ").append(player.getLevel()).append("\n");
-                }
-
-                EmbedBuilder msg = new EmbedBuilder();
-                msg.setTitle("Rank Leaderboard");
-                msg.setDescription(board);
-                msg.setFooter("Page #");
-                event.getChannel().sendMessage(msg.build()).queue();
+                        .build()).queue();
                 return true;
             }
         });
