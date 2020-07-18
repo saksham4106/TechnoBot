@@ -8,13 +8,17 @@ import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.LevelManager;
 import com.technovision.technobot.listeners.MusicManager;
+import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.json.JSONObject;
+import sun.rmi.runtime.Log;
 
 import java.awt.geom.Rectangle2D;
 import java.io.File;
@@ -463,17 +467,42 @@ public class CommandRegistry {
                 }
 
                 StringBuilder board = new StringBuilder();
-                for (int i = 0; i < leaderboard.size(); i++) {
+                int page = 0;
+                int maxPage = (leaderboard.size() / 20) + 1;
+                int max = leaderboard.size();
+                if (args.length > 0) {
+                    if (Integer.parseInt(args[0]) > maxPage) {
+                        event.getChannel().sendMessage("You have reached the maximum page number!").queue();
+                        return true;
+                    }
+                        try {
+                            page = Integer.parseInt(args[0]) - 1;
+                            if (page < 0) {
+                                event.getChannel().sendMessage("That is not a valid page number!").queue();
+                                return true;
+                            }
+                        } catch (NumberFormatException e) {
+                            event.getChannel().sendMessage("That is not a valid page number!").queue();
+                            return true;
+                        }
+                }
+                for (int i=0; i<max; i++) {
                     Player player = leaderboard.remove();
-                    Member member = event.getGuild().getMemberById(player.getId()); //Exception gets thrown here
-                    board.append(i + 1).append(". ").append("<@!").append(member.getUser().getId()).append("> ")
-                            .append(player.getXP()).append("xp ").append("lvl ").append(player.getLevel()).append("\n");
+                    if (i >= page * 20 && i < 20 + (page * 20)) {
+                        User user = event.getJDA().retrieveUserById(player.getId()).complete();
+                        board.append(i + 1).append(". ").append("<@!").append(user.getId()).append("> ").append(player.getXP()).append("xp ").append("lvl ").append(player.getLevel()).append("\n");
+                    }
                 }
 
                 EmbedBuilder msg = new EmbedBuilder();
                 msg.setTitle("Rank Leaderboard");
                 msg.setDescription(board);
-                msg.setFooter("Page #");
+                if (page == 0) {
+                    page = 1;
+                } else {
+                    page++;
+                }
+                msg.setFooter("Page " + page + "/" + maxPage);
                 event.getChannel().sendMessage(msg.build()).queue();
                 return true;
             }
