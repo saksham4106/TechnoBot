@@ -24,6 +24,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
@@ -35,6 +36,8 @@ import static com.technovision.technobot.listeners.CommandEventListener.EMBED_CO
  * @author Sparky
  */
 public class CommandRegistry {
+
+    public static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 
     public CommandRegistry() {
         TechnoBot.getInstance().getRegistry().registerCommands(new Command("ping","Pings the Discord API","{prefix}ping", Command.Category.OTHER) {
@@ -306,7 +309,9 @@ public class CommandRegistry {
                             g.drawString("Rank #" + (LevelManager.getInstance().userList.indexOf(event.getAuthor()) + 1), 720, 110);
                             g.drawString("Level " + player.getInt("level"), 300, 180);
                             g.setFont(new Font("Helvetica", Font.PLAIN, 25));
-                            g.drawString(player.getInt("xp") + " / " + (player.getInt("level") * 300), 750, 180);
+                            String xp = FORMATTER.format(player.getInt("xp"));
+                            String maxXP = FORMATTER.format(player.getInt("level") * 300);
+                            g.drawString(xp + " / " + maxXP, 750, 180);
 
                             //XP Bar
                             g.drawRoundRect(300, 200, 570, 40, 20, 20);
@@ -443,7 +448,7 @@ public class CommandRegistry {
                 String msg = "";
                 for(Tuple<Integer,Integer> tup : LevelManager.getInstance().tupleList) {
                     User u = LevelManager.getInstance().userList.get(LevelManager.getInstance().tupleList.indexOf(tup));
-                    msg += i + ". <@!"+u.getId()+"> " + tup.value + "xp " + "lvl " + tup.key + "\n";
+                    msg += i + ". <@!"+u.getId()+"> " + FORMATTER.format(tup.value) + "xp " + "lvl " + tup.key + "\n";
                     i++;
                 }
 
