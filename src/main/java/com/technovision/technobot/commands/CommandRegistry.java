@@ -113,7 +113,7 @@ public class CommandRegistry {
                 }
                 return true;
             }
-        }, new Command("suggest", "Suggest a feature or idea related to the server", "{prefix}suggest <idea>", Command.Category.OTHER) {
+        }, new Command("suggest", "Suggest a feature or idea related to the server", "{prefix}suggest [content]", Command.Category.OTHER) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 if (args.length > 0) {
@@ -138,25 +138,25 @@ public class CommandRegistry {
                 }
                 return true;
             }
-        },new Command("approve", "Approves a suggestion", "{prefix}approve", Command.Category.STAFF) {
+        },new Command("approve", "Approves a suggestion", "{prefix}approve <id> [reason]", Command.Category.STAFF) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 TechnoBot.getInstance().getSuggestionManager().respond(event, args, SuggestionResponse.APPROVE);
                 return true;
             }
-        },new Command("deny", "Denies a suggestion", "{prefix}deny", Command.Category.STAFF) {
+        },new Command("deny", "Denies a suggestion", "{prefix}deny <id> [reason]", Command.Category.STAFF) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 TechnoBot.getInstance().getSuggestionManager().respond(event, args, SuggestionResponse.DENY);
                 return true;
             }
-        },new Command("consider", "Considers a suggestion", "{prefix}consider", Command.Category.STAFF) {
+        },new Command("consider", "Considers a suggestion", "{prefix}consider <id> [reason]", Command.Category.STAFF) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 TechnoBot.getInstance().getSuggestionManager().respond(event, args, SuggestionResponse.CONSIDER);
                 return true;
             }
-        },new Command("implement", "Implements a suggestion", "{prefix}implement", Command.Category.STAFF) {
+        },new Command("implement", "Implements a suggestion", "{prefix}implement <id> [reason]", Command.Category.STAFF) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                     TechnoBot.getInstance().getSuggestionManager().respond(event, args, SuggestionResponse.IMPLEMENTED);
@@ -170,7 +170,7 @@ public class CommandRegistry {
             }
         });
 
-        TechnoBot.getInstance().getRegistry().registerCommands(new Command("kick", "Kicks the specified user for specified reason", "{prefix}kick <user> (optional reason.. all args)", Command.Category.STAFF) {
+        TechnoBot.getInstance().getRegistry().registerCommands(new Command("kick", "Kicks the specified user for specified reason", "{prefix}kick <user> [reason]", Command.Category.STAFF) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 Member executor = event.getMember();
@@ -225,7 +225,7 @@ public class CommandRegistry {
 
                 return true;
             }
-        }, new Command("ban", "Bans the specified user for specified reason", "{prefix}ban <user> (optional reason.. all args", Command.Category.STAFF) {
+        }, new Command("ban", "Bans the specified user for specified reason", "{prefix}ban <user> [reason]", Command.Category.STAFF) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 Member executor = event.getMember();
@@ -467,7 +467,7 @@ public class CommandRegistry {
                 event.getChannel().sendMessage(msg.build()).queue();
                 return true;
             }
-        }, new Command("leaderboard", "Shows the level Leaderboard", "{prefix}leaderboard", Command.Category.LEVELS) {
+        }, new Command("leaderboard", "Shows the level Leaderboard", "{prefix}leaderboard <page>", Command.Category.LEVELS) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 int usersPerPage = 20;
@@ -537,7 +537,7 @@ public class CommandRegistry {
                 event.getChannel().sendMessage("Left voice channel!").queue();
                 return true;
             }
-        }, new Command("play", "Plays music in voice channel", "{prefix}play", Command.Category.MUSIC) {
+        }, new Command("play", "Plays music in voice channel", "{prefix}play [url]", Command.Category.MUSIC) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
