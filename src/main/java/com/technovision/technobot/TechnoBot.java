@@ -4,6 +4,9 @@ import com.technovision.technobot.commands.CommandRegistry;
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.*;
+import com.technovision.technobot.listeners.managers.LevelManager;
+import com.technovision.technobot.listeners.managers.MusicManager;
+import com.technovision.technobot.listeners.managers.SuggestionManager;
 import com.technovision.technobot.logging.Loggable;
 import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.BotRegistry;
@@ -35,6 +38,7 @@ public class TechnoBot {
     private Logger logger;
     private final JDA jda;
     private final BotRegistry registry;
+    private final SuggestionManager suggestionManager;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
         @Override
         public void load() {
@@ -59,6 +63,11 @@ public class TechnoBot {
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES);
         jda = builder.build();
+        suggestionManager = new SuggestionManager();
+    }
+
+    public SuggestionManager getSuggestionManager() {
+        return suggestionManager;
     }
 
     /**

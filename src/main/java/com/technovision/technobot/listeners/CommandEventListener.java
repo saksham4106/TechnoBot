@@ -16,8 +16,8 @@ import javax.annotation.Nonnull;
  */
 public class CommandEventListener extends ListenerAdapter {
 
-    public static final String PREFIX = "-";
-    public static final int EMBED_COLOR = 0xd256e8;
+    public static final String PREFIX = "!";
+    public static final int EMBED_COLOR = 0x7289da;
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {

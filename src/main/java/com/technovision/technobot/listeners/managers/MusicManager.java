@@ -1,4 +1,4 @@
-package com.technovision.technobot.listeners;
+package com.technovision.technobot.listeners.managers;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;

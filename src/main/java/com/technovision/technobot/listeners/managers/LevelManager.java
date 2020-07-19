@@ -1,4 +1,4 @@
-package com.technovision.technobot.listeners;
+package com.technovision.technobot.listeners.managers;
 
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.data.Configuration;

@@ -4,8 +4,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
-import com.technovision.technobot.listeners.LevelManager;
-import com.technovision.technobot.listeners.MusicManager;
+import com.technovision.technobot.listeners.managers.LevelManager;
+import com.technovision.technobot.listeners.managers.MusicManager;
 import com.technovision.technobot.util.Tuple;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -122,16 +122,19 @@ public class CommandRegistry {
                     for (String arg : args) {
                         msg.append(arg).append(" ");
                     }
-                    embed.setFooter(event.getAuthor().getAsTag(), event.getAuthor().getAvatarUrl());
-                    embed.addField("Suggestion", msg.toString(), false);
+                    embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
+                    embed.setTitle("Suggestion #" + (TechnoBot.getInstance().getSuggestionManager().getAmount() + 1));
+                    embed.setDescription(msg.toString());
                     embed.setColor(EMBED_COLOR);
                     TextChannel channel = event.getGuild().getTextChannelsByName("SUGGESTIONS", true).get(0);
                     channel.sendMessage(embed.build()).queue(message -> {
                         message.addReaction(":upvote:733030671802695860").queue();
                         message.addReaction(":downvote:733030678832087120").queue();
+                        TechnoBot.getInstance().getSuggestionManager().addSuggestion(message.getId());
                     });
+                    event.getChannel().sendMessage("Your suggestion has been added to #suggestions").queue();
                 } else {
-                    event.getChannel().sendMessage("USAGE: !suggest <message>").queue();
+                    event.getChannel().sendMessage("You must write out your suggestion!").queue();
                 }
                 return true;
             }
