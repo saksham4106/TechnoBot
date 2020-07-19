@@ -55,7 +55,7 @@ public class CommandRegistry {
                 msg.delete().queue();
                 return true;
             }
-        }, new Command("help", "Displays a list of available commands","{prefix}help (optional: category/command)", Command.Category.OTHER) {
+        }, new Command("help", "Displays a list of available commands","{prefix}help [category|command]", Command.Category.OTHER) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 Map<Category, List<Command>> categories = new HashMap<Category,List<Command>>();
@@ -66,8 +66,7 @@ public class CommandRegistry {
                 for(Command c : TechnoBot.getInstance().getRegistry().getCommands()) {
                     categories.get(c.category).add(c);
                 }
-
-                if(args.length==0) {
+                if(args.length == 0) {
                     event.getChannel().sendMessage(new EmbedBuilder() {{
                         setTitle("TechnoBot Commands");
                         setColor(EMBED_COLOR);
@@ -76,40 +75,35 @@ public class CommandRegistry {
                             addField((category.name().charAt(0) + "").toUpperCase() + category.name().substring(1).toLowerCase(), commands.size() + " commands in category | `" + CommandEventListener.PREFIX + "help " + category.name().toLowerCase() + "`", false);
                         });
                     }}.build()).queue();
-                } else if(args.length<=2) {
-                    for (Category c : categories.keySet()) {
-                        if (args[0].equalsIgnoreCase(c.name())) {
-                            String categoryName = (c.name().charAt(0) + "").toUpperCase() + c.name().substring(1).toLowerCase();
-                            if(args.length==2) {
-                                for(Command cmd : categories.get(c)) {
-                                    if(args[1].equalsIgnoreCase(cmd.name)) {
-                                        EmbedBuilder builder = new EmbedBuilder()
-                                                .setTitle((cmd.name.charAt(0) + "").toUpperCase() + cmd.name.substring(1))
-                                                .setColor(EMBED_COLOR)
-                                                .setDescription(cmd.description)
-                                                .addField("Category", (""+cmd.category.name().charAt(0)).toUpperCase()+cmd.category.name().substring(1).toLowerCase(), true)
-                                                .addField("Usage", cmd.usage.replaceAll("\\{prefix}",CommandEventListener.PREFIX), true);
-                                        event.getChannel().sendMessage(builder.build()).queue();
-                                        return true;
-                                    }
-                                }
-                            }
-                            EmbedBuilder builder = new EmbedBuilder()
-                                    .setTitle(categoryName + " Commands")
-                                    .setColor(EMBED_COLOR)
-                                    .setFooter("Use \"" + CommandEventListener.PREFIX + "help category command\" for more info on a command.");
-                            for (Command cmd : categories.get(c)) {
-                                builder.addField(cmd.name, cmd.description + "\n`" + CommandEventListener.PREFIX + "help " + c.name().toLowerCase() + " " + cmd.name.toLowerCase() + "`", true);
-                            }
-
-                            event.getChannel().sendMessage(builder.build()).queue();
-
-                            return true;
-                        }
-                    }
-                    event.getChannel().sendMessage("Unknown Category: `" + args[0].toLowerCase() + "`").queue();
                 } else {
-                    event.getChannel().sendMessage("Usage: "+usage.replaceAll("\\{prefix}",CommandEventListener.PREFIX)).queue();
+                    try {
+                        Category c = Category.valueOf(args[0].toUpperCase());
+                        String categoryName = (c.name().charAt(0) + "").toUpperCase() + c.name().substring(1).toLowerCase();
+                        EmbedBuilder builder = new EmbedBuilder()
+                                .setTitle(categoryName + " Commands")
+                                .setColor(EMBED_COLOR);
+                        String description = "";
+                        for (Command cmd : categories.get(c)) {
+                            String usage = cmd.usage.replace("{prefix}", CommandEventListener.PREFIX);
+                            description += "`" + usage + "`\n" + cmd.description + "\n\n";
+                        }
+                        builder.setDescription(description);
+                        event.getChannel().sendMessage(builder.build()).queue();
+                    } catch (IllegalArgumentException e) {
+                        for(Command cmd : TechnoBot.getInstance().getRegistry().getCommands()) {
+                            if(args[0].equalsIgnoreCase(cmd.name)) {
+                                EmbedBuilder builder = new EmbedBuilder()
+                                        .setTitle((cmd.name.charAt(0) + "").toUpperCase() + cmd.name.substring(1))
+                                        .setColor(EMBED_COLOR)
+                                        .setDescription(cmd.description)
+                                        .addField("Category", (""+cmd.category.name().charAt(0)).toUpperCase()+cmd.category.name().substring(1).toLowerCase(), true)
+                                        .addField("Usage", "`" + cmd.usage.replace("{prefix}", CommandEventListener.PREFIX) + "`", true);
+                                event.getChannel().sendMessage(builder.build()).queue();
+                                return true;
+                            }
+                        }
+                        event.getChannel().sendMessage("No command called \"" + args[0] + "\" found.").queue();
+                    }
                 }
                 return true;
             }
