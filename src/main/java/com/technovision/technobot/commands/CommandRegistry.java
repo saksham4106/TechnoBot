@@ -7,6 +7,7 @@ import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.managers.LevelManager;
 import com.technovision.technobot.listeners.managers.MusicManager;
 import com.technovision.technobot.listeners.managers.SuggestionManager;
+import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.Tuple;
 import com.technovision.technobot.util.enums.SuggestionResponse;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -78,14 +79,14 @@ public class CommandRegistry {
                 } else if(args.length<=2) {
                     for (Category c : categories.keySet()) {
                         if (args[0].equalsIgnoreCase(c.name())) {
+                            String categoryName = (c.name().charAt(0) + "").toUpperCase() + c.name().substring(1).toLowerCase();
                             if(args.length==2) {
                                 for(Command cmd : categories.get(c)) {
                                     if(args[1].equalsIgnoreCase(cmd.name)) {
                                         EmbedBuilder builder = new EmbedBuilder()
-                                                .setTitle(":robot: TechnoBot Commands")
-                                                .setDescription("Category: "+(c.name().charAt(0) + "").toUpperCase() + c.name().substring(1).toLowerCase()+" | Command: "+cmd.name)
-                                                .addField("Name", cmd.name, true)
-                                                .addField("Description", cmd.description, true)
+                                                .setTitle((cmd.name.charAt(0) + "").toUpperCase() + cmd.name.substring(1))
+                                                .setColor(EMBED_COLOR)
+                                                .setDescription(cmd.description)
                                                 .addField("Category", (""+cmd.category.name().charAt(0)).toUpperCase()+cmd.category.name().substring(1).toLowerCase(), true)
                                                 .addField("Usage", cmd.usage.replaceAll("\\{prefix}",CommandEventListener.PREFIX), true);
                                         event.getChannel().sendMessage(builder.build()).queue();
@@ -94,9 +95,9 @@ public class CommandRegistry {
                                 }
                             }
                             EmbedBuilder builder = new EmbedBuilder()
-                                    .setTitle(":robot: TechnoBot Commands")
-                                    .setDescription("Category: " + (c.name().charAt(0) + "").toUpperCase() + c.name().substring(1).toLowerCase())
-                                    .setColor(EMBED_COLOR);
+                                    .setTitle(categoryName + " Commands")
+                                    .setColor(EMBED_COLOR)
+                                    .setFooter("Use \"" + CommandEventListener.PREFIX + "help category command\" for more info on a command.");
                             for (Command cmd : categories.get(c)) {
                                 builder.addField(cmd.name, cmd.description + "\n`" + CommandEventListener.PREFIX + "help " + c.name().toLowerCase() + " " + cmd.name.toLowerCase() + "`", true);
                             }
@@ -469,20 +470,46 @@ public class CommandRegistry {
         }, new Command("leaderboard", "Shows the level Leaderboard", "{prefix}leaderboard", Command.Category.LEVELS) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
-
-                int i = 1;
+                int usersPerPage = 20;
+                int start = 0;
+                List<Tuple<Integer, Integer>> tuples = LevelManager.getInstance().tupleList;
+                if (args.length > 0) {
+                    try {
+                        int page = Integer.parseInt(args[0]);
+                        if (page > 1) {
+                            int comparison = (tuples.size() / usersPerPage) + 1;
+                            if (tuples.size() % usersPerPage != 0) { comparison++; }
+                            if (page >= comparison) {
+                                event.getChannel().sendMessage("There are no more pages!").queue();
+                                return true;
+                            }
+                            start = (usersPerPage * (page - 1)) - 1;
+                        }
+                    } catch (NumberFormatException e) {
+                        event.getChannel().sendMessage("That is not a valid page number!").queue();
+                        return true;
+                    }
+                }
                 String msg = "";
-                for(Tuple<Integer,Integer> tup : LevelManager.getInstance().tupleList) {
-                    User u = LevelManager.getInstance().userList.get(LevelManager.getInstance().tupleList.indexOf(tup));
-                    msg += i + ". <@!"+u.getId()+"> " + FORMATTER.format(tup.value) + "xp " + "lvl " + tup.key + "\n";
-                    i++;
+                int finish = start + usersPerPage;
+                if (start != 0) { finish++; }
+                if (start != 0) { start++; }
+
+                for (int i = start; i < finish; i++) {
+                    try {
+                        Tuple<Integer, Integer> tup = tuples.get(i);
+                        User u = LevelManager.getInstance().userList.get(i);
+                        msg += (i + 1) + ". <@!"+u.getId()+"> " + FORMATTER.format(tup.value) + "xp " + "lvl " + tup.key + "\n";
+                    } catch (IndexOutOfBoundsException ignored) {}
                 }
 
                 EmbedBuilder builder = new EmbedBuilder();
-                builder.setTitle("Rank Leaderboard");
+                builder.setTitle(":trophy: Rank Leaderboard");
                 builder.setColor(EMBED_COLOR);
                 builder.setDescription(msg);
-                builder.setFooter("Page 1/1");
+                int maxPage = tuples.size() / usersPerPage;
+                if (maxPage * usersPerPage != tuples.size()) { maxPage++; }
+                builder.setFooter("Page " + (1 + (start / usersPerPage)) + "/" + maxPage);
                 event.getChannel().sendMessage(builder.build()).queue();
                 return true;
             }
