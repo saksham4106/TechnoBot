@@ -6,13 +6,12 @@ import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.managers.LevelManager;
 import com.technovision.technobot.listeners.managers.MusicManager;
+import com.technovision.technobot.listeners.managers.SuggestionManager;
 import com.technovision.technobot.util.Tuple;
+import com.technovision.technobot.util.enums.SuggestionResponse;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
 
@@ -69,9 +68,9 @@ public class CommandRegistry {
 
                 if(args.length==0) {
                     event.getChannel().sendMessage(new EmbedBuilder() {{
-                        setTitle(":robot: TechnoBot Commands");
+                        setTitle("TechnoBot Commands");
                         setColor(EMBED_COLOR);
-                        setThumbnail("https://cdn.discordapp.com/avatars/595024631438508070/08e21a9478909deacd7bebb29e98a329.png");
+                        setThumbnail(TechnoBot.getInstance().getJDA().getUserById("732789223639220305").getAvatarUrl());
                         categories.forEach((category, commands) -> {
                             addField((category.name().charAt(0) + "").toUpperCase() + category.name().substring(1).toLowerCase(), commands.size() + " commands in category | `" + CommandEventListener.PREFIX + "help " + category.name().toLowerCase() + "`", false);
                         });
@@ -132,11 +131,35 @@ public class CommandRegistry {
                         message.addReaction(":downvote:733030678832087120").queue();
                         TechnoBot.getInstance().getSuggestionManager().addSuggestion(message.getId());
                     });
-                    event.getChannel().sendMessage("Your suggestion has been added to #suggestions").queue();
+                    event.getChannel().sendMessage("Your suggestion has been added to <#"+ channel.getId() +">!").queue();
                 } else {
                     event.getChannel().sendMessage("You must write out your suggestion!").queue();
                 }
                 return true;
+            }
+        },new Command("approve", "Approves a suggestion", "{prefix}approve", Command.Category.STAFF) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                TechnoBot.getInstance().getSuggestionManager().respond(event, args, SuggestionResponse.APPROVE);
+                return true;
+            }
+        },new Command("deny", "Denies a suggestion", "{prefix}deny", Command.Category.STAFF) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                TechnoBot.getInstance().getSuggestionManager().respond(event, args, SuggestionResponse.DENY);
+                return true;
+            }
+        },new Command("consider", "Considers a suggestion", "{prefix}consider", Command.Category.STAFF) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                TechnoBot.getInstance().getSuggestionManager().respond(event, args, SuggestionResponse.CONSIDER);
+                return true;
+            }
+        },new Command("implement", "Implements a suggestion", "{prefix}implement", Command.Category.STAFF) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                    TechnoBot.getInstance().getSuggestionManager().respond(event, args, SuggestionResponse.IMPLEMENTED);
+                    return true;
             }
         }, new Command("youtube", "Sends a link to TechnoVision's YouTube Channel", "{prefix}youtube", Command.Category.OTHER) {
             @Override

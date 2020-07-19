@@ -1,5 +1,6 @@
 package com.technovision.technobot.listeners;
 
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -12,7 +13,8 @@ public class ExtrasEventListener extends ListenerAdapter {
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         if(event.getAuthor().isBot()) return;
         if(event.getMessage().getContentRaw().contains("<@!595024631438508070>")) {
-            event.getChannel().sendMessage("Do not @ TechnoVision, he is very busy! (Refer to #rules number 2)").queue();
+            TextChannel channel = event.getGuild().getTextChannelsByName("RULES", true).get(0);
+            event.getChannel().sendMessage("Do not @ TechnoVision, he is very busy! (Refer to <#"+ channel.getId() +"> number 2)").queue();
         } else if(event.getMessage().getContentRaw().toLowerCase().contains("why no work")) {
             event.getChannel().sendMessage("Please explain your issue. 'why no work' doesn't help!").queue();
         } else if(event.getMessage().getContentRaw().toLowerCase().contains("will this work")) {
@@ -37,6 +39,8 @@ public class ExtrasEventListener extends ListenerAdapter {
             }
             event.getChannel().sendMessage(msg).queue();
             event.getMessage().addReaction("\uD83D\uDE20").queue();
+        } else if (event.getMessage().getContentRaw().toLowerCase().contains("<@!732789223639220305>")) {
+            event.getChannel().sendMessage("Uhh, do you need something?").queue();
         }
     }
 }
