@@ -90,12 +90,12 @@ public class MusicManager extends ListenerAdapter {
             posString[(int) Math.floor((float) sch.trackQueue.get(0).getPosition() / (float) sch.trackQueue.get(0).getDuration() * 30F)] = "◉";
         } catch(Exception e) {posString[29] = "◉";}
 
-        long msPos = sch.trackQueue.get(0).getPosition();
+        long msPos = (sch.trackQueue.size()>0)?sch.trackQueue.get(0).getPosition():0;
         long minPos = msPos/60000;
         msPos = msPos%60000;
         int secPos = (int) Math.floor((float)msPos/1000f);
 
-        long msDur = sch.trackQueue.get(0).getDuration();
+        long msDur = (sch.trackQueue.size()>0)?sch.trackQueue.get(0).getDuration():0;
         long minDur = msDur/60000;
         msDur = msDur%60000;
         int secDur = (int) Math.floor((float)msDur/1000f);
@@ -105,7 +105,7 @@ public class MusicManager extends ListenerAdapter {
                 .setDescription(embedOriginal.getDescription())
                 .setColor(embedOriginal.getColor())
                 .addField("Player Status", ((sch.isPaused())?"Paused":((sch.loop)?"Looping 1 song.":((sch.loopQueue)?"Looping Queue.":"Playing Queue"))), false)
-                .addField("Current Song", "["+sch.trackQueue.get(0).getInfo().title+"]("+sch.trackQueue.get(0).getInfo().uri+")", false)
+                .addField("Current Song", (sch.trackQueue.size()>0)?"["+sch.trackQueue.get(0).getInfo().title+"]("+sch.trackQueue.get(0).getInfo().uri+")":"None", false)
                 .addField("Loop Mode", ((sch.loop)?"Loop Song":((sch.loopQueue)?"Loop Playlist":"Loop Off")), true)
                 .addField("Position", minPos+":"+((secPos<10)?"0"+secPos:secPos)+" / "+minDur+":"+((secDur<10)?"0"+secDur:secDur), false)
                 .addField("Progress", String.join("", posString), false);
