@@ -7,6 +7,7 @@ import com.technovision.technobot.listeners.*;
 import com.technovision.technobot.listeners.managers.LevelManager;
 import com.technovision.technobot.listeners.managers.MusicManager;
 import com.technovision.technobot.listeners.managers.SuggestionManager;
+import com.technovision.technobot.listeners.managers.YoutubeManager;
 import com.technovision.technobot.logging.Loggable;
 import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.BotRegistry;
@@ -22,6 +23,7 @@ import javax.security.auth.login.LoginException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.Authenticator;
 import java.net.URL;
 
 /**
@@ -39,6 +41,7 @@ public class TechnoBot {
     private final JDA jda;
     private final BotRegistry registry;
     private final SuggestionManager suggestionManager;
+    private final YoutubeManager youtubeManager;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
         @Override
         public void load() {
@@ -46,6 +49,7 @@ public class TechnoBot {
             if(!getJson().has("token")) getJson().put("token", "");
             if(!getJson().has("logs-webhook")) getJson().put("logs-webhook", "");
             if(!getJson().has("guildlogs-webhook")) getJson().put("guildlogs-webhook", "");
+            if(!getJson().has("youtube-api-key")) getJson().put("youtube-api-key", "");
         }
     };
 
@@ -64,10 +68,15 @@ public class TechnoBot {
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES);
         jda = builder.build();
         suggestionManager = new SuggestionManager();
+        youtubeManager = new YoutubeManager();
     }
 
     public SuggestionManager getSuggestionManager() {
         return suggestionManager;
+    }
+
+    public YoutubeManager getYoutubeManager() {
+        return youtubeManager;
     }
 
     /**
