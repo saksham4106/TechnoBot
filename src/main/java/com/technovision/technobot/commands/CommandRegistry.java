@@ -6,6 +6,7 @@ import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.managers.LevelManager;
 import com.technovision.technobot.listeners.managers.MusicManager;
+import com.technovision.technobot.util.Track;
 import com.technovision.technobot.util.Tuple;
 import com.technovision.technobot.util.enums.SuggestionResponse;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -538,12 +539,13 @@ public class CommandRegistry {
                 }
                 MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
                 try {
-                    String track = "";
+                    StringBuilder keywords = new StringBuilder();
                     for (String word : args) {
-                        track += word + " ";
+                        keywords.append(word).append(" ");
                     }
-                    String url = TechnoBot.getInstance().getYoutubeManager().search(track);
-                    MusicManager.getInstance().addTrack(url, event.getChannel(), event.getGuild());
+                    Track track = TechnoBot.getInstance().getYoutubeManager().search(keywords.toString(), event.getAuthor());
+
+                    MusicManager.getInstance().addTrack(track, event.getChannel(), event.getGuild());
                     MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.setPaused(false);
                 } catch(IndexOutOfBoundsException e) {
                     event.getChannel().sendMessage("What do you want me to play?").queue();

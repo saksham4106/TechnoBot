@@ -7,6 +7,8 @@ import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.technovision.technobot.TechnoBot;
+import com.technovision.technobot.util.Track;
+import net.dv8tion.jda.api.entities.User;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -34,7 +36,7 @@ public class YoutubeManager {
 
     public YouTube getYoutube() { return youtube; }
 
-    public String search(String keywords) {
+    public Track search(String keywords, User author) {
         try {
             // Call the API and get first result.
             SearchListResponse searchResponse = search
@@ -48,7 +50,10 @@ public class YoutubeManager {
             for (SearchResult result : searchResponse.getItems()) {
                 ResourceId rId = result.getId();
                 if (rId.getKind().equals("youtube#video")) {
-                    return "https://www.youtube.com/watch?v=" + rId.getVideoId();
+                    String url = "https://www.youtube.com/watch?v=" + rId.getVideoId();
+                    String thumb = String.format("https://img.youtube.com/vi/%s/0.jpg", rId.getVideoId());
+                    Track track = new Track(url, thumb, author);
+                    return track;
                 }
             }
         } catch (IOException ignored) { }

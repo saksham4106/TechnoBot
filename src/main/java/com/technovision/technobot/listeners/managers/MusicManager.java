@@ -12,7 +12,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import com.technovision.technobot.TechnoBot;
+import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.logging.Logger;
+import com.technovision.technobot.util.Track;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
 import net.dv8tion.jda.api.entities.*;
@@ -128,11 +130,19 @@ public class MusicManager extends ListenerAdapter {
         handlers.get(guild.getIdLong()).trackScheduler.clearQueue();
     }
 
-    public void addTrack(String name, MessageChannel channel, Guild guild) {
-        playerManager.loadItem(name, new AudioLoadResultHandler() {
+    public void addTrack(Track track, MessageChannel channel, Guild guild) {
+        playerManager.loadItem(track.getUrl(), new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                channel.sendMessage("Loading song `"+audioTrack.getInfo().title+"`").queue();
+
+                EmbedBuilder embed = new EmbedBuilder()
+                    .setColor(CommandEventListener.EMBED_COLOR)
+                    .setTitle(audioTrack.getInfo().title, audioTrack.getInfo().uri)
+                    .setFooter("Added by " + track.getAuthor().getAsTag(), track.getAuthor().getAvatarUrl())
+                    .setThumbnail(track.getThumbnail());
+
+                channel.sendMessage("**" + audioTrack.getInfo().title + "** successfully added!").queue();
+                channel.sendMessage(embed.build()).queue();
                 handlers.get(guild.getIdLong()).trackScheduler.queue(audioTrack);
             }
 
