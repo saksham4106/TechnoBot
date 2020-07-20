@@ -7,7 +7,6 @@ import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.technovision.technobot.TechnoBot;
-import com.technovision.technobot.logging.Logger;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;

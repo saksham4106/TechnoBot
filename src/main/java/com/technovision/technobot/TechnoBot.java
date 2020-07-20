@@ -23,7 +23,6 @@ import javax.security.auth.login.LoginException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.Authenticator;
 import java.net.URL;
 
 /**
