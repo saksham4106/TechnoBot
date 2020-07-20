@@ -23,6 +23,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -531,7 +532,7 @@ public class CommandRegistry {
                 event.getChannel().sendMessage("Left voice channel!").queue();
                 return true;
             }
-        }, new Command("play", "Plays music in voice channel", "{prefix}play [url]", Command.Category.MUSIC) {
+        }, new Command("play", "Plays music in voice channel", "{prefix}play [song|url]", Command.Category.MUSIC) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
@@ -540,7 +541,12 @@ public class CommandRegistry {
                 }
                 MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
                 try {
-                    MusicManager.getInstance().addTrack(args[0], event.getChannel(), event.getGuild());
+                    String track = "";
+                    for (String word : args) {
+                        track += word + " ";
+                    }
+                    String url = TechnoBot.getInstance().getYoutubeManager().search(track);
+                    MusicManager.getInstance().addTrack(url, event.getChannel(), event.getGuild());
                     MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.setPaused(false);
                 } catch(IndexOutOfBoundsException e) {
                     event.getChannel().sendMessage("What do you want me to play?").queue();
