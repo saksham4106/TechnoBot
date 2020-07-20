@@ -134,15 +134,22 @@ public class MusicManager extends ListenerAdapter {
         playerManager.loadItem(track.getUrl(), new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
+                if (!handlers.get(guild.getIdLong()).trackScheduler.trackQueue.isEmpty()) {
+                    long msPos = audioTrack.getInfo().length;
+                    long minPos = msPos/60000;
+                    msPos = msPos%60000;
+                    int secPos = (int) Math.floor((float)msPos/1000f);
+                    EmbedBuilder embed = new EmbedBuilder()
+                            .setColor(CommandEventListener.EMBED_COLOR)
+                            .setTitle(audioTrack.getInfo().title, audioTrack.getInfo().uri)
+                            .addField("Song Duration", minPos+":"+((secPos<10)?"0"+secPos:secPos), true)
+                            .addField("Position in Queue", String.valueOf(handlers.get(guild.getIdLong()).trackScheduler.trackQueue.size()), true)
+                            .setFooter("Added by " + track.getAuthor().getAsTag(), track.getAuthor().getAvatarUrl())
+                            .setThumbnail(track.getThumbnail());
 
-                EmbedBuilder embed = new EmbedBuilder()
-                    .setColor(CommandEventListener.EMBED_COLOR)
-                    .setTitle(audioTrack.getInfo().title, audioTrack.getInfo().uri)
-                    .setFooter("Added by " + track.getAuthor().getAsTag(), track.getAuthor().getAvatarUrl())
-                    .setThumbnail(track.getThumbnail());
-
-                channel.sendMessage("**" + audioTrack.getInfo().title + "** successfully added!").queue();
-                channel.sendMessage(embed.build()).queue();
+                    channel.sendMessage(":ballot_box_with_check: **" + audioTrack.getInfo().title + "** successfully added!").queue();
+                    channel.sendMessage(embed.build()).queue();
+                }
                 handlers.get(guild.getIdLong()).trackScheduler.queue(audioTrack);
             }
 
@@ -316,11 +323,13 @@ public class MusicManager extends ListenerAdapter {
             long minPos = msPos/60000;
             msPos = msPos%60000;
             int secPos = (int) Math.floor((float)msPos/1000f);
-
+            String thumb = String.format("https://img.youtube.com/vi/%s/0.jpg", track.getInfo().uri.substring(32));
             EmbedBuilder builder = new EmbedBuilder()
-                    .setTitle("Song Started :musical_note:")
+                    .setTitle("Now Playing")
                     .setDescription("["+track.getInfo().title+"]("+track.getInfo().uri+")")
-                    .addField("Length", minPos+":"+((secPos<10)?"0"+secPos:secPos), true);
+                    .addField("Song Duration", minPos+":"+((secPos<10)?"0"+secPos:secPos), true)
+                    .setColor(CommandEventListener.EMBED_COLOR)
+                    .setThumbnail(thumb);
             builder.addField("Up Next", (trackQueue.size()>1)?("["+trackQueue.get(1).getInfo().title+"]("+trackQueue.get(1).getInfo().uri+")"):"Nothing", true);
 
             logChannel.sendMessage(builder.build()).queue();

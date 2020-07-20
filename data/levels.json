@@ -1,0 +1,35 @@
+{"users": [
+    {
+        "color": "#8394eb",
+        "lastTalked": 1595288223798,
+        "level": 1,
+        "background": "",
+        "xp": 87,
+        "rank": 3,
+        "id": 595024631438508070,
+        "opacity": 0.5,
+        "accent": "#FFFFFF"
+    },
+    {
+        "color": "#8394eb",
+        "lastTalked": 1595287193564,
+        "level": 1,
+        "background": "",
+        "xp": 65,
+        "rank": 4,
+        "id": 391648676650549248,
+        "opacity": 0.5,
+        "accent": "#FFFFFF"
+    },
+    {
+        "color": "#8394eb",
+        "lastTalked": 1595286301859,
+        "level": 1,
+        "background": "",
+        "xp": 16,
+        "rank": 4,
+        "id": 345713912945180674,
+        "opacity": 0.5,
+        "accent": "#FFFFFF"
+    }
+]}

@@ -519,7 +519,7 @@ public class CommandRegistry {
                 event.getChannel().sendMessage("Joined `"+event.getMember().getVoiceState().getChannel().getName()+"`").queue();
                 return true;
             }
-        }, new Command("leave", "Leaves the voice channel", "{prefix}join", Command.Category.MUSIC) {
+        }, new Command("leave", "Leaves the voice channel", "{prefix}leave", Command.Category.MUSIC) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
@@ -534,7 +534,10 @@ public class CommandRegistry {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
-                    event.getChannel().sendMessage("You are not in a voice channel!").queue();
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.setColor(CommandEventListener.ERROR_EMBED_COLOR);
+                    embed.setDescription(":x: Please connect to a voice channel first!");
+                    event.getChannel().sendMessage(embed.build()).queue();
                     return true;
                 }
                 MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
@@ -547,8 +550,11 @@ public class CommandRegistry {
 
                     MusicManager.getInstance().addTrack(track, event.getChannel(), event.getGuild());
                     MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.setPaused(false);
-                } catch(IndexOutOfBoundsException e) {
-                    event.getChannel().sendMessage("What do you want me to play?").queue();
+                } catch(IndexOutOfBoundsException | NullPointerException e) {
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.setColor(0xF05230);
+                    embed.setDescription(":x: Please specify a song a to play.");
+                    event.getChannel().sendMessage(embed.build()).queue();
                 }
                 return true;
             }
@@ -565,27 +571,32 @@ public class CommandRegistry {
                     return true;
                 }
 
-                EmbedBuilder builder = new EmbedBuilder()
-                        .setTitle(event.getGuild().getName()+"'s Queue")
-                        .setDescription(tracks.size()+" songs in queue")
-                        .addField("Now Playing :musical_note:", "["+tracks.get(0).getInfo().title+"]("+tracks.get(0).getInfo().uri+")\nBy: "+tracks.get(0).getInfo().author, false);
-                tracks.remove(0);
-                builder.addField("All Songs","All Songs in queue listed below.",false);
-                int c = 1;
                 int fulltime = 0;
-                for(AudioTrack track : tracks) {
-                    if(c<=20)
-                    builder.addField(c+". "+track.getInfo().title, track.getInfo().uri, false);
-                    c++;
+                String description = "";
+                for (int i = 0; i < tracks.size(); i++) {
+                    AudioTrack track = tracks.get(i);
+                    long msPos = track.getInfo().length;
+                    long minPos = msPos/60000;
+                    msPos = msPos%60000;
+                    int secPos = (int) Math.floor((float)msPos/1000f);
+                    if (i == 0) {
+                        description += "__Now Playing:__";
+                    }
+                    else if (i == 1) {
+                        description += "\n__Up Next:__";
+                    }
+                    description += "\n`" + i + ".` ["+track.getInfo().title+"]("+track.getInfo().uri+") | `" + minPos+":"+((secPos<10)?"0"+secPos:secPos + "`\n");
                     fulltime += track.getInfo().length;
                 }
-
                 int minTime = fulltime / 60000;
                 fulltime %= 60000;
                 int secTime = fulltime / 1000;
+                description += "\n\n**" + (tracks.size()-2) + " Songs in Queue | "+minTime+":"+((secTime<10)?"0"+secTime:secTime) + " Total Length**";
 
-
-                builder.addField("...and "+Math.max(c-20,0)+" more songs", "Left in queue: "+minTime+":"+((secTime<10)?"0"+secTime:secTime), false);
+                EmbedBuilder builder = new EmbedBuilder()
+                        .setTitle("Music Queue :musical_note:")
+                        .setColor(EMBED_COLOR)
+                        .setDescription(description);
 
                 event.getChannel().sendMessage(builder.build()).queue();
                 return true;
@@ -661,7 +672,7 @@ public class CommandRegistry {
                 EmbedBuilder builder = new EmbedBuilder()
                         .setTitle("Now Playing :musical_note:", currentPlaying.getInfo().uri)
                         .setDescription(currentPlaying.getInfo().title)
-                        .setColor(0x00FFFF)
+                        .setColor(EMBED_COLOR)
                         .addField("Position", String.join("",posString),false)
                         .addField("Progress", minPos+":"+((secPos<10)?"0"+secPos:secPos)+" / "+minDur+":"+((secDur<10)?"0"+secDur:secDur), false);
                 event.getChannel().sendMessage(builder.build()).queue();
