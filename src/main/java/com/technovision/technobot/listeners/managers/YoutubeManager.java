@@ -7,8 +7,6 @@ import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.technovision.technobot.TechnoBot;
-import com.technovision.technobot.util.Track;
-import net.dv8tion.jda.api.entities.User;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -24,7 +22,8 @@ public class YoutubeManager {
     public YoutubeManager() {
         try {
             key = TechnoBot.getInstance().getBotConfig().getJson().getString("youtube-api-key");
-            youtube = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(), request -> {}).setApplicationName("technobot-discord-bot").build();
+            youtube = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(),
+                    request -> {}).setApplicationName("technobot-discord-bot").build();
             List<String> properties = new ArrayList<>();
             properties.add("id");
             properties.add("snippet");
@@ -34,26 +33,22 @@ public class YoutubeManager {
         }
     }
 
-    public YouTube getYoutube() { return youtube; }
-
-    public Track search(String keywords, User author) {
+    public String search(String keywords) {
         try {
             // Call the API and get first result.
             SearchListResponse searchResponse = search
-                    .setMaxResults(25L)
+                    .setMaxResults(3L)
                     .setKey(key)
                     .setQ(keywords)
                     .execute();
-            if (searchResponse.getItems().size() == 0) { return null; }
+            if (searchResponse.getItems().size() == 0) {
+                return null; }
 
             // Loop through results until you find a video
             for (SearchResult result : searchResponse.getItems()) {
                 ResourceId rId = result.getId();
                 if (rId.getKind().equals("youtube#video")) {
-                    String url = "https://www.youtube.com/watch?v=" + rId.getVideoId();
-                    String thumb = String.format("https://img.youtube.com/vi/%s/0.jpg", rId.getVideoId());
-                    Track track = new Track(url, thumb, author);
-                    return track;
+                    return "https://www.youtube.com/watch?v=" + rId.getVideoId();
                 }
             }
         } catch (IOException ignored) { }

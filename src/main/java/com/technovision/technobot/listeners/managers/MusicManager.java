@@ -14,7 +14,6 @@ import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.logging.Logger;
-import com.technovision.technobot.util.Track;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
 import net.dv8tion.jda.api.entities.*;
@@ -130,8 +129,8 @@ public class MusicManager extends ListenerAdapter {
         handlers.get(guild.getIdLong()).trackScheduler.clearQueue();
     }
 
-    public void addTrack(Track track, MessageChannel channel, Guild guild) {
-        playerManager.loadItem(track.getUrl(), new AudioLoadResultHandler() {
+    public void addTrack(User author, String url, MessageChannel channel, Guild guild) {
+        playerManager.loadItem(url, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
                 if (!handlers.get(guild.getIdLong()).trackScheduler.trackQueue.isEmpty()) {
@@ -139,13 +138,14 @@ public class MusicManager extends ListenerAdapter {
                     long minPos = msPos/60000;
                     msPos = msPos%60000;
                     int secPos = (int) Math.floor((float)msPos/1000f);
+                    String thumb = String.format("https://img.youtube.com/vi/%s/0.jpg", audioTrack.getInfo().uri.substring(32));
                     EmbedBuilder embed = new EmbedBuilder()
                             .setColor(CommandEventListener.EMBED_COLOR)
                             .setTitle(audioTrack.getInfo().title, audioTrack.getInfo().uri)
                             .addField("Song Duration", minPos+":"+((secPos<10)?"0"+secPos:secPos), true)
                             .addField("Position in Queue", String.valueOf(handlers.get(guild.getIdLong()).trackScheduler.trackQueue.size()), true)
-                            .setFooter("Added by " + track.getAuthor().getAsTag(), track.getAuthor().getAvatarUrl())
-                            .setThumbnail(track.getThumbnail());
+                            .setFooter("Added by " + author.getAsTag(), author.getAvatarUrl())
+                            .setThumbnail(thumb);
 
                     channel.sendMessage(":ballot_box_with_check: **" + audioTrack.getInfo().title + "** successfully added!").queue();
                     channel.sendMessage(embed.build()).queue();
