@@ -6,7 +6,6 @@ import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.managers.LevelManager;
 import com.technovision.technobot.listeners.managers.MusicManager;
-import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.Tuple;
 import com.technovision.technobot.util.enums.SuggestionResponse;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -554,7 +553,6 @@ public class CommandRegistry {
                         url = TechnoBot.getInstance().getYoutubeManager().search(keywords.toString());
                     }
                     if (url != null) {
-                        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, url);
                         MusicManager.getInstance().addTrack(event.getAuthor(), url, event.getChannel(), event.getGuild());
                         MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.setPaused(false);
                     } else {
