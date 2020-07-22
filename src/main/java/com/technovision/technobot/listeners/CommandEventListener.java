@@ -18,6 +18,7 @@ public class CommandEventListener extends ListenerAdapter {
 
     public static final String PREFIX = "!";
     public static final int EMBED_COLOR = 0x7289da;
+    public static final int ERROR_EMBED_COLOR = 0xF05230;
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {

@@ -22,7 +22,8 @@ public class YoutubeManager {
     public YoutubeManager() {
         try {
             key = TechnoBot.getInstance().getBotConfig().getJson().getString("youtube-api-key");
-            youtube = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(), request -> {}).setApplicationName("technobot-discord-bot").build();
+            youtube = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(),
+                    request -> {}).setApplicationName("technobot-discord-bot").build();
             List<String> properties = new ArrayList<>();
             properties.add("id");
             properties.add("snippet");
@@ -32,17 +33,16 @@ public class YoutubeManager {
         }
     }
 
-    public YouTube getYoutube() { return youtube; }
-
     public String search(String keywords) {
         try {
             // Call the API and get first result.
             SearchListResponse searchResponse = search
-                    .setMaxResults(25L)
+                    .setMaxResults(3L)
                     .setKey(key)
                     .setQ(keywords)
                     .execute();
-            if (searchResponse.getItems().size() == 0) { return null; }
+            if (searchResponse.getItems().size() == 0) {
+                return null; }
 
             // Loop through results until you find a video
             for (SearchResult result : searchResponse.getItems()) {
