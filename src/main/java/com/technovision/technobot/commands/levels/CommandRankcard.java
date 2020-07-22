@@ -101,13 +101,14 @@ public class CommandRankcard extends Command {
                 }
             }
         }
-        EmbedBuilder msg = new EmbedBuilder();
-        msg.setTitle(":paintbrush: Customize Rank Card");
-        msg.addField("rankcard background [url]", "Sets the background of your level card.", false);
-        msg.addField("rankcard color <color>", "Sets the base color for your level card.", false);
-        msg.addField("rankcard accent <color>", "Sets the accent color for your level card.", false);
-        msg.addField("rankcard opacity <opacity>", "Sets the opacity for your level card.", false);
-        msg.addField("rankcard reset", "Resets customization to default settings.", false);
+        EmbedBuilder msg = new EmbedBuilder()
+                .setColor(EMBED_COLOR)
+                .setTitle(":paintbrush: Customize Rank Card")
+                .addField("rankcard background [url]", "Sets the background of your level card.", false)
+                .addField("rankcard color <color>", "Sets the base color for your level card.", false)
+                .addField("rankcard accent <color>", "Sets the accent color for your level card.", false)
+                .addField("rankcard opacity <opacity>", "Sets the opacity for your level card.", false)
+                .addField("rankcard reset", "Resets customization to default settings.", false);
         event.getChannel().sendMessage(msg.build()).queue();
         return true;
     }
