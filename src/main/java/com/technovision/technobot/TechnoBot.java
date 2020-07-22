@@ -4,10 +4,7 @@ import com.technovision.technobot.commands.CommandRegistry;
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.*;
-import com.technovision.technobot.listeners.managers.LevelManager;
-import com.technovision.technobot.listeners.managers.MusicManager;
-import com.technovision.technobot.listeners.managers.SuggestionManager;
-import com.technovision.technobot.listeners.managers.YoutubeManager;
+import com.technovision.technobot.listeners.managers.*;
 import com.technovision.technobot.logging.Loggable;
 import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.BotRegistry;
@@ -41,6 +38,7 @@ public class TechnoBot {
     private final BotRegistry registry;
     private final SuggestionManager suggestionManager;
     private final YoutubeManager youtubeManager;
+    private final EconManager econManager;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
         @Override
         public void load() {
@@ -68,6 +66,7 @@ public class TechnoBot {
         jda = builder.build();
         suggestionManager = new SuggestionManager();
         youtubeManager = new YoutubeManager();
+        econManager = new EconManager();
     }
 
     public SuggestionManager getSuggestionManager() {
@@ -76,6 +75,10 @@ public class TechnoBot {
 
     public YoutubeManager getYoutubeManager() {
         return youtubeManager;
+    }
+
+    public EconManager getEconomy() {
+        return econManager;
     }
 
     /**

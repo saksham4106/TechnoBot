@@ -4,6 +4,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.CommandEventListener;
+import com.technovision.technobot.listeners.managers.EconManager;
 import com.technovision.technobot.listeners.managers.LevelManager;
 import com.technovision.technobot.listeners.managers.MusicManager;
 import com.technovision.technobot.util.Tuple;
@@ -723,6 +724,39 @@ public class CommandRegistry {
                 }
 
                 event.getChannel().sendMessage("🔈 Set volume to "+args[0]+"!").queue();
+                return true;
+            }
+        }, new Command("work", "Work for some cash", "{prefix}work", Command.Category.ECONOMY) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                EmbedBuilder embed = new EmbedBuilder();
+                JSONObject profile = TechnoBot.getInstance().getEconomy().getProfile(event.getAuthor());
+                long timestamp = profile.getLong("work-timestamp");
+                int cooldown = 14400000;
+                if (System.currentTimeMillis() >= timestamp + cooldown) {
+                    TechnoBot.getInstance().getEconomy().addMoney(event.getAuthor(), 100, EconManager.Activity.WORK);
+                    embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
+                    embed.setDescription("You work for the day and receive " + EconManager.SYMBOL +  "100");
+                    embed.setColor(0x33cc33);
+                } else {
+                    embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
+                    embed.setDescription(":stopwatch: You cannot work for " + TechnoBot.getInstance().getEconomy().getCooldown(timestamp, cooldown) + ".");
+                    embed.setColor(EMBED_COLOR);
+                }
+                event.getChannel().sendMessage(embed.build()).queue();
+                return true;
+            }
+        }, new Command("balance", "View your account balance", "{prefix}balance", Command.Category.ECONOMY) {
+            @Override
+            public boolean execute(MessageReceivedEvent event, String[] args) {
+                Tuple<Long, Long> profile = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor());
+                EmbedBuilder embed = new EmbedBuilder()
+                        .setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl())
+                        .addField("Cash:", EconManager.SYMBOL + profile.key, true)
+                        .addField("Bank:", EconManager.SYMBOL + profile.value, true)
+                        .addField("Net Worth:", EconManager.SYMBOL + (profile.key + profile.value), true)
+                        .setColor(EMBED_COLOR);
+                event.getChannel().sendMessage(embed.build()).queue();
                 return true;
             }
         });
