@@ -38,99 +38,11 @@ public class CommandRegistry {
     public static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 
     public CommandRegistry() {
-        TechnoBot.getInstance().getRegistry().registerCommands(new Command("ping","Pings the Discord API","{prefix}ping", Command.Category.OTHER) {
-            @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) {
-                long time = System.currentTimeMillis();
-                Message msg = event.getChannel().sendMessage(":signal_strength: Ping").complete();
-                long latency = System.currentTimeMillis() - time;
-                EmbedBuilder embed = new EmbedBuilder();
-                embed.setTitle(":ping_pong: Pong!");
-                embed.addField("Latency", latency + "ms", false);
-                embed.addField("API","2ms", false);
-                embed.setColor(EMBED_COLOR);
-                event.getChannel().sendMessage(embed.build()).queue();
-                msg.delete().queue();
-                return true;
-            }
-        }, new Command("help", "Displays a list of available commands","{prefix}help [category|command]", Command.Category.OTHER) {
-            @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) {
-                Map<Category, List<Command>> categories = new HashMap<Category,List<Command>>();
-
-                for(Category c : Category.values()) {
-                    categories.put(c, new ArrayList<>());
-                }
-                for(Command c : TechnoBot.getInstance().getRegistry().getCommands()) {
-                    categories.get(c.category).add(c);
-                }
-                if(args.length == 0) {
-                    event.getChannel().sendMessage(new EmbedBuilder() {{
-                        setTitle("TechnoBot Commands");
-                        setColor(EMBED_COLOR);
-                        setThumbnail(TechnoBot.getInstance().getJDA().getUserById("732789223639220305").getAvatarUrl());
-                        categories.forEach((category, commands) -> {
-                            addField((category.name().charAt(0) + "").toUpperCase() + category.name().substring(1).toLowerCase(), commands.size() + " commands in category | `" + CommandEventListener.PREFIX + "help " + category.name().toLowerCase() + "`", false);
-                        });
-                    }}.build()).queue();
-                } else {
-                    try {
-                        Category c = Category.valueOf(args[0].toUpperCase());
-                        String categoryName = (c.name().charAt(0) + "").toUpperCase() + c.name().substring(1).toLowerCase();
-                        EmbedBuilder builder = new EmbedBuilder()
-                                .setTitle(categoryName + " Commands")
-                                .setColor(EMBED_COLOR);
-                        String description = "";
-                        for (Command cmd : categories.get(c)) {
-                            String usage = cmd.usage.replace("{prefix}", CommandEventListener.PREFIX);
-                            description += "`" + usage + "`\n" + cmd.description + "\n\n";
-                        }
-                        builder.setDescription(description);
-                        event.getChannel().sendMessage(builder.build()).queue();
-                    } catch (IllegalArgumentException e) {
-                        for(Command cmd : TechnoBot.getInstance().getRegistry().getCommands()) {
-                            if(args[0].equalsIgnoreCase(cmd.name)) {
-                                EmbedBuilder builder = new EmbedBuilder()
-                                        .setTitle((cmd.name.charAt(0) + "").toUpperCase() + cmd.name.substring(1))
-                                        .setColor(EMBED_COLOR)
-                                        .setDescription(cmd.description)
-                                        .addField("Category", (""+cmd.category.name().charAt(0)).toUpperCase()+cmd.category.name().substring(1).toLowerCase(), true)
-                                        .addField("Usage", "`" + cmd.usage.replace("{prefix}", CommandEventListener.PREFIX) + "`", true);
-                                event.getChannel().sendMessage(builder.build()).queue();
-                                return true;
-                            }
-                        }
-                        event.getChannel().sendMessage("No command called \"" + args[0] + "\" found.").queue();
-                    }
-                }
-                return true;
-            }
-        }, new Command("suggest", "Suggest a feature or idea related to the server", "{prefix}suggest [content]", Command.Category.OTHER) {
-            @Override
-            public boolean execute(MessageReceivedEvent event, String[] args) {
-                if (args.length > 0) {
-                    EmbedBuilder embed = new EmbedBuilder();
-                    StringBuilder msg = new StringBuilder();
-                    for (String arg : args) {
-                        msg.append(arg).append(" ");
-                    }
-                    embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
-                    embed.setTitle("Suggestion #" + (TechnoBot.getInstance().getSuggestionManager().getAmount() + 1));
-                    embed.setDescription(msg.toString());
-                    embed.setColor(EMBED_COLOR);
-                    TextChannel channel = event.getGuild().getTextChannelsByName("SUGGESTIONS", true).get(0);
-                    channel.sendMessage(embed.build()).queue(message -> {
-                        message.addReaction(":upvote:733030671802695860").queue();
-                        message.addReaction(":downvote:733030678832087120").queue();
-                        TechnoBot.getInstance().getSuggestionManager().addSuggestion(message.getId());
-                    });
-                    event.getChannel().sendMessage("Your suggestion has been added to <#"+ channel.getId() +">!").queue();
-                } else {
-                    event.getChannel().sendMessage("You must write out your suggestion!").queue();
-                }
-                return true;
-            }
-        },new Command("approve", "Approves a suggestion", "{prefix}approve <id> [reason]", Command.Category.STAFF) {
+        TechnoBot.getInstance().getRegistry().registerCommands(
+                new CommandPing(),
+                new CommandHelp(),
+                new CommandSuggest(),
+                new Command("approve", "Approves a suggestion", "{prefix}approve <id> [reason]", Command.Category.STAFF) {
             @Override
             public boolean execute(MessageReceivedEvent event, String[] args) {
                 TechnoBot.getInstance().getSuggestionManager().respond(event, args, SuggestionResponse.APPROVE);
