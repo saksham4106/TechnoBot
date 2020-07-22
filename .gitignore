@@ -1,4 +1,5 @@
 target/*
 .idea/*
+data/*
 data/config/*
 data/images/rankCard.png
