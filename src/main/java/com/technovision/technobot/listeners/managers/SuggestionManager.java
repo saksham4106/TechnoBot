@@ -1,6 +1,7 @@
 package com.technovision.technobot.listeners.managers;
 
 import com.technovision.technobot.TechnoBot;
+import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.util.enums.SuggestionResponse;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -68,7 +69,10 @@ public class SuggestionManager {
 
     public void respond(MessageReceivedEvent event, String[] args, SuggestionResponse response) {
         if(!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
-            event.getChannel().sendMessage("You do not have permission to do that!").queue();
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setColor(Command.ERROR_EMBED_COLOR);
+            embed.setDescription(":x: You do not have permission to do that!");
+            event.getChannel().sendMessage(embed.build()).queue();
             return;
         }
         if (args.length > 0) {

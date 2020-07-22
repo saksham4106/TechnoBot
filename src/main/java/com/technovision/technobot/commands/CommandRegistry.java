@@ -55,6 +55,7 @@ public class CommandRegistry {
                 new CommandDeny(),
                 new CommandConsider(),
                 new CommandImplement(),
+                new CommandClear(),
 
                 // Other
                 new CommandHelp(),

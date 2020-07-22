@@ -24,7 +24,10 @@ public class CommandKick extends Command {
         }
 
         if(!executor.hasPermission(Permission.KICK_MEMBERS)) {
-            event.getChannel().sendMessage("You do not have permission to do that!").queue();
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setColor(ERROR_EMBED_COLOR);
+            embed.setDescription(":x: You do not have permission to do that!");
+            event.getChannel().sendMessage(embed.build()).queue();
             return true;
         }
 
