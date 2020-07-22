@@ -26,7 +26,7 @@ import java.net.URL;
  * Multi-Purpose Bot for TechnoVision Discord.
  * @author TechnVision
  * @author Sparky
- * @version 0.3
+ * @version 0.4
  */
 @Loggable(display = "TechnoBot")
 public class TechnoBot {

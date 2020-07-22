@@ -16,16 +16,12 @@ import javax.annotation.Nonnull;
  */
 public class CommandEventListener extends ListenerAdapter {
 
-    public static final String PREFIX = "!";
-    public static final int EMBED_COLOR = 0x7289da;
-    public static final int ERROR_EMBED_COLOR = 0xF05230;
-
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) { return; }
         String[] mArray = event.getMessage().getContentRaw().split(" ");
         String command = mArray[0];
-        if (command.startsWith(PREFIX)) {
+        if (command.startsWith(Command.PREFIX)) {
             String[] args = new String[mArray.length - 1];
             for (int i = 0; i < mArray.length; i++) {
                 if (i > 0) args[i - 1] = mArray[i];
@@ -34,13 +30,13 @@ public class CommandEventListener extends ListenerAdapter {
             BotRegistry registry = TechnoBot.getInstance().getRegistry();
 
             for (Command cmd : registry.getCommands()) {
-                if ((PREFIX + cmd.name).equalsIgnoreCase(command)) {
+                if ((Command.PREFIX + cmd.name).equalsIgnoreCase(command)) {
                     if (!cmd.execute(event, args)) {
                         TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, "Command '"+cmd.name+"' failed to execute!");
                     }
                     return;
                 }
-                if(cmd.getAliases().contains(PREFIX+command)) {
+                if(cmd.getAliases().contains(Command.PREFIX + command)) {
                     if(!cmd.execute(event,args)) {
                         TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, "Command '"+cmd.name+"' failed to execute!");
                     }

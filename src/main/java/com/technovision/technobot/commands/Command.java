@@ -1,5 +1,6 @@
 package com.technovision.technobot.commands;
 
+import com.google.api.client.util.Sets;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,6 +14,11 @@ import java.util.function.Consumer;
  * @author Sparky
  */
 public abstract class Command {
+
+    public static final String PREFIX = "!";
+    public static final int EMBED_COLOR = 0x7289da;
+    public static final int ERROR_EMBED_COLOR = 0xF05230;
+
     public final String name;
     public final Category category;
     public final String description;
@@ -27,7 +33,9 @@ public abstract class Command {
 
     public abstract boolean execute(MessageReceivedEvent event, String[] args);
 
-    public abstract @NotNull Set<String> getAliases();
+    public @NotNull Set<String> getAliases() {
+        return Sets.newHashSet();
+    }
 
     public enum Category {
         STAFF,LEVELS,MUSIC,OTHER,ECONOMY,FUN

@@ -12,7 +12,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import com.technovision.technobot.TechnoBot;
-import com.technovision.technobot.listeners.CommandEventListener;
+import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
@@ -140,7 +140,7 @@ public class MusicManager extends ListenerAdapter {
                     int secPos = (int) Math.floor((float)msPos/1000f);
                     String thumb = String.format("https://img.youtube.com/vi/%s/0.jpg", audioTrack.getInfo().uri.substring(32));
                     EmbedBuilder embed = new EmbedBuilder()
-                            .setColor(CommandEventListener.EMBED_COLOR)
+                            .setColor(Command.EMBED_COLOR)
                             .setTitle(audioTrack.getInfo().title, audioTrack.getInfo().uri)
                             .addField("Song Duration", minPos+":"+((secPos<10)?"0"+secPos:secPos), true)
                             .addField("Position in Queue", String.valueOf(handlers.get(guild.getIdLong()).trackScheduler.trackQueue.size()), true)
@@ -328,7 +328,7 @@ public class MusicManager extends ListenerAdapter {
                     .setTitle("Now Playing")
                     .setDescription("["+track.getInfo().title+"]("+track.getInfo().uri+")")
                     .addField("Song Duration", minPos+":"+((secPos<10)?"0"+secPos:secPos), true)
-                    .setColor(CommandEventListener.EMBED_COLOR)
+                    .setColor(Command.EMBED_COLOR)
                     .setThumbnail(thumb);
             builder.addField("Up Next", (trackQueue.size()>1)?("["+trackQueue.get(1).getInfo().title+"]("+trackQueue.get(1).getInfo().uri+")"):"Nothing", true);
 

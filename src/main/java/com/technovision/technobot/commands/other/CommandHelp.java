@@ -1,15 +1,14 @@
-package com.technovision.technobot.commands;
+package com.technovision.technobot.commands.other;
 
 import com.google.common.collect.Sets;
 import com.technovision.technobot.TechnoBot;
+import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.CommandEventListener;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-
-import static com.technovision.technobot.listeners.CommandEventListener.EMBED_COLOR;
 
 public class CommandHelp extends Command {
     public CommandHelp() {
@@ -32,7 +31,7 @@ public class CommandHelp extends Command {
                 setColor(EMBED_COLOR);
                 setThumbnail(TechnoBot.getInstance().getJDA().getUserById("732789223639220305").getAvatarUrl());
                 categories.forEach((category, commands) -> {
-                    addField((category.name().charAt(0) + "").toUpperCase() + category.name().substring(1).toLowerCase(), commands.size() + " commands in category | `" + CommandEventListener.PREFIX + "help " + category.name().toLowerCase() + "`", false);
+                    addField((category.name().charAt(0) + "").toUpperCase() + category.name().substring(1).toLowerCase(), commands.size() + " commands in category | `" + PREFIX + "help " + category.name().toLowerCase() + "`", false);
                 });
             }}.build()).queue();
         } else {
@@ -44,7 +43,7 @@ public class CommandHelp extends Command {
                         .setColor(EMBED_COLOR);
                 String description = "";
                 for (Command cmd : categories.get(c)) {
-                    String usage = cmd.usage.replace("{prefix}", CommandEventListener.PREFIX);
+                    String usage = cmd.usage.replace("{prefix}", PREFIX);
                     description += "`" + usage + "`\n" + cmd.description + "\n\n";
                 }
                 builder.setDescription(description);
@@ -57,7 +56,7 @@ public class CommandHelp extends Command {
                                 .setColor(EMBED_COLOR)
                                 .setDescription(cmd.description)
                                 .addField("Category", (""+cmd.category.name().charAt(0)).toUpperCase()+cmd.category.name().substring(1).toLowerCase(), true)
-                                .addField("Usage", "`" + cmd.usage.replace("{prefix}", CommandEventListener.PREFIX) + "`", true);
+                                .addField("Usage", "`" + cmd.usage.replace("{prefix}", PREFIX) + "`", true);
                         event.getChannel().sendMessage(builder.build()).queue();
                         return true;
                     }

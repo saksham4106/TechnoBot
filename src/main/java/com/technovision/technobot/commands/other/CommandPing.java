@@ -1,15 +1,9 @@
-package com.technovision.technobot.commands;
+package com.technovision.technobot.commands.other;
 
-import com.google.common.collect.Sets;
+import com.technovision.technobot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.technovision.technobot.listeners.CommandEventListener.EMBED_COLOR;
 
 public class CommandPing extends Command {
 
@@ -30,10 +24,5 @@ public class CommandPing extends Command {
         event.getChannel().sendMessage(embed.build()).queue();
         msg.delete().queue();
         return true;
-    }
-
-    @Override
-    public @NotNull Set<String> getAliases() {
-        return Sets.newHashSet();
     }
 }

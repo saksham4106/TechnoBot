@@ -1,6 +1,6 @@
 package com.technovision.technobot.util.enums;
 
-import static com.technovision.technobot.listeners.CommandEventListener.PREFIX;
+import static com.technovision.technobot.commands.Command.PREFIX;
 
 public enum SuggestionResponse {
 
