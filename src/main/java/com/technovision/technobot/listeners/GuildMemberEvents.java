@@ -26,11 +26,11 @@ public class GuildMemberEvents extends ListenerAdapter {
     public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
         // Join Message
         TextChannel channel = event.getGuild().getTextChannelsByName(JOIN_CHANNEL, true).get(0);
-        EmbedBuilder embed = new EmbedBuilder();
         User user = event.getMember().getUser();
-        embed.setAuthor(user.getAsTag(), null, user.getAvatarUrl());
-        embed.setDescription("Welcome, <@!"+user.getId()+">" + " to the Server!");
-        embed.setColor(Command.EMBED_COLOR);
+        EmbedBuilder embed = new EmbedBuilder()
+                .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
+                .setDescription("Welcome, <@!"+user.getId()+">" + " to the Server!")
+                .setColor(Command.EMBED_COLOR);
         channel.sendMessage(embed.build()).queue();
 
         // Add Role

@@ -21,7 +21,7 @@ public class CommandBalance extends Command {
     public boolean execute(MessageReceivedEvent event, String[] args) {
         Tuple<Long, Long> profile = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor());
         EmbedBuilder embed = new EmbedBuilder()
-                .setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl())
+                .setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getEffectiveAvatarUrl())
                 .addField("Cash:", EconManager.SYMBOL + profile.key, true)
                 .addField("Bank:", EconManager.SYMBOL + profile.value, true)
                 .addField("Net Worth:", EconManager.SYMBOL + (profile.key + profile.value), true)

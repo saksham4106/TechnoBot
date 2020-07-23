@@ -34,13 +34,19 @@ public class CommandLeaderboard extends Command {
                     int comparison = (tuples.size() / usersPerPage) + 1;
                     if (tuples.size() % usersPerPage != 0) { comparison++; }
                     if (page >= comparison) {
-                        event.getChannel().sendMessage("There are no more pages!").queue();
+                        EmbedBuilder embed = new EmbedBuilder()
+                                .setColor(ERROR_EMBED_COLOR)
+                                .setDescription(":x: That page doesn't exist!");
+                        event.getChannel().sendMessage(embed.build()).queue();
                         return true;
                     }
                     start = (usersPerPage * (page - 1)) - 1;
                 }
             } catch (NumberFormatException e) {
-                event.getChannel().sendMessage("That is not a valid page number!").queue();
+                EmbedBuilder embed = new EmbedBuilder()
+                        .setColor(ERROR_EMBED_COLOR)
+                        .setDescription(":x: That is not a valid page number!");
+                event.getChannel().sendMessage(embed.build()).queue();
                 return true;
             }
         }

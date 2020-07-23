@@ -21,7 +21,7 @@ public class CommandWork extends Command {
         int cooldown = 14400000;
         if (System.currentTimeMillis() >= timestamp + cooldown) {
             TechnoBot.getInstance().getEconomy().addMoney(event.getAuthor(), 100, EconManager.Activity.WORK);
-            embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
+            embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getEffectiveAvatarUrl());
             embed.setDescription("You work for the day and receive " + EconManager.SYMBOL +  "100");
             embed.setColor(0x33cc33);
         } else {

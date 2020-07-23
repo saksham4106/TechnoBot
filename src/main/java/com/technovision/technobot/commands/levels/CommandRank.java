@@ -15,6 +15,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Set;
@@ -96,7 +97,8 @@ public class CommandRank extends Command {
                     g.drawString(percentStr + "%", 560, 230);
 
                     //Add Avatar
-                    BufferedImage avatar = ImageProcessor.getAvatar(event.getAuthor().getAvatarUrl(), 1.62, 1.62);
+                    BufferedImage avatar;
+                    avatar = ImageProcessor.getAvatar(event.getAuthor());
                     g.setStroke(new BasicStroke(4));
                     int width = avatar.getWidth();
                     BufferedImage circleBuffer = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);

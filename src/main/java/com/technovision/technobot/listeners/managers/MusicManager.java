@@ -144,7 +144,7 @@ public class MusicManager extends ListenerAdapter {
                             .setTitle(audioTrack.getInfo().title, audioTrack.getInfo().uri)
                             .addField("Song Duration", minPos+":"+((secPos<10)?"0"+secPos:secPos), true)
                             .addField("Position in Queue", String.valueOf(handlers.get(guild.getIdLong()).trackScheduler.trackQueue.size()), true)
-                            .setFooter("Added by " + author.getAsTag(), author.getAvatarUrl())
+                            .setFooter("Added by " + author.getAsTag(), author.getEffectiveAvatarUrl())
                             .setThumbnail(thumb);
 
                     channel.sendMessage(":ballot_box_with_check: **" + audioTrack.getInfo().title + "** successfully added!").queue();

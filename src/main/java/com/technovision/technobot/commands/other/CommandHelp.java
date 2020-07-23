@@ -29,7 +29,7 @@ public class CommandHelp extends Command {
             event.getChannel().sendMessage(new EmbedBuilder() {{
                 setTitle("TechnoBot Commands");
                 setColor(EMBED_COLOR);
-                setThumbnail(TechnoBot.getInstance().getJDA().getUserById("732789223639220305").getAvatarUrl());
+                setThumbnail(TechnoBot.getInstance().getJDA().getUserById("732789223639220305").getEffectiveAvatarUrl());
                 categories.forEach((category, commands) -> {
                     addField((category.name().charAt(0) + "").toUpperCase() + category.name().substring(1).toLowerCase(), commands.size() + " commands in category | `" + PREFIX + "help " + category.name().toLowerCase() + "`", false);
                 });
