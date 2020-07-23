@@ -1,8 +1,6 @@
 package com.technovision.technobot.listeners.managers;
 
-import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.data.Configuration;
-import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.Tuple;
 import net.dv8tion.jda.api.entities.User;
 import org.json.JSONArray;

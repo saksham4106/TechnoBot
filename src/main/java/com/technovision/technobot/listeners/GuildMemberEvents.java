@@ -29,7 +29,7 @@ public class GuildMemberEvents extends ListenerAdapter {
         User user = event.getMember().getUser();
         EmbedBuilder embed = new EmbedBuilder()
                 .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
-                .setDescription("Welcome, <@!"+user.getId()+">" + " to the Server!")
+                .setDescription("Welcome, <@!"+user.getId()+">" + " to the **TechnoVision** Server!")
                 .setColor(Command.EMBED_COLOR);
         channel.sendMessage(embed.build()).queue();
 

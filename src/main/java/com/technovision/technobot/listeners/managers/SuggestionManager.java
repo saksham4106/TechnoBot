@@ -69,9 +69,9 @@ public class SuggestionManager {
 
     public void respond(MessageReceivedEvent event, String[] args, SuggestionResponse response) {
         if(!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.setColor(Command.ERROR_EMBED_COLOR);
-            embed.setDescription(":x: You do not have permission to do that!");
+            EmbedBuilder embed = new EmbedBuilder()
+                    .setColor(Command.ERROR_EMBED_COLOR)
+                    .setDescription(":x: You do not have permission to do that!");
             event.getChannel().sendMessage(embed.build()).queue();
             return;
         }
@@ -85,10 +85,17 @@ public class SuggestionManager {
                 String staffName = event.getAuthor().getAsTag();
                 TextChannel channel = event.getGuild().getTextChannelsByName(SuggestionManager.CHANNEL, true).get(0);
                 TechnoBot.getInstance().getSuggestionManager().editEmbed(channel, staffName, args, response);
-                event.getChannel().sendMessage("Suggestion #" + args[0] + " has been " + response.getResponse().toLowerCase() + "!").queue();
+
+                EmbedBuilder embed = new EmbedBuilder()
+                        .setColor(Command.EMBED_COLOR)
+                        .setDescription("Suggestion #" + args[0] + " has been " + response.getResponse().toLowerCase() + "!");
+                event.getChannel().sendMessage(embed.build()).queue();
                 return;
             } catch (NumberFormatException e) {
-                event.getChannel().sendMessage("\"" + args[0] +"\" is not a valid suggestion ID.").queue();
+                EmbedBuilder embed = new EmbedBuilder()
+                        .setColor(Command.ERROR_EMBED_COLOR)
+                        .setDescription(":x: " + "\"" + args[0] +"\" is not a valid suggestion ID.");
+                event.getChannel().sendMessage(embed.build()).queue();
                 return;
             }
         }

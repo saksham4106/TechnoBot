@@ -1,5 +1,6 @@
 package com.technovision.technobot.commands.other;
 
+import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -18,16 +19,25 @@ public class CommandSuggest extends Command {
             for (String arg : args) {
                 msg.append(arg).append(" ");
             }
-            embed.setFooter(event.getAuthor().getAsTag(), event.getAuthor().getEffectiveAvatarUrl());
-            embed.addField("Suggestion", msg.toString(), false);
+            embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
+            embed.setTitle("Suggestion #" + (TechnoBot.getInstance().getSuggestionManager().getAmount() + 1));
+            embed.setDescription(msg.toString());
             embed.setColor(EMBED_COLOR);
             TextChannel channel = event.getGuild().getTextChannelsByName("SUGGESTIONS", true).get(0);
             channel.sendMessage(embed.build()).queue(message -> {
                 message.addReaction(":upvote:733030671802695860").queue();
                 message.addReaction(":downvote:733030678832087120").queue();
+                TechnoBot.getInstance().getSuggestionManager().addSuggestion(message.getId());
             });
+            EmbedBuilder response = new EmbedBuilder()
+                    .setColor(EMBED_COLOR)
+                    .setDescription("Your suggestion has been added to <#"+ channel.getId() +">!");
+            event.getChannel().sendMessage(response.build()).queue();
         } else {
-            event.getChannel().sendMessage("USAGE: !suggest <message>").queue();
+            EmbedBuilder embed = new EmbedBuilder()
+                    .setColor(ERROR_EMBED_COLOR)
+                    .setDescription(":x: You must write out your suggestion!");
+            event.getChannel().sendMessage(embed.build()).queue();
         }
         return true;
     }
