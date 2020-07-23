@@ -1,9 +1,11 @@
 package com.technovision.technobot.commands.levels;
 
 import com.google.common.collect.Sets;
+import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.managers.LevelManager;
+import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -79,12 +81,24 @@ public class CommandRank extends Command {
                     g.drawLine(300, 140, 870, 140);
                     g.drawString(event.getAuthor().getName(), 300, 110);
                     g.setFont(new Font("Helvetica", Font.PLAIN, 35));
-                    g.drawString("Rank #" + (LevelManager.getInstance().userList.indexOf(event.getAuthor()) + 1), 720, 110);
+
+                    int rankNum = LevelManager.getInstance().userList.indexOf(event.getAuthor()) + 1;
+                    int xModifier = 0;
+                    if (rankNum >= 10) { xModifier += 15; }
+                    if (rankNum >= 100) { xModifier += 15; }
+                    if (rankNum >= 1000) { xModifier += 15; }
+                    if (rankNum >= 10000) { xModifier += 15; }
+                    g.drawString("Rank #" + (LevelManager.getInstance().userList.indexOf(event.getAuthor()) + 1), 740 - xModifier, 110);
+
                     g.drawString("Level " + player.getInt("level"), 300, 180);
                     g.setFont(new Font("Helvetica", Font.PLAIN, 25));
-                    String xp = formatter.format(player.getInt("xp"));
-                    String maxXP = formatter.format(player.getInt("level") * 300);
-                    g.drawString(xp + " / " + maxXP, 750, 180);
+                    String xp = format(player.getInt("xp"));
+                    String maxXP = format(player.getInt("level") * 300);
+                    xModifier = 0;
+                    if (xp.length() > 2) { xModifier += 10; }
+                    if (xp.length() > 3 || maxXP.length() > 3) { xModifier += 10; }
+                    if (xp.length() > 4 || maxXP.length() > 4) { xModifier += 10; }
+                    g.drawString(xp + " / " + maxXP, 775 - xModifier, 180);
 
                     //XP Bar
                     g.drawRoundRect(300, 200, 570, 40, 20, 20);
@@ -121,6 +135,28 @@ public class CommandRank extends Command {
             }
         }
         return true;
+    }
+
+    private String format(int num) {
+        if (num >= 1000) {
+            String[] numArray = String.valueOf(num).split("");
+            String formatted = numArray[0];
+            if (num >= 10000) {
+                if (Integer.parseInt(numArray[1]) != 0) {
+                    formatted += numArray[1];
+                }
+                if (Integer.parseInt(numArray[2]) != 0) {
+                    formatted += "." + numArray[1];
+                }
+            } else {
+                if (Integer.parseInt(numArray[1]) != 0) {
+                    formatted += "." + numArray[1];
+                }
+            }
+            formatted += "k";
+            return formatted;
+        }
+        return String.valueOf(num);
     }
 
     @Override
