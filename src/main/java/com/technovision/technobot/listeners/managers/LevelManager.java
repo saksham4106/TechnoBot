@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Manager for member levels and ranks.
@@ -53,13 +54,13 @@ public class LevelManager extends ListenerAdapter {
                     for(Tuple<Integer, Integer> tup : tupleList) {
                         int realXpValue = 0;
                         for(int a = 0; a < jsonUser.getInt("level");a++) {
-                            realXpValue += (a)*300;
+                            realXpValue += getMaxXP(a);
                         }
                         realXpValue += jsonUser.getInt("xp");
 
                         int realXpValueFromTuple = 0;
                         for(int a = 0; a < tup.key; a++) {
-                            realXpValueFromTuple += (a)*300;
+                            realXpValueFromTuple += getMaxXP(a);
                         }
                         realXpValueFromTuple += tup.value;
 
@@ -122,11 +123,11 @@ public class LevelManager extends ListenerAdapter {
                 JSONObject player = ((JSONObject)o);
                 if(player.getLong("id")==event.getAuthor().getIdLong()) {
                     player.put("lastTalked", exactMilli);
-                    player.put("xp", player.getInt("xp")+Math.floor(Math.random()*20)+1);
-                    if(player.getInt("xp") >= player.getInt("level")*300) {
+                    player.put("xp", player.getInt("xp") + (ThreadLocalRandom.current().nextInt(10) + 15));
+                    if(player.getInt("xp") >= getMaxXP(player.getInt("level"))) {
                         String levelUp = "Congrats <@!" + event.getAuthor().getId() + ">" + ", you just advanced to level " + (player.getInt("level")+1)+"!";
                         event.getGuild().getTextChannelsByName(RANK_CHANNEL, true).get(0).sendMessage(levelUp).queue();
-                        player.put("xp", player.getInt("xp")-(player.getInt("level")*300));
+                        player.put("xp", player.getInt("xp")-getMaxXP(player.getInt("level")));
                         player.put("level", player.getInt("level")+1);
                     }
 
@@ -134,5 +135,9 @@ public class LevelManager extends ListenerAdapter {
                 }
             }
         }
+    }
+
+    public int getMaxXP(int level) {
+        return (int) (5 * Math.pow(level, 2) + 50 * level + 100);
     }
 }

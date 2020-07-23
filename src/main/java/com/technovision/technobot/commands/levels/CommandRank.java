@@ -36,7 +36,7 @@ public class CommandRank extends Command {
         for(Object o : LevelManager.getInstance().levelSave.getJson().getJSONArray("users")) {
             if(((JSONObject)o).getLong("id")==event.getAuthor().getIdLong()) {
                 JSONObject player = (JSONObject) o;
-                float percent = ((float) (player.getInt("xp") * 100) / (float) ((player.getInt("level") * 300)));
+                float percent = ((float) (player.getInt("xp") * 100) / (float) (LevelManager.getInstance().getMaxXP(player.getInt("level"))));
                 String percentStr = String.valueOf((int) percent);
                 try {
                     //Get Graphics
@@ -93,7 +93,7 @@ public class CommandRank extends Command {
                     g.drawString("Level " + player.getInt("level"), 300, 180);
                     g.setFont(new Font("Helvetica", Font.PLAIN, 25));
                     String xp = format(player.getInt("xp"));
-                    String maxXP = format(player.getInt("level") * 300);
+                    String maxXP = format(LevelManager.getInstance().getMaxXP(player.getInt("level")));
                     xModifier = 0;
                     if (xp.length() > 2) { xModifier += 10; }
                     if (xp.length() > 3 || maxXP.length() > 3) { xModifier += 10; }
