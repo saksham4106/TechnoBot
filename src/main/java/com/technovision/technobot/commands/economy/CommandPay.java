@@ -25,7 +25,10 @@ public class CommandPay extends Command {
             if (args[0].startsWith("<@!") && args[0].endsWith(">")) {
                 receiver = event.getJDA().retrieveUserById(args[0].substring(3, args[0].length()-1)).complete();
             } else {
-                receiver = event.getGuild().getMembersByName(args[0], true).get(0).getUser();
+                embed.setColor(ERROR_EMBED_COLOR);
+                embed.setDescription(":x: Invalid `[user]` argument given\n\nUsage:\n`pay [user] <amount>`");
+                event.getChannel().sendMessage(embed.build()).queue();
+                return true;
             }
             try {
                 long amt = Integer.parseInt(args[1]);
