@@ -126,7 +126,7 @@ public class LevelManager extends ListenerAdapter {
                     player.put("xp", player.getInt("xp") + (ThreadLocalRandom.current().nextInt(10) + 15));
                     if(player.getInt("xp") >= getMaxXP(player.getInt("level"))) {
                         String levelUp = "Congrats <@!" + event.getAuthor().getId() + ">" + ", you just advanced to level " + (player.getInt("level")+1)+"!";
-                        event.getGuild().getTextChannelsByName(RANK_CHANNEL, true).get(0).sendMessage(levelUp).queue();
+                        event.getChannel().sendMessage(levelUp).queue();
                         player.put("xp", player.getInt("xp")-getMaxXP(player.getInt("level")));
                         player.put("level", player.getInt("level")+1);
                     }
