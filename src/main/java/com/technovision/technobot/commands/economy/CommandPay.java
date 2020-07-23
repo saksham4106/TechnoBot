@@ -23,9 +23,9 @@ public class CommandPay extends Command {
 
             User receiver;
             if (args[0].startsWith("<@!") && args[0].endsWith(">")) {
-                receiver = event.getJDA().getUserById(args[0].substring(3, args[0].length()-1));
+                receiver = event.getJDA().retrieveUserById(args[0].substring(3, args[0].length()-1)).complete();
             } else {
-                receiver = event.getGuild().getMembersByEffectiveName(args[0], true).get(0).getUser();
+                receiver = event.getGuild().getMembersByName(args[0], true).get(0).getUser();
             }
             try {
                 long amt = Integer.parseInt(args[1]);

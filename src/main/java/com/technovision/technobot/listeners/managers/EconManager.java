@@ -31,12 +31,16 @@ public class EconManager {
         return new Tuple<>(bal, bank);
     }
 
-    public void removeMoney(User user, long amount) {
+    public void removeMoney(User user, long amount, Activity activity) {
         JSONObject profile = getProfile(user);
         long bal = profile.getLong("balance");
         long remaining = bal - amount;
         if (remaining < 0) { remaining = 0; }
         profile.put("balance", remaining);
+        if (activity == Activity.CRIME) {
+            profile.put("crime-timestamp", System.currentTimeMillis());
+        }
+        economy.save();
     }
 
     public void pay(User sender, User receiver, long amount) throws InvalidValue {
