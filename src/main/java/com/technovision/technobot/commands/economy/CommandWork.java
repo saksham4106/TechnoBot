@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class CommandWork extends Command {
 
     public CommandWork() {
@@ -20,9 +22,10 @@ public class CommandWork extends Command {
         long timestamp = profile.getLong("work-timestamp");
         int cooldown = 14400000;
         if (System.currentTimeMillis() >= timestamp + cooldown) {
-            TechnoBot.getInstance().getEconomy().addMoney(event.getAuthor(), 100, EconManager.Activity.WORK);
+            int amount = ThreadLocalRandom.current().nextInt(230) + 20;
+            TechnoBot.getInstance().getEconomy().addMoney(event.getAuthor(), amount, EconManager.Activity.WORK);
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getEffectiveAvatarUrl());
-            embed.setDescription("You work for the day and receive " + EconManager.SYMBOL +  "100");
+            embed.setDescription("You work for the day and receive " + EconManager.SYMBOL +  amount);
             embed.setColor(0x33cc33);
         } else {
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());

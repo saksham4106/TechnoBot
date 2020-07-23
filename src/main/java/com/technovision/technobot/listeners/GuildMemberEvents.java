@@ -33,10 +33,9 @@ public class GuildMemberEvents extends ListenerAdapter {
                 .setColor(Command.EMBED_COLOR);
         channel.sendMessage(embed.build()).queue();
 
-        // Add Role
+        // Private Message & Role Assignment
+        if (user.isBot()) { return; }
         event.getGuild().addRoleToMember(event.getMember().getId(), event.getGuild().getRolesByName(JOIN_ROLE, true).get(0)).queue();
-
-        // Send DM
         user.openPrivateChannel().queue((dm) -> dm.sendMessage(JOIN_MESSAGE).queue());
     }
 

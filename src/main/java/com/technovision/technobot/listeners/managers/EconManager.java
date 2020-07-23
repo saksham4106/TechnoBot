@@ -5,6 +5,7 @@ import com.technovision.technobot.util.Tuple;
 import net.dv8tion.jda.api.entities.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.omg.CORBA.DynAnyPackage.InvalidValue;
 
 public class EconManager {
 
@@ -28,6 +29,27 @@ public class EconManager {
         long bal = profile.getLong("balance");
         long bank = profile.getLong("bank");
         return new Tuple<>(bal, bank);
+    }
+
+    public void removeMoney(User user, long amount) {
+        JSONObject profile = getProfile(user);
+        long bal = profile.getLong("balance");
+        long remaining = bal - amount;
+        if (remaining < 0) { remaining = 0; }
+        profile.put("balance", remaining);
+    }
+
+    public void pay(User sender, User receiver, long amount) throws InvalidValue {
+        JSONObject senderProfile = getProfile(sender);
+        JSONObject receiverProfile = getProfile(receiver);
+
+        long senderBal = senderProfile.getLong("balance");
+        if (senderBal - amount < 0) { throw new InvalidValue(); }
+        senderProfile.put("balance", senderBal - amount);
+
+        long receiverBal = receiverProfile.getLong("balance");
+        receiverProfile.put("balance", receiverBal + amount);
+        economy.save();
     }
 
     public void addMoney(User user, long amount, Activity activity) {
