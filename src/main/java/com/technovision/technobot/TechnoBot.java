@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
@@ -160,6 +161,7 @@ public class TechnoBot {
 
         getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
         TechnoBot.getInstance().setupImages();
+        GuildMemberEvents.loadJoinMessage();
 
         new CommandRegistry();
         getInstance().getRegistry().registerEventListeners(new ExtrasEventListener(), new MusicManager(), new GuildLogEventListener(), new LevelManager(), new CommandEventListener(), new GuildMemberEvents());
