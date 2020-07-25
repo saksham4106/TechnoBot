@@ -34,7 +34,7 @@ public class ExtrasEventListener extends ListenerAdapter {
                     msg = "That didn't ping anybody genius.";
                     break;
                 case 3:
-                    msg = "Be that worked in your head, didn't it" + "<@!" + event.getMember().getUser().getId() + ">?";
+                    msg = "Bet that worked in your head, didn't it " + "<@!" + event.getMember().getUser().getId() + ">?";
                     break;
             }
             event.getChannel().sendMessage(msg).queue();

@@ -6,6 +6,8 @@ import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.managers.LevelManager;
 import com.technovision.technobot.logging.Logger;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -33,8 +35,24 @@ public class CommandRank extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
+
+        User user = event.getAuthor();
+        long id = user.getIdLong();
+        if (args.length > 0) {
+            if (args[0].startsWith("<@!") && args[0].endsWith(">")) {
+                id = Long.parseLong(args[0].substring(3, args[0].length()-1));
+                user = event.getJDA().retrieveUserById(id).complete();
+            } else {
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.setColor(ERROR_EMBED_COLOR);
+                embed.setDescription(":x: Invalid `[user]` argument given\n\nUsage:\n`pay [user] <amount>`");
+                event.getChannel().sendMessage(embed.build()).queue();
+                return true;
+            }
+        }
+
         for(Object o : LevelManager.getInstance().levelSave.getJson().getJSONArray("users")) {
-            if(((JSONObject)o).getLong("id")==event.getAuthor().getIdLong()) {
+            if(((JSONObject)o).getLong("id") == id) {
                 JSONObject player = (JSONObject) o;
                 float percent = ((float) (player.getInt("xp") * 100) / (float) (LevelManager.getInstance().getMaxXP(player.getInt("level"))));
                 String percentStr = String.valueOf((int) percent);
@@ -79,16 +97,16 @@ public class CommandRank extends Command {
                     g.setColor(Color.decode(player.getString("accent")));
                     g.setFont(new Font("Helvetica", Font.PLAIN, 52));
                     g.drawLine(300, 140, 870, 140);
-                    g.drawString(event.getAuthor().getName(), 300, 110);
+                    g.drawString(user.getName(), 300, 110);
                     g.setFont(new Font("Helvetica", Font.PLAIN, 35));
 
-                    int rankNum = LevelManager.getInstance().userList.indexOf(event.getAuthor()) + 1;
+                    int rankNum = LevelManager.getInstance().userList.indexOf(user) + 1;
                     int xModifier = 0;
                     if (rankNum >= 10) { xModifier += 15; }
                     if (rankNum >= 100) { xModifier += 15; }
                     if (rankNum >= 1000) { xModifier += 15; }
                     if (rankNum >= 10000) { xModifier += 15; }
-                    g.drawString("Rank #" + (LevelManager.getInstance().userList.indexOf(event.getAuthor()) + 1), 740 - xModifier, 110);
+                    g.drawString("Rank #" + (LevelManager.getInstance().userList.indexOf(user) + 1), 740 - xModifier, 110);
 
                     g.drawString("Level " + player.getInt("level"), 300, 180);
                     g.setFont(new Font("Helvetica", Font.PLAIN, 25));
@@ -112,7 +130,7 @@ public class CommandRank extends Command {
 
                     //Add Avatar
                     BufferedImage avatar;
-                    avatar = ImageProcessor.getAvatar(event.getAuthor());
+                    avatar = ImageProcessor.getAvatar(user);
                     g.setStroke(new BasicStroke(4));
                     int width = avatar.getWidth();
                     BufferedImage circleBuffer = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);

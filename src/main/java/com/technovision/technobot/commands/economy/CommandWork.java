@@ -11,9 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandWork extends Command {
 
-    public CommandWork() {
-        super("work", "Work for some cash", "{prefix}work", Command.Category.ECONOMY);
-    }
+    public CommandWork() { super("work", "Work for some cash", "{prefix}work", Command.Category.ECONOMY); }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {

@@ -8,10 +8,15 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.omg.CORBA.DynAnyPackage.InvalidValue;
 
+import java.text.DecimalFormat;
+
 public class CommandPay extends Command {
+
+    private final DecimalFormat formatter;
 
     public CommandPay() {
         super("pay", "Send cash to a friend", "{prefix}pay [user] <amount>", Category.ECONOMY);
+        formatter = new DecimalFormat("#,###");
     }
 
     @Override
@@ -30,17 +35,19 @@ public class CommandPay extends Command {
                 return true;
             }
             try {
-                long amt = Integer.parseInt(args[1]);
+                long amt = Long.parseLong(args[1]);
                 try {
                     TechnoBot.getInstance().getEconomy().pay(event.getAuthor(), receiver, amt);
                     embed.setColor(EMBED_COLOR);
-                    embed.setDescription(":white_check_mark: <@!" + receiver.getId() + "> has received your " + EconManager.SYMBOL + args[1]);
+                    String money = formatter.format(amt);
+                    embed.setDescription(":white_check_mark: <@!" + receiver.getId() + "> has received your " + EconManager.SYMBOL + money);
                     event.getChannel().sendMessage(embed.build()).queue();
                     return true;
                 } catch (InvalidValue e) {
                     embed.setColor(ERROR_EMBED_COLOR);
                     long bal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).key;
-                    embed.setDescription(String.format(":x: You don't have that much money to give! You currently have %s%d on hand", EconManager.SYMBOL, bal));
+                    String balFormat = formatter.format(bal);
+                    embed.setDescription(String.format(":x: You don't have that much money to give! You currently have %s%d on hand", EconManager.SYMBOL, balFormat));
                     event.getChannel().sendMessage(embed.build()).queue();
                     return true;
                 }

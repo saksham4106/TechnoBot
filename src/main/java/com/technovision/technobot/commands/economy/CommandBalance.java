@@ -9,12 +9,16 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.Set;
 
 public class CommandBalance extends Command {
 
+    private final DecimalFormat formatter;
+
     public CommandBalance() {
         super("balance", "View your account balance", "{prefix}balance", Command.Category.ECONOMY);
+        formatter = new DecimalFormat("#,###");
     }
 
     @Override
@@ -22,9 +26,9 @@ public class CommandBalance extends Command {
         Tuple<Long, Long> profile = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor());
         EmbedBuilder embed = new EmbedBuilder()
                 .setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getEffectiveAvatarUrl())
-                .addField("Cash:", EconManager.SYMBOL + profile.key, true)
-                .addField("Bank:", EconManager.SYMBOL + profile.value, true)
-                .addField("Net Worth:", EconManager.SYMBOL + (profile.key + profile.value), true)
+                .addField("Cash:", EconManager.SYMBOL + formatter.format(profile.key), true)
+                .addField("Bank:", EconManager.SYMBOL + formatter.format(profile.value), true)
+                .addField("Net Worth:", EconManager.SYMBOL + formatter.format((profile.key + profile.value)), true)
                 .setColor(EMBED_COLOR);
         event.getChannel().sendMessage(embed.build()).queue();
         return true;
