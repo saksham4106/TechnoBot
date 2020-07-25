@@ -36,7 +36,7 @@ public class CommandEventListener extends ListenerAdapter {
                     }
                     return;
                 }
-                if(cmd.getAliases().contains(Command.PREFIX + command)) {
+                if(cmd.getAliases().contains(command)) {
                     if(!cmd.execute(event,args)) {
                         TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, "Command '"+cmd.name+"' failed to execute!");
                     }
