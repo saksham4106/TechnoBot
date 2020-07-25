@@ -43,10 +43,6 @@ public class CommandRank extends Command {
                 id = Long.parseLong(args[0].substring(3, args[0].length()-1));
                 user = event.getJDA().retrieveUserById(id).complete();
             } else {
-                EmbedBuilder embed = new EmbedBuilder();
-                embed.setColor(ERROR_EMBED_COLOR);
-                embed.setDescription(":x: Invalid `[user]` argument given\n\nUsage:\n`pay [user] <amount>`");
-                event.getChannel().sendMessage(embed.build()).queue();
                 return true;
             }
         }
