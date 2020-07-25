@@ -9,7 +9,7 @@ import org.omg.CORBA.DynAnyPackage.InvalidValue;
 
 public class EconManager {
 
-    public static final String SYMBOL = ":sparkles:";
+    public static final String SYMBOL = "<:coin:735696678321127577>";
 
     private final Configuration economy;
 
