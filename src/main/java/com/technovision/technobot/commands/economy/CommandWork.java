@@ -24,7 +24,7 @@ public class CommandWork extends Command {
             TechnoBot.getInstance().getEconomy().addMoney(event.getAuthor(), amount, EconManager.Activity.WORK);
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getEffectiveAvatarUrl());
             embed.setDescription("You work for the day and receive " + EconManager.SYMBOL +  amount);
-            embed.setColor(0x33cc33);
+            embed.setColor(EconManager.SUCCESS_COLOR);
         } else {
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
             embed.setDescription(":stopwatch: You cannot work for " + TechnoBot.getInstance().getEconomy().getCooldown(timestamp, cooldown) + ".");

@@ -15,11 +15,8 @@ import java.util.Set;
 
 public class CommandBalance extends Command {
 
-    private final DecimalFormat formatter;
-
     public CommandBalance() {
         super("balance", "View your account balance", "{prefix}balance", Command.Category.ECONOMY);
-        formatter = new DecimalFormat("#,###");
     }
 
     @Override
@@ -37,9 +34,9 @@ public class CommandBalance extends Command {
         Tuple<Long, Long> profile = TechnoBot.getInstance().getEconomy().getBalance(user);
         EmbedBuilder embed = new EmbedBuilder()
                 .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
-                .addField("Cash:", EconManager.SYMBOL + formatter.format(profile.key), true)
-                .addField("Bank:", EconManager.SYMBOL + formatter.format(profile.value), true)
-                .addField("Net Worth:", EconManager.SYMBOL + formatter.format((profile.key + profile.value)), true)
+                .addField("Cash:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.key), true)
+                .addField("Bank:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.value), true)
+                .addField("Net Worth:", EconManager.SYMBOL + EconManager.FORMATTER.format((profile.key + profile.value)), true)
                 .setColor(EMBED_COLOR);
         event.getChannel().sendMessage(embed.build()).queue();
         return true;

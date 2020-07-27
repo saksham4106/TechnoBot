@@ -28,7 +28,7 @@ public class CommandCrime extends Command {
             if (rand.nextInt(10) > 5) { //40% Success Rate
                 int amount = rand.nextInt(450) + 250;
                 TechnoBot.getInstance().getEconomy().addMoney(event.getAuthor(), amount, EconManager.Activity.CRIME);
-                embed.setColor(0x33cc33);
+                embed.setColor(EconManager.SUCCESS_COLOR);
                 embed.setDescription("You rob the local bank and steal " + EconManager.SYMBOL + amount);
             } else {
                 int amount = rand.nextInt(350) + 1;
