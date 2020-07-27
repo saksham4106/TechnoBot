@@ -80,8 +80,8 @@ public class CommandWarn extends Command {
         CommandInfractions.infractionConfig.save();
 
         event.getChannel().sendMessage(new EmbedBuilder()
-                .setTitle("Success")
-                .setDescription("Successfully warned <@!"+target.getUser().getId()+"> for reason `"+reason.replaceAll("`","")+"`").build()).queue();
+                .setAuthor(target.getUser().getAsTag() + " has been warned", null, target.getUser().getEffectiveAvatarUrl())
+                .setDescription("**Reason:** " + reason.replaceAll("`","")).build()).queue();
 
         return true;
     }
