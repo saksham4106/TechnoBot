@@ -58,6 +58,7 @@ public class CommandRegistry {
                 new CommandWarn(),
                 new CommandKick(),
                 new CommandBan(),
+                new CommandMute(),
                 new CommandApprove(),
                 new CommandDeny(),
                 new CommandConsider(),
