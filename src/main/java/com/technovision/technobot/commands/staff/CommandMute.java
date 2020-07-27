@@ -116,7 +116,7 @@ public class CommandMute extends Command {
         String reason = "Unspecified";
         long timeMs = System.currentTimeMillis();
         String toParse = "";
-        try {toParse = args[1];} catch(NumberFormatException e) {
+        try {toParse = args[1];} catch(ArrayIndexOutOfBoundsException e) {
             event.getChannel().sendMessage("Please enter a valid date! Examples (each is equivalent to 1 year):\n"+
                     "`"+365L*24L*60L*60L*1000L +"ms`\n`"+365L*24L*60L*60L+"s`\n`"+365L*24L*60L+"m`\n`"+365L*24L+"h`\n`365d`\n`1y`").queue();
             return true;
