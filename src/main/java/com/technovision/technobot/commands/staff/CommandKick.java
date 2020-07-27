@@ -82,8 +82,8 @@ public class CommandKick extends Command {
         CommandInfractions.infractionConfig.save();
 
         event.getChannel().sendMessage(new EmbedBuilder()
-                .setTitle("Success")
-                .setDescription("Successfully kicked <@!"+target.getUser().getId()+"> for reason `"+reason.replaceAll("`","")+"`").build()).queue();
+                .setAuthor(target.getUser().getAsTag() + " has been kicked", null, target.getUser().getEffectiveAvatarUrl())
+                .setDescription("**Reason:** " + reason.replaceAll("`","")).build()).queue();
 
         return true;
     }

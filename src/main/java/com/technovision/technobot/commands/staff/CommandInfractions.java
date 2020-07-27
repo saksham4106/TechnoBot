@@ -65,14 +65,15 @@ public class CommandInfractions extends Command {
 
     private void complete(MessageReceivedEvent event, Member target) {
         if(!infractionConfig.getJson().has(target.getId())) {
-            event.getChannel().sendMessage(target.getEffectiveName()+" has no infractions!").queue();
+            EmbedBuilder embed = new EmbedBuilder()
+                    .setAuthor(target.getUser().getAsTag() + " has no infractions", null, target.getUser().getEffectiveAvatarUrl());
+            event.getChannel().sendMessage(embed.build()).queue();
             return;
         }
 
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(target.getEffectiveName()+"'s Infractions")
-                .setDescription(infractionConfig.getJson().getJSONArray(target.getId()).length()+" total infractions on account.")
-                .setColor(Color.RED);
+                .setTitle(target.getEffectiveName()+"'s Infractions", target.getUser().getEffectiveAvatarUrl())
+                .setDescription(infractionConfig.getJson().getJSONArray(target.getId()).length()+" total infractions on account.");
 
         for(Object o : infractionConfig.getJson().getJSONArray(target.getId())) {
             JSONObject infraction = (JSONObject)o;
