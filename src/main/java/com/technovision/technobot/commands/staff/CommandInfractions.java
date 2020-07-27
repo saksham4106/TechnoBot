@@ -72,7 +72,7 @@ public class CommandInfractions extends Command {
         }
 
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(target.getEffectiveName()+"'s Infractions", target.getUser().getEffectiveAvatarUrl())
+                .setAuthor(target.getUser().getAsTag() +"'s Infractions", null, target.getUser().getEffectiveAvatarUrl())
                 .setDescription(infractionConfig.getJson().getJSONArray(target.getId()).length()+" total infractions on account.");
 
         for(Object o : infractionConfig.getJson().getJSONArray(target.getId())) {
