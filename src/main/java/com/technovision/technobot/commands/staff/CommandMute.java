@@ -117,8 +117,8 @@ public class CommandMute extends Command {
         long timeMs = System.currentTimeMillis();
         String toParse = "";
         try {toParse = args[1];} catch(ArrayIndexOutOfBoundsException e) {
-            event.getChannel().sendMessage("Please enter a valid date! Examples (each is equivalent to 1 year):\n"+
-                    "`"+365L*24L*60L+"m`\n`"+365L*24L+"h`\n`365d`\n`1y`").queue();
+            event.getChannel().sendMessage("Please enter a valid date! Examples (each is equivalent to 1 day):\n"+
+                    "`1440m`\n`24h`\n`1d`").queue();
             return true;
         }
 
@@ -128,13 +128,9 @@ public class CommandMute extends Command {
             timeMs += Long.parseLong(toParse.substring(0,toParse.length()-1))*60*60*1000;
         } else if(toParse.endsWith("d")) {
             timeMs += Long.parseLong(toParse.substring(0,toParse.length()-1))*24*60*60*1000;
-        } else if(toParse.endsWith("w")) {
-            timeMs += Long.parseLong(toParse.substring(0,toParse.length()-1))*7*24*60*60*1000;
-        } else if(toParse.endsWith("y")) {
-            timeMs += Long.parseLong(toParse.substring(0,toParse.length()-1))*365*24*60*60*1000;
         } else {
-            event.getChannel().sendMessage("Please enter a valid date! Examples (each is equivalent to 1 year):\n"+
-                    "`"+365L*24L*60L+"m`\n`"+365L*24L+"h`\n`365d`\n`1y`").queue();
+            event.getChannel().sendMessage("Please enter a valid date! Examples (each is equivalent to 1 day):\n"+
+                    "`1440m`\n`24h`\n`1d`").queue();
             return true;
         }
 

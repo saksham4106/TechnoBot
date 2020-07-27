@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.images.ImageProcessor;
+import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.managers.LevelManager;
 import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -148,6 +149,10 @@ public class CommandRank extends Command {
                 return true;
             }
         }
+        EmbedBuilder embed = new EmbedBuilder()
+                .setDescription(":x: You do not have a rank yet! Send some messages first.")
+                .setColor(Command.ERROR_EMBED_COLOR);
+        event.getChannel().sendMessage(embed.build()).queue();
         return true;
     }
 
