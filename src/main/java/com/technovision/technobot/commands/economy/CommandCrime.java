@@ -31,7 +31,7 @@ public class CommandCrime extends Command {
                 embed.setColor(EconManager.SUCCESS_COLOR);
                 embed.setDescription("You rob the local bank and steal " + EconManager.SYMBOL + amount);
             } else {
-                int amount = rand.nextInt(350) + 1;
+                int amount = rand.nextInt(400) + 1;
                 TechnoBot.getInstance().getEconomy().removeMoney(event.getAuthor(), amount, EconManager.Activity.CRIME);
                 embed.setColor(ERROR_EMBED_COLOR);
                 embed.setDescription("You were caught shoplifting. Pay a fine of " + EconManager.SYMBOL + amount);

@@ -44,9 +44,9 @@ public class CommandMute extends Command {
                 int i = 0;
 
                 for(Object o : muteTracker.getJson().getJSONArray("users")) {
-                    JSONObject userJSON = (JSONObject)o;
+                    JSONObject userJSON = (JSONObject) o;
 
-                    if(System.currentTimeMillis()>=userJSON.getLong("timeEnded")) {
+                    if(System.currentTimeMillis() >= userJSON.getLong("timeEnded")) {
                         toRemove.add(i);
                         mute_role = TechnoBot.getInstance().getJDA().getGuildById(userJSON.getLong("guild")).getRolesByName(MUTE_ROLE_NAME, true).get(0);
                         if(mute_role==null) {
@@ -58,7 +58,7 @@ public class CommandMute extends Command {
                         if(guild==null) {
                             throw new RuntimeException("Could not find guild by ID "+userJSON.getLong("guild"), new NullPointerException("Local field 'guild' is null!"));
                         }
-                        guild.removeRoleFromMember(userJSON.getLong("userId"),mute_role).queue();
+                        guild.removeRoleFromMember(userJSON.getLong("userId"), mute_role).queue();
                     }
 
                     i++;
@@ -68,7 +68,7 @@ public class CommandMute extends Command {
                 }
                 muteTracker.save();
             }
-        },1000L, 1000L);
+        },60000L, 60000L); // 1 Minute Timer
     }
 
     @Override
@@ -118,15 +118,11 @@ public class CommandMute extends Command {
         String toParse = "";
         try {toParse = args[1];} catch(ArrayIndexOutOfBoundsException e) {
             event.getChannel().sendMessage("Please enter a valid date! Examples (each is equivalent to 1 year):\n"+
-                    "`"+365L*24L*60L*60L*1000L +"ms`\n`"+365L*24L*60L*60L+"s`\n`"+365L*24L*60L+"m`\n`"+365L*24L+"h`\n`365d`\n`1y`").queue();
+                    "`"+365L*24L*60L+"m`\n`"+365L*24L+"h`\n`365d`\n`1y`").queue();
             return true;
         }
 
-        if(toParse.endsWith("ms")) {
-            timeMs += Long.parseLong(toParse.substring(0,toParse.length()-2));
-        } else if(toParse.endsWith("s")) {
-            timeMs += Long.parseLong(toParse.substring(0,toParse.length()-1))*1000;
-        } else if(toParse.endsWith("m")) {
+        if(toParse.endsWith("m")) {
             timeMs += Long.parseLong(toParse.substring(0,toParse.length()-1))*60*1000;
         } else if(toParse.endsWith("h")) {
             timeMs += Long.parseLong(toParse.substring(0,toParse.length()-1))*60*60*1000;
@@ -138,7 +134,7 @@ public class CommandMute extends Command {
             timeMs += Long.parseLong(toParse.substring(0,toParse.length()-1))*365*24*60*60*1000;
         } else {
             event.getChannel().sendMessage("Please enter a valid date! Examples (each is equivalent to 1 year):\n"+
-                    "`"+365L*24L*60L*60L*1000L +"ms`\n`"+365L*24L*60L*60L+"s`\n`"+365L*24L*60L+"m`\n`"+365L*24L+"h`\n`365d`\n`1y`").queue();
+                    "`"+365L*24L*60L+"m`\n`"+365L*24L+"h`\n`365d`\n`1y`").queue();
             return true;
         }
 

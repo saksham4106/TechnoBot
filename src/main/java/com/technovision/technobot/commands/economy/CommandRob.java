@@ -58,9 +58,9 @@ public class CommandRob extends Command {
                     embed.setDescription("That member does not have any money in their account!");
                 }
             } else {
-                int amount = rand.nextInt(350) + 1;
+                int amount = rand.nextInt(400) + 1;
                 TechnoBot.getInstance().getEconomy().removeMoney(event.getAuthor(), amount, EconManager.Activity.NULL);
-                embed.setDescription("You've been fined " + EconManager.SYMBOL + amount + " for theft!");
+                embed.setDescription("You were caught and fined " + EconManager.SYMBOL + amount + " for theft!");
             }
         } else {
             embed.setDescription(":stopwatch: You cannot attempt to rob another member for " + TechnoBot.getInstance().getEconomy().getCooldown(timestamp, cooldown) + ".");

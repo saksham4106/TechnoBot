@@ -64,6 +64,7 @@ public class CommandRegistry {
                 new CommandConsider(),
                 new CommandImplement(),
                 new CommandClear(),
+                new CommandUnmute(),
 
                 // Other
                 new CommandHelp(),

@@ -38,6 +38,6 @@ public abstract class Command {
     }
 
     public enum Category {
-        STAFF,LEVELS,MUSIC,OTHER,ECONOMY,FUN
+        STAFF,LEVELS,MUSIC,OTHER,ECONOMY
     }
 }
