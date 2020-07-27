@@ -6,15 +6,19 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import javax.annotation.Nonnull;
 
 public class AutomodListener extends ListenerAdapter {
+
+    public static final String ADVERTISE_CHANNEL = "collab-advertise";
+
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
-
-        if(message.toLowerCase().contains("https://discord.gg/")) {
-            event.getMessage().delete().queue();
-            event.getChannel().sendMessage("<@!"+event.getAuthor().getId()+">, please don't post invites here!").queue();
+        if (event.getAuthor().isBot()) { return; }
+        if(message.toLowerCase().contains("discord.gg/")) {
+            if (!event.getChannel().getName().equals(ADVERTISE_CHANNEL)) {
+                event.getMessage().delete().queue();
+                event.getChannel().sendMessage("<@!" + event.getAuthor().getId() + ">, " + "please only post invites in <#730661431703502959>!").queue();
+            }
         }
         // More to come soon
-        // Note; it isn't really possible to "censor" profanities, because you cannot edit people's messages
     }
 }

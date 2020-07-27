@@ -1,12 +1,9 @@
 package com.technovision.technobot.commands.levels;
 
 import com.google.common.collect.Sets;
-import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.images.ImageProcessor;
-import com.technovision.technobot.listeners.CommandEventListener;
 import com.technovision.technobot.listeners.managers.LevelManager;
-import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -20,18 +17,13 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.Set;
 
 public class CommandRank extends Command {
 
-    private final DecimalFormat formatter;
-
     public CommandRank() {
         super("rank", "Displays your levels and server rank", "{prefix}rank", Command.Category.LEVELS);
-        formatter = new DecimalFormat("#,###");
     }
 
     @Override
