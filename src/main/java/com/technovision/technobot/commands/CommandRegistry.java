@@ -1,10 +1,7 @@
 package com.technovision.technobot.commands;
 
 import com.technovision.technobot.TechnoBot;
-import com.technovision.technobot.commands.economy.CommandBalance;
-import com.technovision.technobot.commands.economy.CommandCrime;
-import com.technovision.technobot.commands.economy.CommandPay;
-import com.technovision.technobot.commands.economy.CommandWork;
+import com.technovision.technobot.commands.economy.*;
 import com.technovision.technobot.commands.levels.CommandLeaderboard;
 import com.technovision.technobot.commands.levels.CommandRank;
 import com.technovision.technobot.commands.levels.CommandRankcard;
@@ -35,6 +32,7 @@ public class CommandRegistry {
                 new CommandWork(),
                 new CommandCrime(),
                 new CommandPay(),
+                new CommandRob(),
 
                 // Music
                 new CommandJoin(),

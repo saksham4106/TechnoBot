@@ -31,16 +31,29 @@ public class EconManager {
         return new Tuple<>(bal, bank);
     }
 
-    public void removeMoney(User user, long amount, Activity activity) {
-        JSONObject profile = getProfile(user);
-        long bal = profile.getLong("balance");
+    public long rob(JSONObject robber, JSONObject victim) throws InvalidValue {
+        long bal = victim.getLong("balance");
+        if (bal <= 0) { throw new InvalidValue(); }
+        long amount = (long) (bal * 0.3);
+
+        removeMoney(victim, amount, Activity.NULL);
+        addMoney(robber, amount, Activity.NULL);
+        return amount;
+    }
+
+    public void removeMoney(JSONObject user, long amount, Activity activity) {
+        long bal = user.getLong("balance");
         long remaining = bal - amount;
-        if (remaining < 0) { remaining = 0; }
-        profile.put("balance", remaining);
+        user.put("balance", remaining);
         if (activity == Activity.CRIME) {
-            profile.put("crime-timestamp", System.currentTimeMillis());
+            user.put("crime-timestamp", System.currentTimeMillis());
         }
         economy.save();
+    }
+
+    public void removeMoney(User user, long amount, Activity activity) {
+        JSONObject profile = getProfile(user);
+        removeMoney(profile, amount, activity);
     }
 
     public void pay(User sender, User receiver, long amount) throws InvalidValue {
@@ -58,14 +71,18 @@ public class EconManager {
 
     public void addMoney(User user, long amount, Activity activity) {
         JSONObject profile = getProfile(user);
-        long bal = profile.getLong("balance");
-        profile.put("balance", bal + amount);
+        addMoney(profile, amount, activity);
+    }
+
+    public void addMoney(JSONObject user, long amount, Activity activity) {
+        long bal = user.getLong("balance");
+        user.put("balance", bal + amount);
         switch (activity) {
             case WORK:
-                profile.put("work-timestamp", System.currentTimeMillis());
+                user.put("work-timestamp", System.currentTimeMillis());
                 break;
             case CRIME:
-                profile.put("crime-timestamp", System.currentTimeMillis());
+                user.put("crime-timestamp", System.currentTimeMillis());
                 break;
         }
         economy.save();
@@ -84,6 +101,7 @@ public class EconManager {
             put("bank", 0);
             put("work-timestamp", 0);
             put("crime-timestamp", 0);
+            put("rob-timestamp", 0);
         }});
         economy.save();
         return (JSONObject) profiles.get(profiles.length() - 1);
@@ -100,6 +118,6 @@ public class EconManager {
     }
 
     public enum Activity {
-        WORK, CRIME;
+        WORK, CRIME, NULL;
     }
 }
