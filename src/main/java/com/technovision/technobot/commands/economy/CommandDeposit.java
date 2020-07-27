@@ -1,63 +1,59 @@
 package com.technovision.technobot.commands.economy;
 
+import com.google.common.collect.Sets;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.EconManager;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 import org.omg.CORBA.DynAnyPackage.InvalidValue;
 
-import java.text.DecimalFormat;
+import java.util.Set;
 
-public class CommandPay extends Command {
+public class CommandDeposit extends Command {
 
-    public CommandPay() {
-        super("pay", "Send cash to a friend", "{prefix}pay [user] <amount>", Category.ECONOMY);
+    public CommandDeposit() {
+        super("deposit", "Deposit cash into the bank", "{prefix}deposit <amount>", Category.ECONOMY);
     }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
-        if (args.length > 1) {
-
-            User receiver;
-            if (args[0].startsWith("<@!") && args[0].endsWith(">")) {
-                receiver = event.getJDA().retrieveUserById(args[0].substring(3, args[0].length()-1)).complete();
-            } else {
-                embed.setColor(ERROR_EMBED_COLOR);
-                embed.setDescription(":x: Invalid `[user]` argument given\n\nUsage:\n`pay [user] <amount>`");
-                event.getChannel().sendMessage(embed.build()).queue();
-                return true;
-            }
+        if (args.length > 0) {
             try {
-                long amt = Long.parseLong(args[1]);
+                long amt = Long.parseLong(args[0]);
                 try {
-                    TechnoBot.getInstance().getEconomy().pay(event.getAuthor(), receiver, amt);
+                    TechnoBot.getInstance().getEconomy().deposit(event.getAuthor(), amt);
                     embed.setColor(EconManager.SUCCESS_COLOR);
                     String money = EconManager.FORMATTER.format(amt);
-                    embed.setDescription(":white_check_mark: <@!" + receiver.getId() + "> has received your " + EconManager.SYMBOL + money);
+                    embed.setDescription(":white_check_mark: Deposited " + EconManager.SYMBOL + money + " to your bank!");
                     event.getChannel().sendMessage(embed.build()).queue();
                     return true;
                 } catch (InvalidValue e) {
                     embed.setColor(ERROR_EMBED_COLOR);
                     long bal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).key;
                     String balFormat = EconManager.FORMATTER.format(bal);
-                    embed.setDescription(String.format(":x: You don't have that much money to give! You currently have %s%s on hand", EconManager.SYMBOL, balFormat));
+                    embed.setDescription(String.format(":x: You don't have that much money to deposit! You currently have %s%s on hand", EconManager.SYMBOL, balFormat));
                     event.getChannel().sendMessage(embed.build()).queue();
                     return true;
                 }
             } catch (NumberFormatException e) {
                 embed.setColor(ERROR_EMBED_COLOR);
-                embed.setDescription(":x: Invalid `<amount>` argument given\n\nUsage:\n`pay [user] <amount>`");
+                embed.setDescription(":x: Invalid `<amount>` argument given\n\nUsage:\n`deposit <amount>`");
                 event.getChannel().sendMessage(embed.build()).queue();
                 return true;
             }
         }
         embed.setColor(ERROR_EMBED_COLOR);
-        embed.setDescription(":x: Too few arguments given.\n\nUsage:\n`pay [user] <amount>`");
+        embed.setDescription(":x: Too few arguments given.\n\nUsage:\n`deposit <amount>`");
         event.getChannel().sendMessage(embed.build()).queue();
         return true;
+    }
+
+    @Override
+    public @NotNull Set<String> getAliases() {
+        return Sets.newHashSet("dep");
     }
 }

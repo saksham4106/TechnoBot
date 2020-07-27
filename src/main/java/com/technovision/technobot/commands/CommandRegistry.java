@@ -33,6 +33,8 @@ public class CommandRegistry {
                 new CommandCrime(),
                 new CommandPay(),
                 new CommandRob(),
+                new CommandDeposit(),
+                new CommandWithdraw(),
 
                 // Music
                 new CommandJoin(),

@@ -7,9 +7,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.omg.CORBA.DynAnyPackage.InvalidValue;
 
+import java.text.DecimalFormat;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class EconManager {
 
     public static final String SYMBOL = "<:coin:735696678321127577>";
+    public static final int SUCCESS_COLOR = 0x33cc33;
+    public static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 
     private final Configuration economy;
 
@@ -29,6 +34,26 @@ public class EconManager {
         long bal = profile.getLong("balance");
         long bank = profile.getLong("bank");
         return new Tuple<>(bal, bank);
+    }
+
+    public void deposit(User user, long amount) throws InvalidValue {
+        JSONObject profile = getProfile(user);
+        long bal = profile.getLong("balance");
+        long newBalance = bal - amount;
+        if (newBalance < 0) { throw new InvalidValue(); }
+        long bank = profile.getLong("bank");
+        profile.put("bank", bank + amount);
+        profile.put("balance", newBalance);
+    }
+
+    public void withdraw(User user, long amount) throws InvalidValue {
+        JSONObject profile = getProfile(user);
+        long bank = profile.getLong("bank");
+        long newBank = bank - amount;
+        if (newBank < 0) { throw new InvalidValue(); }
+        long bal = profile.getLong("balance");
+        profile.put("bank", newBank);
+        profile.put("balance", bal + amount);
     }
 
     public long rob(JSONObject robber, JSONObject victim) throws InvalidValue {

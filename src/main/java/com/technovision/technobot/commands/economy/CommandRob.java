@@ -52,7 +52,7 @@ public class CommandRob extends Command {
             if (rand.nextInt(10) > 5) { //40% Success Rate
                 try {
                     long amount = TechnoBot.getInstance().getEconomy().rob(robberProfile, victimProfile);
-                    embed.setColor(0x33cc33);
+                    embed.setColor(EconManager.SUCCESS_COLOR);
                     embed.setDescription("You quickly swipe " + EconManager.SYMBOL + amount + " from " + args[0]);
                 } catch (InvalidValue e) {
                     embed.setDescription("That member does not have any money in their account!");
