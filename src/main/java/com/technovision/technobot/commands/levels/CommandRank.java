@@ -103,7 +103,9 @@ public class CommandRank extends Command {
                     if (rankNum >= 100) { xModifier += 15; }
                     if (rankNum >= 1000) { xModifier += 15; }
                     if (rankNum >= 10000) { xModifier += 15; }
-                    g.drawString("Rank #" + (LevelManager.getInstance().userList.indexOf(user) + 1), 740 - xModifier, 110);
+                    int rnk = (LevelManager.getInstance().userList.indexOf(user) + 1);
+                    if (rnk == 0) { rnk = event.getGuild().getMemberCount(); }
+                    g.drawString("Rank #" + rnk, 740 - xModifier, 110);
 
                     g.drawString("Level " + player.getInt("level"), 300, 180);
                     g.setFont(new Font("Helvetica", Font.PLAIN, 25));

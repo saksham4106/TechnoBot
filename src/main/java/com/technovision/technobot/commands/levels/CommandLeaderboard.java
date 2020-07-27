@@ -69,6 +69,7 @@ public class CommandLeaderboard extends Command {
         builder.setDescription(msg);
         int maxPage = tuples.size() / usersPerPage;
         if (maxPage * usersPerPage != tuples.size()) { maxPage++; }
+        if (maxPage == 0) { maxPage++; }
         builder.setFooter("Page " + (1 + (start / usersPerPage)) + "/" + maxPage);
         event.getChannel().sendMessage(builder.build()).queue();
         return true;

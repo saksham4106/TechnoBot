@@ -1,1 +1,11 @@
-{"users": []}
+{"users": [{
+    "color": "#8394eb",
+    "lastTalked": 1595885253742,
+    "level": 1,
+    "background": "",
+    "xp": 23,
+    "rank": 2,
+    "id": 595024631438508070,
+    "opacity": 0.5,
+    "accent": "#FFFFFF"
+}]}
