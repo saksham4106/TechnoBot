@@ -44,13 +44,29 @@ public class CommandInfractions extends Command {
                 target = event.getGuild().getMemberById(args[0]);
             } catch(Exception ignored) {}
         }
+        if(target==null&&args.length>0) {
+            event.getGuild().retrieveMemberById(args[0]).queue(member -> {
+                complete(event, member);
+            });
+            return true;
+        }
         if(target==null) {
             target = executor;
         }
 
+        complete(event, target);
+        return true;
+    }
+
+    @Override
+    public @NotNull Set<String> getAliases() {
+        return Sets.newHashSet("warnings","warns");
+    }
+
+    private void complete(MessageReceivedEvent event, Member target) {
         if(!infractionConfig.getJson().has(target.getId())) {
             event.getChannel().sendMessage(target.getEffectiveName()+" has no infractions!").queue();
-            return true;
+            return;
         }
 
         EmbedBuilder builder = new EmbedBuilder()
@@ -66,12 +82,5 @@ public class CommandInfractions extends Command {
         }
 
         event.getChannel().sendMessage(builder.build()).queue();
-
-        return true;
-    }
-
-    @Override
-    public @NotNull Set<String> getAliases() {
-        return Sets.newHashSet("warnings","warns");
     }
 }
