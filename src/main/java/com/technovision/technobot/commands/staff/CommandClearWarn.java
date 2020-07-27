@@ -1,22 +1,23 @@
 package com.technovision.technobot.commands.staff;
 
+import com.google.common.collect.Sets;
 import com.technovision.technobot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Set;
 import java.util.TimeZone;
 
-public class CommandKick extends Command {
-
-
-    public CommandKick() {
-        super("kick", "Kicks the specified user for specified reason", "{prefix}kick <user> [reason]", Command.Category.STAFF);
+public class CommandClearWarn extends Command {
+    public CommandClearWarn() {
+        super("clearinfractions", "Clear infractions of specified user", "clearinfractions <user>", Category.STAFF);
     }
 
     @Override
@@ -47,44 +48,25 @@ public class CommandKick extends Command {
             event.getChannel().sendMessage("Could not find user!").queue();
             return true;
         }
-        if(executor.getUser().getId().equalsIgnoreCase(target.getUser().getId())) {
-            event.getChannel().sendMessage("You can't kick yourself \uD83E\uDD26\u200D").queue();
-            return true;
-        }
-        if(!executor.canInteract(target)) {
-            event.getChannel().sendMessage("You can't kick that user!").queue();
-            return true;
-        }
 
         if(args.length==0) {
-            event.getChannel().sendMessage("Please specify a user and reason!").queue();
+            event.getChannel().sendMessage("Please specify a user!").queue();
             return true;
         }
 
-        String reason = "Unspecified";
-
-        if(args.length>1) {
-            reason = String.join(" ", args);
-            reason = reason.substring(reason.indexOf(" "));
-        }
-
-        target.kick(reason).queue();
-
-        final String r = reason;
-        if(!CommandInfractions.infractionConfig.getJson().has(target.getId())) CommandInfractions.infractionConfig.getJson().put(target.getId(), new JSONArray());
-        CommandInfractions.infractionConfig.getJson().getJSONArray(target.getId()).put(new JSONObject() {{
-            put("type", "Kick");
-            put("date", new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime()));
-            put("reason", r);
-            put("issuer", executor.getIdLong());
-        }});
+        if(CommandInfractions.infractionConfig.getJson().has(target.getId())) CommandInfractions.infractionConfig.getJson().remove(target.getId());
 
         CommandInfractions.infractionConfig.save();
 
         event.getChannel().sendMessage(new EmbedBuilder()
                 .setTitle("Success")
-                .setDescription("Successfully kicked <@!"+target.getUser().getId()+"> for reason `"+reason.replaceAll("`","")+"`").build()).queue();
+                .setDescription("Successfully cleared warnings of <@!"+target.getUser().getId()+">!").build()).queue();
 
         return true;
+    }
+
+    @Override
+    public @NotNull Set<String> getAliases() {
+        return Sets.newHashSet("clearwarn", "clearwarns", "clearwarnings");
     }
 }

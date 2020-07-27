@@ -5,18 +5,18 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Set;
 import java.util.TimeZone;
 
-public class CommandBan extends Command {
-
-
-    public CommandBan() {
-        super("ban", "Bans the specified user for specified reason", "{prefix}ban <user> [reason]", Command.Category.STAFF);
+public class CommandWarn extends Command {
+    public CommandWarn() {
+        super("warn", "Warns specified user for specified reason", "warn <user> [reason]", Category.STAFF);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class CommandBan extends Command {
             // there was no mentioned user, using second check
         }
 
-        if(!executor.hasPermission(Permission.BAN_MEMBERS)) {
+        if(!executor.hasPermission(Permission.KICK_MEMBERS)) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(ERROR_EMBED_COLOR);
             embed.setDescription(":x: You do not have permission to do that!");
@@ -48,11 +48,11 @@ public class CommandBan extends Command {
             return true;
         }
         if(executor.getUser().getId().equalsIgnoreCase(target.getUser().getId())) {
-            event.getChannel().sendMessage("You can't ban yourself \uD83E\uDD26\u200D").queue();
+            event.getChannel().sendMessage("You can't warn yourself \uD83E\uDD26\u200D").queue();
             return true;
         }
         if(!executor.canInteract(target)) {
-            event.getChannel().sendMessage("You can't ban that user!").queue();
+            event.getChannel().sendMessage("You can't warn that user!").queue();
             return true;
         }
 
@@ -68,22 +68,26 @@ public class CommandBan extends Command {
             reason = reason.substring(reason.indexOf(" "));
         }
 
-        target.ban(0, reason).queue();
-
         final String r = reason;
         if(!CommandInfractions.infractionConfig.getJson().has(target.getId())) CommandInfractions.infractionConfig.getJson().put(target.getId(), new JSONArray());
         CommandInfractions.infractionConfig.getJson().getJSONArray(target.getId()).put(new JSONObject() {{
-            put("type", "Ban");
+            put("type", "Warning");
             put("date", new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime()));
             put("reason", r);
             put("issuer", executor.getIdLong());
         }});
+
         CommandInfractions.infractionConfig.save();
 
         event.getChannel().sendMessage(new EmbedBuilder()
                 .setTitle("Success")
-                .setDescription("Successfully banned <@!"+target.getUser().getId()+"> for reason `"+reason.replaceAll("`","")+"`").build()).queue();
+                .setDescription("Successfully warned <@!"+target.getUser().getId()+"> for reason `"+reason.replaceAll("`","")+"`").build()).queue();
 
         return true;
+    }
+
+    @Override
+    public @NotNull Set<String> getAliases() {
+        return super.getAliases();
     }
 }

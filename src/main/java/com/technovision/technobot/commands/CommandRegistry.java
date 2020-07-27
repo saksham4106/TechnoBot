@@ -51,6 +51,9 @@ public class CommandRegistry {
                 new CommandVolume(),
 
                 // Staff
+                new CommandInfractions(),
+                new CommandClearWarn(),
+                new CommandWarn(),
                 new CommandKick(),
                 new CommandBan(),
                 new CommandApprove(),
