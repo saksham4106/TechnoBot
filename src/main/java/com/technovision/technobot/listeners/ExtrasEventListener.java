@@ -35,8 +35,6 @@ public class ExtrasEventListener extends ListenerAdapter {
             }
             event.getChannel().sendMessage(msg).queue();
             event.getMessage().addReaction("\uD83D\uDE20").queue();
-        } else if (event.getMessage().getContentRaw().toLowerCase().contains("<@!"+ event.getJDA().getSelfUser() + ">")) {
-            event.getChannel().sendMessage("Uhh, do you need something?").queue();
         }
     }
 }
