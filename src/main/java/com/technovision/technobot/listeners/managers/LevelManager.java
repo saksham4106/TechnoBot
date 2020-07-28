@@ -22,7 +22,6 @@ public class LevelManager extends ListenerAdapter {
     public final List<Tuple<Integer,Integer>> tupleList = new ArrayList<>();
     public final List<User> userList = new ArrayList<>();
 
-    public static final String RANK_CHANNEL = "RANKS-AND-ROLES";
     private static LevelManager instance;
 
     private final Map<Long, Long> lastTalked = new HashMap<Long, Long>();
@@ -129,8 +128,23 @@ public class LevelManager extends ListenerAdapter {
                         event.getChannel().sendMessage(levelUp).queue();
                         player.put("xp", player.getInt("xp")-getMaxXP(player.getInt("level")));
                         player.put("level", player.getInt("level")+1);
-                    }
 
+                        int level = player.getInt("level");
+                        switch (level) {
+                            case 5:
+                                event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById(737482087002800221L)).queue();
+                                break;
+                            case 10:
+                                event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById(737482150898827315L)).queue();
+                                break;
+                            case 20:
+                                event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById(737482202421526651L)).queue();
+                                break;
+                            case 30:
+                                event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById(737482254497874011L)).queue();
+                                break;
+                        }
+                    }
                     levelSave.save();
                 }
             }

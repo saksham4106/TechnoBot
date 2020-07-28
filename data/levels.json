@@ -1,10 +1,10 @@
 {"users": [
     {
         "color": "#8394eb",
-        "lastTalked": 1595899147078,
-        "level": 3,
+        "lastTalked": 1595900337972,
+        "level": 5,
         "background": "",
-        "xp": 158,
+        "xp": 12,
         "rank": 2,
         "id": 595024631438508070,
         "opacity": 0.5,
@@ -45,10 +45,10 @@
     },
     {
         "color": "#8394eb",
-        "lastTalked": 1595899119751,
+        "lastTalked": 1595900186553,
         "level": 1,
         "background": "",
-        "xp": 37,
+        "xp": 80,
         "rank": 4,
         "id": 345713912945180674,
         "opacity": 0.5,
