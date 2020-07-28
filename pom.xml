@@ -6,7 +6,8 @@
 
     <groupId>com.technovision</groupId>
     <artifactId>technobot</artifactId>
-    <version>0.2-music</version>
+    <version>0.5</version>
+    <packaging>jar</packaging>
 
     <repositories>
         <repository>

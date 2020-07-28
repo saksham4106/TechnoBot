@@ -3,6 +3,7 @@ package com.technovision.technobot.listeners.managers;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.util.Tuple;
+import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -85,7 +86,11 @@ public class LevelManager extends ListenerAdapter {
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
 
         if (event.getAuthor().isBot()) { return; }
-        if (event.getMessage().getContentRaw().startsWith("!")) { return; }
+        if (event.getChannel().getParent() != null) {
+            if (event.getChannel().getParent().getIdLong() == 729856082410864690L) { return; }
+            if (event.getChannel().getParent().getIdLong() == 599346627131605015L) { return; }
+            if (event.getChannel().getParent().getIdLong() == 599345340742762496L) { return; }
+        }
         long exactMilli = event.getMessage().getTimeCreated().toInstant().toEpochMilli();
 
         boolean exists = false;

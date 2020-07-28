@@ -4,12 +4,12 @@ import com.google.common.collect.Sets;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.EconManager;
+import com.technovision.technobot.util.exceptions.InvalidBalanceException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
-import org.omg.CORBA.DynAnyPackage.InvalidValue;
 
 import java.util.Random;
 import java.util.Set;
@@ -54,7 +54,7 @@ public class CommandRob extends Command {
                     long amount = TechnoBot.getInstance().getEconomy().rob(robberProfile, victimProfile);
                     embed.setColor(EconManager.SUCCESS_COLOR);
                     embed.setDescription("You quickly swipe " + EconManager.SYMBOL + amount + " from " + args[0]);
-                } catch (InvalidValue e) {
+                } catch (InvalidBalanceException e) {
                     embed.setDescription("That member does not have any money in their account!");
                 }
             } else {

@@ -3,12 +3,10 @@ package com.technovision.technobot.commands.economy;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.EconManager;
+import com.technovision.technobot.util.exceptions.InvalidBalanceException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.omg.CORBA.DynAnyPackage.InvalidValue;
-
-import java.text.DecimalFormat;
 
 public class CommandPay extends Command {
 
@@ -40,7 +38,7 @@ public class CommandPay extends Command {
                     embed.setDescription(":white_check_mark: <@!" + receiver.getId() + "> has received your " + EconManager.SYMBOL + money);
                     event.getChannel().sendMessage(embed.build()).queue();
                     return true;
-                } catch (InvalidValue e) {
+                } catch (InvalidBalanceException e) {
                     embed.setColor(ERROR_EMBED_COLOR);
                     long bal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).key;
                     String balFormat = EconManager.FORMATTER.format(bal);

@@ -3,9 +3,9 @@ package com.technovision.technobot.commands.economy;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.EconManager;
+import com.technovision.technobot.util.exceptions.InvalidBalanceException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.omg.CORBA.DynAnyPackage.InvalidValue;
 
 public class CommandWithdraw extends Command {
 
@@ -27,7 +27,7 @@ public class CommandWithdraw extends Command {
                     embed.setDescription(":white_check_mark: Withdrew " + EconManager.SYMBOL + money + " from your bank!");
                     event.getChannel().sendMessage(embed.build()).queue();
                     return true;
-                } catch (InvalidValue e) {
+                } catch (InvalidBalanceException e) {
                     embed.setColor(ERROR_EMBED_COLOR);
                     long bankBal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).value;
                     String bankBalFormat = EconManager.FORMATTER.format(bankBal);

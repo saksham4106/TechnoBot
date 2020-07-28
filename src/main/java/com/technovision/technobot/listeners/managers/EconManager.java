@@ -1,11 +1,11 @@
 package com.technovision.technobot.listeners.managers;
 
 import com.technovision.technobot.data.Configuration;
+import com.technovision.technobot.util.exceptions.InvalidBalanceException;
 import com.technovision.technobot.util.Tuple;
 import net.dv8tion.jda.api.entities.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.omg.CORBA.DynAnyPackage.InvalidValue;
 
 import java.text.DecimalFormat;
 
@@ -35,29 +35,29 @@ public class EconManager {
         return new Tuple<>(bal, bank);
     }
 
-    public void deposit(User user, long amount) throws InvalidValue {
+    public void deposit(User user, long amount) throws InvalidBalanceException {
         JSONObject profile = getProfile(user);
         long bal = profile.getLong("balance");
         long newBalance = bal - amount;
-        if (newBalance < 0) { throw new InvalidValue(); }
+        if (newBalance < 0) { throw new InvalidBalanceException(); }
         long bank = profile.getLong("bank");
         profile.put("bank", bank + amount);
         profile.put("balance", newBalance);
     }
 
-    public void withdraw(User user, long amount) throws InvalidValue {
+    public void withdraw(User user, long amount) throws InvalidBalanceException {
         JSONObject profile = getProfile(user);
         long bank = profile.getLong("bank");
         long newBank = bank - amount;
-        if (newBank < 0) { throw new InvalidValue(); }
+        if (newBank < 0) { throw new InvalidBalanceException(); }
         long bal = profile.getLong("balance");
         profile.put("bank", newBank);
         profile.put("balance", bal + amount);
     }
 
-    public long rob(JSONObject robber, JSONObject victim) throws InvalidValue {
+    public long rob(JSONObject robber, JSONObject victim) throws InvalidBalanceException {
         long bal = victim.getLong("balance");
-        if (bal <= 0) { throw new InvalidValue(); }
+        if (bal <= 0) { throw new InvalidBalanceException(); }
         long amount = (long) (bal * 0.3);
 
         removeMoney(victim, amount, Activity.NULL);
@@ -80,12 +80,12 @@ public class EconManager {
         removeMoney(profile, amount, activity);
     }
 
-    public void pay(User sender, User receiver, long amount) throws InvalidValue {
+    public void pay(User sender, User receiver, long amount) throws InvalidBalanceException {
         JSONObject senderProfile = getProfile(sender);
         JSONObject receiverProfile = getProfile(receiver);
 
         long senderBal = senderProfile.getLong("balance");
-        if (senderBal - amount < 0) { throw new InvalidValue(); }
+        if (senderBal - amount < 0) { throw new InvalidBalanceException(); }
         senderProfile.put("balance", senderBal - amount);
 
         long receiverBal = receiverProfile.getLong("balance");

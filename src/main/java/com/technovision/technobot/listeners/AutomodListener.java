@@ -17,11 +17,13 @@ public class AutomodListener extends ListenerAdapter {
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
         if (event.getAuthor().isBot()) { return; }
-        if (event.getMessage().getContentRaw().contains("<@!595024631438508070>")) {
-            TextChannel channel = event.getGuild().getTextChannelsByName("RULES", true).get(0);
-            event.getMessage().delete().queue();
-            event.getChannel().sendMessage("<@!"+event.getAuthor().getIdLong()+">, do not ping TechnoVision! <#"+channel.getId()+">").queue();
-            LOGGER.log(event.getGuild(), event.getTextChannel(), event.getAuthor(), event.getJDA().getSelfUser(), AutoModLogger.Infraction.PING);
+        if (event.getMessage().getMentionedMembers().size() > 0) {
+            if (event.getMessage().getMentionedMembers().contains(event.getGuild().getMemberById(595024631438508070L))) {
+                TextChannel channel = event.getGuild().getTextChannelsByName("RULES", true).get(0);
+                event.getMessage().delete().queue();
+                event.getChannel().sendMessage("<@!" + event.getAuthor().getIdLong() + ">, do not ping TechnoVision! <#" + channel.getId() + ">").queue();
+                LOGGER.log(event.getGuild(), event.getTextChannel(), event.getAuthor(), event.getJDA().getSelfUser(), AutoModLogger.Infraction.PING);
+            }
         }
         else if (message.toLowerCase().contains("discord.gg/")) {
             if (!event.getChannel().getName().equals(ADVERTISE_CHANNEL)) {
