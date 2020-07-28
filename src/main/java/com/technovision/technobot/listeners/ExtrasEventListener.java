@@ -12,10 +12,7 @@ public class ExtrasEventListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         if(event.getAuthor().isBot()) return;
-        if(event.getMessage().getContentRaw().contains("<@!595024631438508070>")) {
-            TextChannel channel = event.getGuild().getTextChannelsByName("RULES", true).get(0);
-            event.getChannel().sendMessage("Do not @ TechnoVision, he is very busy! (Refer to <#"+ channel.getId() +"> number 2)").queue();
-        } else if(event.getMessage().getContentRaw().toLowerCase().contains("why no work")) {
+        if(event.getMessage().getContentRaw().toLowerCase().contains("why no work")) {
             event.getChannel().sendMessage("Please explain your issue. 'why no work' doesn't help!").queue();
         } else if(event.getMessage().getContentRaw().toLowerCase().contains("will this work")) {
             event.getChannel().sendMessage("https://tryitands.ee/").queue();

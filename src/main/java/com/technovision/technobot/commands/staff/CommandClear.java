@@ -1,6 +1,8 @@
 package com.technovision.technobot.commands.staff;
 
+import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
+import com.technovision.technobot.logging.AutoModLogger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
@@ -49,6 +51,7 @@ public class CommandClear extends Command {
                     Message m = channel.sendMessage(String.format(":ballot_box_with_check: I have deleted `%d messages`!", amt)).complete();
                     Thread.sleep(3000);
                     m.delete().queue();
+                    TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), event.getAuthor(), event.getAuthor(), AutoModLogger.Infraction.CLEAR);
                 } catch (InterruptedException ignored) { }
             }).start();
         } catch (NumberFormatException e) {

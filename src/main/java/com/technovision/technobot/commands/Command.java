@@ -17,7 +17,7 @@ public abstract class Command {
 
     public static final String PREFIX = "!";
     public static final int EMBED_COLOR = 0x7289da;
-    public static final int ERROR_EMBED_COLOR = 0xF05230;
+    public static final int ERROR_EMBED_COLOR = 0xdd5f53;
 
     public final String name;
     public final Category category;

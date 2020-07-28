@@ -5,6 +5,7 @@ import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.images.ImageProcessor;
 import com.technovision.technobot.listeners.*;
 import com.technovision.technobot.listeners.managers.*;
+import com.technovision.technobot.logging.AutoModLogger;
 import com.technovision.technobot.logging.Loggable;
 import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.BotRegistry;
@@ -39,12 +40,12 @@ public class TechnoBot {
     private final SuggestionManager suggestionManager;
     private final YoutubeManager youtubeManager;
     private final EconManager econManager;
+    private final AutoModLogger autoModLogger;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
         @Override
         public void load() {
             super.load();
             if(!getJson().has("token")) getJson().put("token", "");
-            if(!getJson().has("logs-webhook")) getJson().put("logs-webhook", "");
             if(!getJson().has("guildlogs-webhook")) getJson().put("guildlogs-webhook", "");
             if(!getJson().has("youtube-api-key")) getJson().put("youtube-api-key", "");
         }
@@ -67,6 +68,11 @@ public class TechnoBot {
         suggestionManager = new SuggestionManager();
         youtubeManager = new YoutubeManager();
         econManager = new EconManager();
+        autoModLogger = new AutoModLogger();
+    }
+
+    public AutoModLogger getAutoModLogger() {
+        return autoModLogger;
     }
 
     public SuggestionManager getSuggestionManager() {

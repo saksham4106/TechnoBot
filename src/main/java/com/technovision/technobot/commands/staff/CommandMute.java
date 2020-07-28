@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.data.Configuration;
+import com.technovision.technobot.logging.AutoModLogger;
 import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -135,8 +136,7 @@ public class CommandMute extends Command {
         }
 
         if(args.length>2) {
-            reason = String.join(" ",(String[]) Arrays.copyOfRange(args, 1, args.length, Object[].class));
-            reason = reason.substring(reason.indexOf(" ",reason.indexOf(" ")+1));
+            reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length, String[].class));
         }
 
         try {
@@ -188,6 +188,8 @@ public class CommandMute extends Command {
         event.getChannel().sendMessage(new EmbedBuilder()
                 .setAuthor(target.getUser().getAsTag() + " has been muted", null, target.getUser().getEffectiveAvatarUrl())
                 .setDescription("**Reason:** " + reason.replaceAll("`","")).build()).queue();
+
+        TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.MUTE, reason);
     }
 
     @Override

@@ -8,12 +8,11 @@ import org.json.JSONObject;
 import org.omg.CORBA.DynAnyPackage.InvalidValue;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class EconManager {
 
     public static final String SYMBOL = "<:coin:735696678321127577>";
-    public static final int SUCCESS_COLOR = 0x33cc33;
+    public static final int SUCCESS_COLOR = 0x77b255;
     public static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 
     private final Configuration economy;

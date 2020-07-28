@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.Set;
 
 public class CommandBalance extends Command {
@@ -37,6 +38,7 @@ public class CommandBalance extends Command {
                 .addField("Cash:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.key), true)
                 .addField("Bank:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.value), true)
                 .addField("Net Worth:", EconManager.SYMBOL + EconManager.FORMATTER.format((profile.key + profile.value)), true)
+                .setTimestamp(new Date().toInstant())
                 .setColor(EMBED_COLOR);
         event.getChannel().sendMessage(embed.build()).queue();
         return true;

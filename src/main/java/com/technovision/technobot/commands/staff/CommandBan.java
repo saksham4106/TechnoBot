@@ -1,6 +1,8 @@
 package com.technovision.technobot.commands.staff;
 
+import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
+import com.technovision.technobot.logging.AutoModLogger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -83,6 +85,8 @@ public class CommandBan extends Command {
         event.getChannel().sendMessage(new EmbedBuilder()
                 .setAuthor(target.getUser().getAsTag() + " has been banned", null, target.getUser().getEffectiveAvatarUrl())
                 .setDescription("**Reason:** " + reason.replaceAll("`","")).build()).queue();
+
+        TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.BAN, reason);
 
         return true;
     }

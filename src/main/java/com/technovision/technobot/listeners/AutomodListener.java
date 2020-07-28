@@ -1,5 +1,8 @@
 package com.technovision.technobot.listeners;
 
+import com.technovision.technobot.TechnoBot;
+import com.technovision.technobot.logging.AutoModLogger;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -8,17 +11,25 @@ import javax.annotation.Nonnull;
 public class AutomodListener extends ListenerAdapter {
 
     public static final String ADVERTISE_CHANNEL = "collab-advertise";
+    public static final AutoModLogger LOGGER = TechnoBot.getInstance().getAutoModLogger();
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
         if (event.getAuthor().isBot()) { return; }
-        if(message.toLowerCase().contains("discord.gg/")) {
+        if (event.getMessage().getContentRaw().contains("<@!595024631438508070>")) {
+            TextChannel channel = event.getGuild().getTextChannelsByName("RULES", true).get(0);
+            event.getMessage().delete().queue();
+            event.getChannel().sendMessage("<@!"+event.getAuthor().getIdLong()+">, do not ping TechnoVision! <#"+channel.getId()+">").queue();
+            LOGGER.log(event.getGuild(), event.getTextChannel(), event.getAuthor(), event.getJDA().getSelfUser(), AutoModLogger.Infraction.PING);
+        }
+        else if (message.toLowerCase().contains("discord.gg/")) {
             if (!event.getChannel().getName().equals(ADVERTISE_CHANNEL)) {
                 event.getMessage().delete().queue();
-                event.getChannel().sendMessage("<@!" + event.getAuthor().getId() + ">, " + "please only post invites in <#730661431703502959>!").queue();
+                TextChannel channel = event.getGuild().getTextChannelsByName("RULES", true).get(0);
+                event.getChannel().sendMessage("<@!" + event.getAuthor().getId() + ">, " + "you are not allowed to advertise in this channel! <#"+channel.getId()+">").queue();
+                LOGGER.log(event.getGuild(), event.getTextChannel(), event.getAuthor(), event.getJDA().getSelfUser(), AutoModLogger.Infraction.INVITE);
             }
         }
-        // More to come soon
     }
 }

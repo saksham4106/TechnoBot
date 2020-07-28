@@ -2,6 +2,7 @@ package com.technovision.technobot.commands.staff;
 
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
+import com.technovision.technobot.logging.AutoModLogger;
 import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -64,6 +65,7 @@ public class CommandUnmute extends Command {
             event.getGuild().removeRoleFromMember(member, mute_role).queue();
             event.getChannel().sendMessage(new EmbedBuilder()
                     .setAuthor(target.getUser().getAsTag() + " has been un-muted", null, target.getUser().getEffectiveAvatarUrl()).build()).queue();
+            TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.UNMUTE);
         } catch(IndexOutOfBoundsException e) {
             TechnoBot.getInstance().getLogger().log(Logger.LogLevel.WARNING, "Mute role does not exist!");
         }
