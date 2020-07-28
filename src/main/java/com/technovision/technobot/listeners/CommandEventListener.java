@@ -43,7 +43,6 @@ public class CommandEventListener extends ListenerAdapter {
                     return;
                 }
             }
-            event.getChannel().sendMessage("Unknown Command!").queue();
         }
     }
 }
