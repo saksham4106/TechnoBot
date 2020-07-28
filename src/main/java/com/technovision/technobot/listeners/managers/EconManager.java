@@ -11,7 +11,7 @@ import java.text.DecimalFormat;
 
 public class EconManager {
 
-    public static final String SYMBOL = "<:coin:735696678321127577>";
+    public static final String SYMBOL = ":sparkles:";
     public static final int SUCCESS_COLOR = 0x77b255;
     public static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 

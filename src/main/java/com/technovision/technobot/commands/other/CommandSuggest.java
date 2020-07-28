@@ -25,8 +25,8 @@ public class CommandSuggest extends Command {
             embed.setColor(EMBED_COLOR);
             TextChannel channel = event.getGuild().getTextChannelsByName("SUGGESTIONS", true).get(0);
             channel.sendMessage(embed.build()).queue(message -> {
-                message.addReaction(":upvote:733030671802695860").queue();
-                message.addReaction(":downvote:733030678832087120").queue();
+                message.addReaction("\u2B06\uFE0F").queue();
+                message.addReaction("\u2B07\uFE0F").queue();
                 TechnoBot.getInstance().getSuggestionManager().addSuggestion(message.getId());
             });
             EmbedBuilder response = new EmbedBuilder()
