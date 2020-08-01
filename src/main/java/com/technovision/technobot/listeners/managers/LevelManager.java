@@ -3,7 +3,7 @@ package com.technovision.technobot.listeners.managers;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.util.Tuple;
-import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -72,14 +72,11 @@ public class LevelManager extends ListenerAdapter {
                         }
 
                     }
-
-
-
                     tupleList.add(ind, new Tuple<>(jsonUser.getInt("level"),jsonUser.getInt("xp")));
                     userList.add(ind, TechnoBot.getInstance().getJDA().retrieveUserById(jsonUser.getLong("id")).complete());
                 }
             }
-        },5000L,120000L);
+        },5000L,30000L);
     }
 
     @Override
@@ -135,19 +132,30 @@ public class LevelManager extends ListenerAdapter {
                         player.put("level", player.getInt("level")+1);
 
                         int level = player.getInt("level");
-                        switch (level) {
-                            case 5:
-                                event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById(737482087002800221L)).queue();
-                                break;
-                            case 10:
-                                event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById(737482150898827315L)).queue();
-                                break;
-                            case 20:
-                                event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById(737482202421526651L)).queue();
-                                break;
-                            case 30:
-                                event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById(737482254497874011L)).queue();
-                                break;
+                        List<Role> roles = event.getMember().getRoles();
+                        if (level >= 5) {
+                            Role elite = event.getGuild().getRoleById(739016880236527678L);
+                            if (roles.contains(elite)) {
+                                event.getGuild().addRoleToMember(event.getMember(), elite).queue();
+                            }
+                        }
+                        if (level >= 10) {
+                            Role heroic = event.getGuild().getRoleById(739016981621243998L);
+                            if (roles.contains(heroic)) {
+                                event.getGuild().addRoleToMember(event.getMember(), heroic).queue();
+                            }
+                        }
+                        if (level >= 20) {
+                            Role ultimate = event.getGuild().getRoleById(737482202421526651L);
+                            if (roles.contains(ultimate)) {
+                                event.getGuild().addRoleToMember(event.getMember(), ultimate).queue();
+                            }
+                        }
+                        if (level >= 30) {
+                            Role legendary = event.getGuild().getRoleById(737482254497874011L);
+                            if (roles.contains(legendary)) {
+                                event.getGuild().addRoleToMember(event.getMember(), legendary).queue();
+                            }
                         }
                     }
                     levelSave.save();
