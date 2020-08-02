@@ -1,10 +1,12 @@
 package com.technovision.technobot.listeners;
 
 import com.technovision.technobot.commands.Command;
+import com.technovision.technobot.listeners.managers.EconManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
@@ -18,24 +20,23 @@ import java.util.Scanner;
  */
 public class GuildMemberEvents extends ListenerAdapter {
 
-    public static String JOIN_CHANNEL = "NEW-MEMBERS";
-    public static String JOIN_ROLE = "MEMBER";
+    public static long JOIN_CHANNEL = 739158625800683591L;
+    public static long JOIN_ROLE = 599348242538430494L;
     public static String JOIN_MESSAGE;
 
     @Override
     public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
         // Join Message
-        TextChannel channel = event.getGuild().getTextChannelsByName(JOIN_CHANNEL, true).get(0);
+        TextChannel channel = event.getGuild().getTextChannelById(JOIN_CHANNEL);
         User user = event.getMember().getUser();
         EmbedBuilder embed = new EmbedBuilder()
-                .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
-                .setDescription("Welcome, <@!"+user.getId()+">" + " to the **TechnoVision** Server!")
-                .setColor(Command.EMBED_COLOR);
+                .setDescription("**" + user.getAsTag() + "** has joined the server!" )
+                .setColor(EconManager.SUCCESS_COLOR);
         channel.sendMessage(embed.build()).queue();
 
         // Private Message & Role Assignment
         if (user.isBot()) { return; }
-        event.getGuild().addRoleToMember(event.getMember().getId(), event.getGuild().getRolesByName(JOIN_ROLE, true).get(0)).queue();
+        event.getGuild().addRoleToMember(event.getMember().getId(), event.getGuild().getRoleById(JOIN_ROLE)).queue();
         user.openPrivateChannel().queue((dm) -> dm.sendMessage(JOIN_MESSAGE).queue());
     }
 

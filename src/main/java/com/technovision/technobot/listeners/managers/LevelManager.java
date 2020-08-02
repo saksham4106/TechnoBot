@@ -129,9 +129,8 @@ public class LevelManager extends ListenerAdapter {
                         String levelUp = "Congrats <@!" + event.getAuthor().getId() + ">" + ", you just advanced to level " + (player.getInt("level")+1)+"!";
                         event.getChannel().sendMessage(levelUp).queue();
                         player.put("xp", player.getInt("xp")-getMaxXP(player.getInt("level")));
-                        player.put("level", player.getInt("level")+1);
-
-                        int level = player.getInt("level");
+                        int level = player.getInt("level") + 1;
+                        player.put("level", level);
                         List<Role> roles = event.getMember().getRoles();
                         if (level >= 5) {
                             Role elite = event.getGuild().getRoleById(739016880236527678L);
