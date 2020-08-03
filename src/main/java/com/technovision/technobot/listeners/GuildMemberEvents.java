@@ -28,7 +28,7 @@ public class GuildMemberEvents extends ListenerAdapter {
     public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
         // Join Message
         TextChannel channel = event.getGuild().getTextChannelById(JOIN_CHANNEL);
-        User user = event.getMember().getUser();
+        User user = event.getUser();
         EmbedBuilder embed = new EmbedBuilder()
                 .setDescription("**" + user.getAsTag() + "** has joined the server!" )
                 .setColor(EconManager.SUCCESS_COLOR);
@@ -38,6 +38,15 @@ public class GuildMemberEvents extends ListenerAdapter {
         if (user.isBot()) { return; }
         event.getGuild().addRoleToMember(event.getMember().getId(), event.getGuild().getRoleById(JOIN_ROLE)).queue();
         user.openPrivateChannel().queue((dm) -> dm.sendMessage(JOIN_MESSAGE).queue());
+    }
+
+    @Override
+    public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent event) {
+        TextChannel channel = event.getGuild().getTextChannelById(JOIN_CHANNEL);
+        EmbedBuilder embed = new EmbedBuilder()
+                .setDescription("**" + event.getUser().getAsTag() + "** has left the server!" )
+                .setColor(Command.ERROR_EMBED_COLOR);
+        channel.sendMessage(embed.build()).queue();
     }
 
     public static void loadJoinMessage() {
