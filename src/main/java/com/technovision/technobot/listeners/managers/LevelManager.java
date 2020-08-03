@@ -10,6 +10,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import javax.annotation.Nonnull;
+import net.dv8tion.jda.api.entities.Role;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -61,7 +62,7 @@ public class LevelManager extends ListenerAdapter {
 
         // Add XP
         long exactMilli = event.getMessage().getTimeCreated().toInstant().toEpochMilli();
-        if (exactMilli - 60000 >= profile.getLong("lastTalked")) {
+        if (exactMilli - 1 >= profile.getLong("lastTalked")) { //60000
             List<Bson> updates = new ArrayList<>();
             updates.add(new Document("$set", new Document("lastTalked", exactMilli)));
             int xpIncrease = ThreadLocalRandom.current().nextInt(10) + 15;
@@ -75,6 +76,32 @@ public class LevelManager extends ListenerAdapter {
                 String levelUp = "Congrats <@!" + event.getAuthor().getId() + ">" + ", you just advanced to **Level " + lvl + "**! :tada:";
                 event.getChannel().sendMessage(levelUp).queue();
                 updates.add(new Document("$set", new Document("level", lvl)));
+
+                List<net.dv8tion.jda.api.entities.Role> roles = event.getMember().getRoles();
+                if (lvl >= 5) {
+                    Role elite = event.getGuild().getRoleById(739746039820714086L);
+                    if (!roles.contains(elite)) {
+                        event.getGuild().addRoleToMember(event.getMember(), elite).queue();
+                    }
+                }
+                if (lvl >= 10) {
+                    Role heroic = event.getGuild().getRoleById(739746100063240243L);
+                    if (!roles.contains(heroic)) {
+                        event.getGuild().addRoleToMember(event.getMember(), heroic).queue();
+                    }
+                }
+                if (lvl >= 20) {
+                    Role ultimate = event.getGuild().getRoleById(737482202421526651L);
+                    if (!roles.contains(ultimate)) {
+                        event.getGuild().addRoleToMember(event.getMember(), ultimate).queue();
+                    }
+                }
+                if (lvl >= 30) {
+                    Role legendary = event.getGuild().getRoleById(737482254497874011L);
+                    if (!roles.contains(legendary)) {
+                        event.getGuild().addRoleToMember(event.getMember(), legendary).queue();
+                    }
+                }
             }
             updates.add(new Document("$set", new Document("xp", xp)));
             int totalXP = profile.getInteger("totalXP") + xpIncrease;
