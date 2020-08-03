@@ -62,7 +62,7 @@ public class LevelManager extends ListenerAdapter {
 
         // Add XP
         long exactMilli = event.getMessage().getTimeCreated().toInstant().toEpochMilli();
-        if (exactMilli - 1 >= profile.getLong("lastTalked")) { //60000
+        if (exactMilli - 60000 >= profile.getLong("lastTalked")) {
             List<Bson> updates = new ArrayList<>();
             updates.add(new Document("$set", new Document("lastTalked", exactMilli)));
             int xpIncrease = ThreadLocalRandom.current().nextInt(10) + 15;
