@@ -87,7 +87,7 @@ public class CommandRank extends Command {
                     g.setFont(new Font("Helvetica", Font.PLAIN, 52));
                     g.drawLine(300, 140, 870, 140);
                     g.drawString(user.getName(), 300, 110);
-                    g.setFont(new Font("Helvetica", Font.PLAIN, 35));
+                    g.setFont(new Font("Arial", Font.PLAIN, 35));
 
                     int rankNum = LevelManager.getInstance().userList.indexOf(user) + 1;
                     int xModifier = 0;
@@ -100,7 +100,7 @@ public class CommandRank extends Command {
                     g.drawString("Rank #" + rnk, 740 - xModifier, 110);
 
                     g.drawString("Level " + player.getInt("level"), 300, 180);
-                    g.setFont(new Font("Helvetica", Font.PLAIN, 25));
+                    g.setFont(new Font("Arial", Font.PLAIN, 25));
                     String xp = format(player.getInt("xp"));
                     String maxXP = format(LevelManager.getInstance().getMaxXP(player.getInt("level")));
                     xModifier = 0;
@@ -116,7 +116,7 @@ public class CommandRank extends Command {
                     g.setColor(Color.decode(player.getString("color")));
                     g.fillRoundRect(300, 200, (int) (570 * (percent * 0.01)), 40, 20, 20);
                     g.setColor(Color.decode(player.getString("accent")));
-                    g.setFont(new Font("Helvetica", Font.PLAIN, 30));
+                    g.setFont(new Font("Arial", Font.PLAIN, 30));
                     g.drawString(percentStr + "%", 560, 230);
 
                     //Add Avatar
