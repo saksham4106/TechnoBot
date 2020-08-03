@@ -107,7 +107,7 @@ public class LevelManager extends ListenerAdapter {
             updates.add(new Document("$set", new Document("totalXP", totalXP)));
             levels.updateMany(profile, updates);
 
-            int originalIndex = leaderboard.indexOf(profile);
+            int originalIndex = getIndex(profile);
             profile.put("lastTalked", exactMilli);
             profile.put("xp", xp);
             profile.put("totalXP", totalXP);
@@ -149,6 +149,20 @@ public class LevelManager extends ListenerAdapter {
     }
 
     public LinkedList<Document> getLeaderboard() { return leaderboard; }
+
+    public int getIndex(Document profile) {
+        long id = profile.getLong("id");
+        Document doc;
+        long currID;
+        for (int i = 0; i < leaderboard.size(); i++) {
+            doc = leaderboard.get(i);
+            currID = doc.getLong("id");
+            if (currID == id) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public int getRank(long id) {
         Document doc;
