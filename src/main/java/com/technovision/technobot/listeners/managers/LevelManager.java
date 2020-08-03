@@ -3,7 +3,6 @@ package com.technovision.technobot.listeners.managers;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.technovision.technobot.TechnoBot;
-import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bson.Document;
@@ -118,7 +117,6 @@ public class LevelManager extends ListenerAdapter {
     }
 
     private void updateLeaderboard(Document profile, int originalIndex) {
-        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.INFO, String.valueOf(originalIndex));
         int index = originalIndex;
         if (index <= 0) {
             leaderboard.remove(originalIndex);
