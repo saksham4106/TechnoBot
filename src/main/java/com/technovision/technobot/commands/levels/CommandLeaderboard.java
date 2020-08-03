@@ -1,17 +1,16 @@
 package com.technovision.technobot.commands.levels;
 
 import com.google.common.collect.Sets;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
-import com.technovision.technobot.listeners.managers.LevelManager;
-import com.technovision.technobot.util.Tuple;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Set;
 
 public class CommandLeaderboard extends Command {
@@ -25,58 +24,26 @@ public class CommandLeaderboard extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        /**
-        int usersPerPage = 20;
-        int start = 0;
-        List<Tuple<Integer, Integer>> tuples = TechnoBot.getInstance().getLevelManager().tupleList;
-        if (args.length > 0) {
-            try {
-                int page = Integer.parseInt(args[0]);
-                if (page > 1) {
-                    int comparison = (tuples.size() / usersPerPage) + 1;
-                    if (tuples.size() % usersPerPage != 0) { comparison++; }
-                    if (page >= comparison) {
-                        EmbedBuilder embed = new EmbedBuilder()
-                                .setColor(ERROR_EMBED_COLOR)
-                                .setDescription(":x: That page doesn't exist!");
-                        event.getChannel().sendMessage(embed.build()).queue();
-                        return true;
-                    }
-                    start = (usersPerPage * (page - 1)) - 1;
-                }
-            } catch (NumberFormatException e) {
-                EmbedBuilder embed = new EmbedBuilder()
-                        .setColor(ERROR_EMBED_COLOR)
-                        .setDescription(":x: That is not a valid page number!");
-                event.getChannel().sendMessage(embed.build()).queue();
-                return true;
-            }
-        }
+        MongoCollection<Document> profiles = TechnoBot.getInstance().getLevelManager().getProfiles();
+        FindIterable<Document> cursor = profiles.find().sort(new Document("totalXP", -1));
+
         String msg = "";
-        int finish = start + usersPerPage;
-        if (start != 0) { finish++; }
-        if (start != 0) { start++; }
-
-        for (int i = start; i < finish; i++) {
-            try {
-                Tuple<Integer, Integer> tup = tuples.get(i);
-                User u = TechnoBot.getInstance().getLevelManager().userList.get(i);
-                msg += (i + 1) + ". <@!"+u.getId()+"> " + formatter.format(tup.value) + "xp " + "lvl " + tup.key + "\n";
-            } catch (IndexOutOfBoundsException ignored) {}
+        int counter = 1;
+        for (Document document : cursor) {
+            long id = document.getLong("id");
+            int xp = document.getInteger("xp");
+            int lvl = document.getInteger("level");
+            msg += (counter) + ". <@!"+id+"> " + formatter.format(xp) + "xp " + "lvl " + lvl + "\n";
+            counter++;
         }
-
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle(":trophy: Rank Leaderboard");
         builder.setColor(EMBED_COLOR);
         builder.setDescription(msg);
-        int maxPage = tuples.size() / usersPerPage;
-        if (maxPage * usersPerPage != tuples.size()) { maxPage++; }
-        if (maxPage == 0) { maxPage++; }
-        builder.setFooter("Page " + (1 + (start / usersPerPage)) + "/" + maxPage);
         event.getChannel().sendMessage(builder.build()).queue();
-         **/
         return true;
     }
+
 
     @Override
     public @NotNull Set<String> getAliases() {

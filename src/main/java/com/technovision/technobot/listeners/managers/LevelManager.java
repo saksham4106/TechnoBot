@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class LevelManager extends ListenerAdapter {
 
-    private final MongoCollection levels;
+    private final MongoCollection<Document> levels;
 
     public LevelManager() {
         levels = TechnoBot.getInstance().getMongoDatabase().getCollection("levels");
@@ -46,6 +46,7 @@ public class LevelManager extends ListenerAdapter {
             profile.append("rank", 150);
             profile.append("background", "");
             profile.append("xp", 0);
+            profile.append("totalXP", 0);
             profile.append("opacity", 0.5);
             profile.append("accent", "#FFFFFF");
             levels.insertOne(profile);
@@ -67,6 +68,7 @@ public class LevelManager extends ListenerAdapter {
                 updates.add(new Document("$set", new Document("level", lvl + 1)));
             }
             updates.add(new Document("$set", new Document("xp", xp)));
+            updates.add(new Document("$set", new Document("totalXP", profile.getInteger("totalXP") + xp)));
             levels.updateMany(profile, updates);
         }
     }
@@ -81,5 +83,9 @@ public class LevelManager extends ListenerAdapter {
 
     public void update(Document profile, List<Bson> updates) {
         levels.updateMany(profile, updates);
+    }
+
+    public MongoCollection<Document> getProfiles() {
+        return levels;
     }
 }
