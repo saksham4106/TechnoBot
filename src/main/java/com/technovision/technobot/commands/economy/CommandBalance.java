@@ -4,13 +4,12 @@ import com.google.common.collect.Sets;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.EconManager;
-import com.technovision.technobot.util.Tuple;
+import javafx.util.Pair;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Set;
 
@@ -32,12 +31,12 @@ public class CommandBalance extends Command {
             }
         }
 
-        Tuple<Long, Long> profile = TechnoBot.getInstance().getEconomy().getBalance(user);
+        Pair<Long, Long> profile = TechnoBot.getInstance().getEconomy().getBalance(user);
         EmbedBuilder embed = new EmbedBuilder()
                 .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
-                .addField("Cash:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.key), true)
-                .addField("Bank:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.value), true)
-                .addField("Net Worth:", EconManager.SYMBOL + EconManager.FORMATTER.format((profile.key + profile.value)), true)
+                .addField("Cash:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.getKey()), true)
+                .addField("Bank:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.getValue()), true)
+                .addField("Net Worth:", EconManager.SYMBOL + EconManager.FORMATTER.format((profile.getKey() + profile.getValue())), true)
                 .setTimestamp(new Date().toInstant())
                 .setColor(EMBED_COLOR);
         event.getChannel().sendMessage(embed.build()).queue();

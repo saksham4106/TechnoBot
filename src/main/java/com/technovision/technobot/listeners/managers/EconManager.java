@@ -2,7 +2,7 @@ package com.technovision.technobot.listeners.managers;
 
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.util.exceptions.InvalidBalanceException;
-import com.technovision.technobot.util.Tuple;
+import javafx.util.Pair;
 import net.dv8tion.jda.api.entities.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,11 +28,11 @@ public class EconManager {
         economy.save();
     }
 
-    public Tuple<Long, Long> getBalance(User user) {
+    public Pair<Long, Long> getBalance(User user) {
         JSONObject profile = getProfile(user);
         long bal = profile.getLong("balance");
         long bank = profile.getLong("bank");
-        return new Tuple<>(bal, bank);
+        return new Pair<>(bal, bank);
     }
 
     public void deposit(User user, long amount) throws InvalidBalanceException {

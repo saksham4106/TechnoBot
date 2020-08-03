@@ -1,8 +1,6 @@
 package com.technovision.technobot.commands.levels;
 
 import com.google.common.collect.Sets;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -11,6 +9,7 @@ import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.util.LinkedList;
 import java.util.Set;
 
 public class CommandLeaderboard extends Command {
@@ -24,16 +23,15 @@ public class CommandLeaderboard extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        MongoCollection<Document> profiles = TechnoBot.getInstance().getLevelManager().getProfiles();
-        FindIterable<Document> cursor = profiles.find().sort(new Document("totalXP", -1));
+        LinkedList<Document> leaderboard = TechnoBot.getInstance().getLevelManager().getLeaderboard();
 
         String msg = "";
         int counter = 1;
-        for (Document document : cursor) {
-            long id = document.getLong("id");
-            int xp = document.getInteger("xp");
-            int lvl = document.getInteger("level");
-            msg += (counter) + ". <@!"+id+"> " + formatter.format(xp) + "xp " + "lvl " + lvl + "\n";
+        for (Document doc: leaderboard) {
+            int totalXP = doc.getInteger("totalXP");
+            int lvl = doc.getInteger("level");
+            long id = doc.getLong("id");
+            msg += (counter) + ". <@!"+id+"> " + formatter.format(totalXP) + "xp " + "lvl " + lvl + "\n";
             counter++;
         }
         EmbedBuilder builder = new EmbedBuilder();
