@@ -22,18 +22,13 @@ public class LevelManager extends ListenerAdapter {
 
     private final MongoCollection<Document> levels;
     private final LinkedList<Document> leaderboard;
-    private final HashMap<Long, Integer> ranks;
 
     public LevelManager() {
         levels = TechnoBot.getInstance().getMongoDatabase().getCollection("levels");
         leaderboard = new LinkedList<>();
-        ranks = new HashMap<>();
         FindIterable<Document> cursor = levels.find().sort(new Document("totalXP", -1));
-        int counter = 1;
         for (Document document : cursor) {
             leaderboard.add(document);
-            ranks.put(document.getLong("id"), counter);
-            counter++;
         }
     }
 
@@ -129,8 +124,6 @@ public class LevelManager extends ListenerAdapter {
     }
 
     public LinkedList<Document> getLeaderboard() { return leaderboard; }
-
-    public HashMap<Long, Integer> getRanks() { return ranks; }
 
     public int getRank(long id) {
         Document doc;
