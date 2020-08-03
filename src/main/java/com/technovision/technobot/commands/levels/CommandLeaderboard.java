@@ -1,6 +1,7 @@
 package com.technovision.technobot.commands.levels;
 
 import com.google.common.collect.Sets;
+import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.LevelManager;
 import com.technovision.technobot.util.Tuple;
@@ -24,9 +25,10 @@ public class CommandLeaderboard extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
+        /**
         int usersPerPage = 20;
         int start = 0;
-        List<Tuple<Integer, Integer>> tuples = LevelManager.getInstance().tupleList;
+        List<Tuple<Integer, Integer>> tuples = TechnoBot.getInstance().getLevelManager().tupleList;
         if (args.length > 0) {
             try {
                 int page = Integer.parseInt(args[0]);
@@ -58,7 +60,7 @@ public class CommandLeaderboard extends Command {
         for (int i = start; i < finish; i++) {
             try {
                 Tuple<Integer, Integer> tup = tuples.get(i);
-                User u = LevelManager.getInstance().userList.get(i);
+                User u = TechnoBot.getInstance().getLevelManager().userList.get(i);
                 msg += (i + 1) + ". <@!"+u.getId()+"> " + formatter.format(tup.value) + "xp " + "lvl " + tup.key + "\n";
             } catch (IndexOutOfBoundsException ignored) {}
         }
@@ -72,6 +74,7 @@ public class CommandLeaderboard extends Command {
         if (maxPage == 0) { maxPage++; }
         builder.setFooter("Page " + (1 + (start / usersPerPage)) + "/" + maxPage);
         event.getChannel().sendMessage(builder.build()).queue();
+         **/
         return true;
     }
 

@@ -1,5 +1,8 @@
 package com.technovision.technobot;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoDatabase;
 import com.technovision.technobot.commands.CommandRegistry;
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.images.ImageProcessor;
@@ -41,6 +44,8 @@ public class TechnoBot {
     private final YoutubeManager youtubeManager;
     private final EconManager econManager;
     private final AutoModLogger autoModLogger;
+    private final MongoDatabase mongoDatabase;
+    private final LevelManager levelManager;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
         @Override
         public void load() {
@@ -48,6 +53,7 @@ public class TechnoBot {
             if(!getJson().has("token")) getJson().put("token", "");
             if(!getJson().has("guildlogs-webhook")) getJson().put("guildlogs-webhook", "");
             if(!getJson().has("youtube-api-key")) getJson().put("youtube-api-key", "");
+            if(!getJson().has("mongo-client-uri")) getJson().put("mongo-client-uri", "");
         }
     };
 
@@ -60,6 +66,10 @@ public class TechnoBot {
         instance = this;
         registry = new BotRegistry();
 
+        MongoClientURI clientURI = new MongoClientURI(getBotConfig().getJson().getString("mongo-client-uri"));
+        MongoClient mongoClient = new MongoClient(clientURI);
+        mongoDatabase = mongoClient.getDatabase("TechnoBot");
+
         JDABuilder builder = JDABuilder.createDefault(getToken());
         builder.setStatus(OnlineStatus.ONLINE).setActivity(Activity.watching("TechnoVisionTV"));
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
@@ -69,6 +79,15 @@ public class TechnoBot {
         youtubeManager = new YoutubeManager();
         econManager = new EconManager();
         autoModLogger = new AutoModLogger();
+        levelManager = new LevelManager();
+    }
+
+    public LevelManager getLevelManager() {
+        return levelManager;
+    }
+
+    public MongoDatabase getMongoDatabase() {
+        return mongoDatabase;
     }
 
     public AutoModLogger getAutoModLogger() {
@@ -165,11 +184,11 @@ public class TechnoBot {
         } catch(LoginException e) { throw new RuntimeException(e); }
 
         getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
-        TechnoBot.getInstance().setupImages();
+        getInstance().setupImages();
         GuildMemberEvents.loadJoinMessage();
 
         new CommandRegistry();
-        getInstance().getRegistry().registerEventListeners(new AutomodListener(), new ExtrasEventListener(), new MusicManager(), new GuildLogEventListener(), new LevelManager(), new CommandEventListener(), new GuildMemberEvents());
+        getInstance().getRegistry().registerEventListeners(new AutomodListener(), new ExtrasEventListener(), new MusicManager(), new GuildLogEventListener(), getInstance().levelManager, new CommandEventListener(), new GuildMemberEvents());
         getInstance().getRegistry().addListeners(getInstance().getJDA());
     }
 }
