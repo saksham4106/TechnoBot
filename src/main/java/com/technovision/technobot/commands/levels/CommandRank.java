@@ -95,8 +95,7 @@ public class CommandRank extends Command {
             g.drawString(user.getName(), 300, 110);
             g.setFont(new Font("Arial", Font.PLAIN, 35));
 
-            //int rank = TechnoBot.getInstance().getLevelManager().getRanks().get(id).rank;
-            int rank = 1;
+            int rank = TechnoBot.getInstance().getLevelManager().getRank(id);
             int xModifier = 0;
             if (rank >= 10) { xModifier += 15; }
             if (rank >= 100) { xModifier += 15; }
