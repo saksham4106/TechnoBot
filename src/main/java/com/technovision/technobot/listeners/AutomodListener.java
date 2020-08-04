@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 
 public class AutomodListener extends ListenerAdapter {
 
-    public static final String ADVERTISE_CHANNEL = "collab-advertise";
+    public static final String ADVERTISE_CHANNEL = "advertise";
     public static final AutoModLogger LOGGER = TechnoBot.getInstance().getAutoModLogger();
 
     @Override

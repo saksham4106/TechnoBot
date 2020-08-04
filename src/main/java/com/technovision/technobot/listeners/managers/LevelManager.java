@@ -78,13 +78,13 @@ public class LevelManager extends ListenerAdapter {
 
                 List<net.dv8tion.jda.api.entities.Role> roles = event.getMember().getRoles();
                 if (lvl >= 5) {
-                    Role elite = event.getGuild().getRoleById(739746039820714086L);
+                    Role elite = event.getGuild().getRoleById(739995619904454707L);
                     if (!roles.contains(elite)) {
                         event.getGuild().addRoleToMember(event.getMember(), elite).queue();
                     }
                 }
                 if (lvl >= 10) {
-                    Role heroic = event.getGuild().getRoleById(739746100063240243L);
+                    Role heroic = event.getGuild().getRoleById(739995681540014120L);
                     if (!roles.contains(heroic)) {
                         event.getGuild().addRoleToMember(event.getMember(), heroic).queue();
                     }
