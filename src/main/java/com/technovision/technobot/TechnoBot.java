@@ -5,7 +5,7 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import com.technovision.technobot.commands.CommandRegistry;
 import com.technovision.technobot.data.Configuration;
-import com.technovision.technobot.images.ImageProcessor;
+import com.technovision.technobot.util.ImageProcessor;
 import com.technovision.technobot.listeners.*;
 import com.technovision.technobot.listeners.managers.*;
 import com.technovision.technobot.logging.AutoModLogger;

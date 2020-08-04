@@ -3,7 +3,7 @@ package com.technovision.technobot.commands.levels;
 import com.google.common.collect.Sets;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
-import com.technovision.technobot.images.ImageProcessor;
+import com.technovision.technobot.util.ImageProcessor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
