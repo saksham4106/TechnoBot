@@ -5,8 +5,11 @@ import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.EconManager;
 import com.technovision.technobot.util.exceptions.InvalidBalanceException;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+
+import java.util.List;
 
 public class CommandPay extends Command {
 
@@ -21,8 +24,9 @@ public class CommandPay extends Command {
         if (args.length > 1) {
 
             User receiver;
-            if (args[0].startsWith("<@!") && args[0].endsWith(">")) {
-                receiver = event.getJDA().retrieveUserById(args[0].substring(3, args[0].length()-1)).complete();
+            List<Member> mentions = event.getMessage().getMentionedMembers();
+            if (mentions.size() > 0) {
+                receiver = mentions.get(0).getUser();
             } else {
                 embed.setColor(ERROR_EMBED_COLOR);
                 embed.setDescription(":x: Invalid `[user]` argument given\n\nUsage:\n`pay [user] <amount>`");

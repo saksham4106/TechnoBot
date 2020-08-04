@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.EconManager;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public class CommandBalance extends Command {
@@ -24,9 +26,10 @@ public class CommandBalance extends Command {
 
         User user = event.getAuthor();
         if (args.length > 0) {
-            if (args[0].startsWith("<@!") && args[0].endsWith(">")) {
-                user = event.getJDA().retrieveUserById(args[0].substring(3, args[0].length()-1)).complete();
-            } else {
+            List<Member> mentions = event.getMessage().getMentionedMembers();
+            if (mentions.size() > 0) {
+                user = mentions.get(0).getUser();
+            }  else {
                 return true;
             }
         }
