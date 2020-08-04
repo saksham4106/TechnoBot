@@ -29,7 +29,7 @@ public class CommandWithdraw extends Command {
                     return true;
                 } catch (InvalidBalanceException e) {
                     embed.setColor(ERROR_EMBED_COLOR);
-                    long bankBal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).getValue();
+                    long bankBal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).getRight();
                     String bankBalFormat = EconManager.FORMATTER.format(bankBal);
                     embed.setDescription(String.format(":x: You don't have that much money to withdraw! You currently have %s%s in the bank.", EconManager.SYMBOL, bankBalFormat));
                     event.getChannel().sendMessage(embed.build()).queue();

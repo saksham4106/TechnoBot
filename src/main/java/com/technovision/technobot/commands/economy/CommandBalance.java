@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.EconManager;
-import javafx.util.Pair;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -34,9 +34,9 @@ public class CommandBalance extends Command {
         Pair<Long, Long> profile = TechnoBot.getInstance().getEconomy().getBalance(user);
         EmbedBuilder embed = new EmbedBuilder()
                 .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
-                .addField("Cash:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.getKey()), true)
-                .addField("Bank:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.getValue()), true)
-                .addField("Net Worth:", EconManager.SYMBOL + EconManager.FORMATTER.format((profile.getKey() + profile.getValue())), true)
+                .addField("Cash:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.getLeft()), true)
+                .addField("Bank:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.getRight()), true)
+                .addField("Net Worth:", EconManager.SYMBOL + EconManager.FORMATTER.format((profile.getLeft() + profile.getRight())), true)
                 .setTimestamp(new Date().toInstant())
                 .setColor(EMBED_COLOR);
         event.getChannel().sendMessage(embed.build()).queue();

@@ -23,7 +23,6 @@
             <artifactId>mongo-java-driver</artifactId>
             <version>3.12.6</version>
         </dependency>
-
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
