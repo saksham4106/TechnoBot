@@ -6,11 +6,13 @@ import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.EconManager;
 import com.technovision.technobot.util.exceptions.InvalidBalanceException;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -32,8 +34,9 @@ public class CommandRob extends Command {
         }
 
         User victim;
-        if (args[0].startsWith("<@!") && args[0].endsWith(">")) {
-            victim = event.getJDA().retrieveUserById(args[0].substring(3, args[0].length()-1)).complete();
+        List<Member> mentions = event.getMessage().getMentionedMembers();
+        if (mentions.size() > 0) {
+            victim = mentions.get(0).getUser();
         } else {
             embed.setColor(ERROR_EMBED_COLOR);
             embed.setDescription(":x: Invalid `[user]` argument given\n\nUsage:\n`rob [user]`");

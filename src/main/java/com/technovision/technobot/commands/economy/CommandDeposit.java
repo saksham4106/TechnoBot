@@ -33,7 +33,7 @@ public class CommandDeposit extends Command {
                     return true;
                 } catch (InvalidBalanceException e) {
                     embed.setColor(ERROR_EMBED_COLOR);
-                    long bal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).key;
+                    long bal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).getLeft();
                     String balFormat = EconManager.FORMATTER.format(bal);
                     embed.setDescription(String.format(":x: You don't have that much money to deposit! You currently have %s%s on hand", EconManager.SYMBOL, balFormat));
                     event.getChannel().sendMessage(embed.build()).queue();

@@ -1,4 +1,4 @@
-package com.technovision.technobot.images;
+package com.technovision.technobot.util;
 
 import net.dv8tion.jda.api.entities.User;
 

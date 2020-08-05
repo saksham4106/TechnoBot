@@ -21,11 +21,19 @@ public class CommandSkipto extends Command {
         }
 
         try {
-            MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.skipTo(Math.min(Integer.parseInt(args[0]), MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()));
+            MusicManager.TrackScheduler scheduler = MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler;
+            int queueSize = scheduler.getQueueCopy().size();
+            if (Integer.parseInt(args[0]) >= queueSize || Integer.parseInt(args[0]) <= 0 ) {
+                event.getChannel().sendMessage("That is not a valid track number!").queue();
+                return true;
+            }
+            scheduler.skipTo(Math.min(Integer.parseInt(args[0]), queueSize));
         } catch(IndexOutOfBoundsException e) {
             event.getChannel().sendMessage("Please specify a position to skip to!").queue();
+            return true;
         } catch(NumberFormatException e) {
             event.getChannel().sendMessage("That is not a number!").queue();
+            return true;
         }
 
         new Timer().schedule(new TimerTask() {

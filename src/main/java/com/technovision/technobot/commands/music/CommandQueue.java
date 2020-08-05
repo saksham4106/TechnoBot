@@ -1,12 +1,15 @@
 package com.technovision.technobot.commands.music;
 
+import com.google.common.collect.Sets;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.listeners.managers.MusicManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Set;
 
 public class CommandQueue extends Command {
 
@@ -33,7 +36,9 @@ public class CommandQueue extends Command {
 
         int totalLength = 0;
         String description = "";
-        for (int i = 0; i < tracks.size(); i++) {
+        int finish = tracks.size();
+        if (finish > 11) { finish = 11; }
+        for (int i = 0; i < finish; i++) {
             AudioTrack track = tracks.get(i);
             long msPos = track.getInfo().length;
             long minPos = msPos/60000;
@@ -69,5 +74,10 @@ public class CommandQueue extends Command {
 
         event.getChannel().sendMessage(embed.build()).queue();
         return true;
+    }
+
+    @Override
+    public @NotNull Set<String> getAliases() {
+        return Sets.newHashSet("q");
     }
 }
