@@ -6,10 +6,7 @@ import com.technovision.technobot.commands.levels.CommandLeaderboard;
 import com.technovision.technobot.commands.levels.CommandRank;
 import com.technovision.technobot.commands.levels.CommandRankcard;
 import com.technovision.technobot.commands.music.*;
-import com.technovision.technobot.commands.other.CommandHelp;
-import com.technovision.technobot.commands.other.CommandPing;
-import com.technovision.technobot.commands.other.CommandSuggest;
-import com.technovision.technobot.commands.other.CommandYoutube;
+import com.technovision.technobot.commands.other.*;
 import com.technovision.technobot.commands.staff.*;
 
 /**
@@ -70,7 +67,8 @@ public class CommandRegistry {
                 new CommandHelp(),
                 new CommandSuggest(),
                 new CommandYoutube(),
-                new CommandPing()
+                new CommandPing(),
+                new CommandGoogle()
         );
     }
 }
