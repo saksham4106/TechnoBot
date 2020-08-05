@@ -11,6 +11,7 @@ import com.google.common.collect.Sets;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -91,10 +92,11 @@ public class CommandRankcard extends Command {
                     if (args.length > 1) {
                         try {
                             URL url = new URL(args[1]);
-                            ImageIO.read(url);
+                            BufferedImage test = ImageIO.read(url);
+                            test.getWidth();
                             updates.add(new Document("$set", new Document("background", args[1])));
                             event.getChannel().sendMessage("Updated your background!").queue();
-                        } catch (IOException e) {
+                        } catch (IOException | NullPointerException e) {
                             event.getChannel().sendMessage("Could not change to that background.").queue();
                         }
                     }
