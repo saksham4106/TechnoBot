@@ -17,20 +17,11 @@ public class CommandGoogle extends Command {
         embed.setColor(ERROR_EMBED_COLOR);
 
         if (args.length > 1) {
-            StringBuilder search = new StringBuilder();
-            for (String word : args) {
-                search.append(word).append("+");
-            }
-            embed.setDescription(String.format("https://lmgtfy.com/?q=%s", search.toString()));
+            String search = String.join("+", args);
+            embed.setDescription(String.format("https://lmgtfy.com/?q=%s", search));
             embed.setColor(EMBED_COLOR);
         }
-        else if (args.length == 1) {
-            embed.setDescription(String.format("https://lmgtfy.com/?q=%s", args[0]));
-            embed.setColor(EMBED_COLOR);
-        }
-        else {
-            embed.setDescription("Not enough arguments!");
-        }
+        else { embed.setDescription("Not enough arguments!"); }
         event.getChannel().sendMessage(embed.build()).queue();
         return true;
     }
