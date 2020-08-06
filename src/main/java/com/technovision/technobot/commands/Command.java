@@ -4,10 +4,7 @@ import com.google.api.client.util.Sets;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
-import javax.smartcardio.CommandAPDU;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 /**
  * Discord Executable Command
