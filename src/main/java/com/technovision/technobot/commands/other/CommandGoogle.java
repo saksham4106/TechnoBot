@@ -13,15 +13,23 @@ public class CommandGoogle extends Command {
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("<:google:315469742460633088> Google");
+        embed.setTitle(":mag: Google Search");
         embed.setColor(ERROR_EMBED_COLOR);
-        if(args.length == 1) {
-            embed.setDescription(String.format("https://lmgtfy.com/?q=%s&pp=1&iie=1", args[0].replace(" ", "%20")));
+
+        if (args.length > 1) {
+            StringBuilder search = new StringBuilder();
+            for (String word : args) {
+                search.append(word).append("+");
+            }
+            embed.setDescription(String.format("https://lmgtfy.com/?q=%s", search.toString()));
             embed.setColor(EMBED_COLOR);
-        } else if(args.length < 1) {
+        }
+        else if (args.length == 1) {
+            embed.setDescription(String.format("https://lmgtfy.com/?q=%s", args[0]));
+            embed.setColor(EMBED_COLOR);
+        }
+        else {
             embed.setDescription("Not enough arguments!");
-        } else {
-            embed.setDescription("Too many arguments!");
         }
         event.getChannel().sendMessage(embed.build()).queue();
         return true;
