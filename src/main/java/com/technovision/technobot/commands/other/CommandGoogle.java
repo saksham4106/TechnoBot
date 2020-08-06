@@ -15,10 +15,9 @@ public class CommandGoogle extends Command {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(":mag: Google Search");
         embed.setColor(ERROR_EMBED_COLOR);
-
         if (args.length > 1) {
             String search = String.join("+", args);
-            embed.setDescription(String.format("https://lmgtfy.com/?q=%s", search));
+            embed.setDescription("https://google.com/search?q=" + search);
             embed.setColor(EMBED_COLOR);
         }
         else { embed.setDescription("Not enough arguments!"); }
