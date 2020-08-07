@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-import java.awt.*;
 import java.util.Set;
 
 public class CommandInfractions extends Command {

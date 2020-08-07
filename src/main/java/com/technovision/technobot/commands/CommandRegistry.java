@@ -68,7 +68,8 @@ public class CommandRegistry {
                 new CommandSuggest(),
                 new CommandYoutube(),
                 new CommandPing(),
-                new CommandGoogle()
+                new CommandGoogle(),
+                new CommandReport()
         );
     }
 }

@@ -3,14 +3,16 @@ package com.technovision.technobot.listeners.managers;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.technovision.technobot.TechnoBot;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import javax.annotation.Nonnull;
-import net.dv8tion.jda.api.entities.Role;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
