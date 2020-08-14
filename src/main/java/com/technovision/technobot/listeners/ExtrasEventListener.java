@@ -4,25 +4,40 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ExtrasEventListener extends ListenerAdapter {
+    private static final HashMap<String, Long> COOLDOWN_MAP = new HashMap<>();
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-        if(event.getAuthor().isBot()) return;
+        if (event.getAuthor().isBot()) return;
+        String authorId = event.getAuthor().getId();
         String msg = event.getMessage().getContentRaw().toLowerCase();
-        if(msg.contains("why no work")) {
+        if (COOLDOWN_MAP.containsKey(authorId)) {
+            if (COOLDOWN_MAP.get(authorId) < 120000) { //2 minutes
+                return;
+            } else {
+                COOLDOWN_MAP.remove(authorId);
+            }
+        }
+        if (msg.contains("why no work")) {
             event.getChannel().sendMessage("Please explain your issue. 'why no work' doesn't help!").queue();
-        } else if(msg.contains("will this work")) {
+            COOLDOWN_MAP.put(authorId, System.currentTimeMillis());
+        } else if (msg.contains("will this work")) {
             event.getChannel().sendMessage("https://tryitands.ee/").queue();
-        } else if(msg.startsWith("i need help")&&event.getMessage().getContentRaw().split(" ").length<7) {
+            COOLDOWN_MAP.put(authorId, System.currentTimeMillis());
+        } else if (msg.startsWith("i need help") && event.getMessage().getContentRaw().split(" ").length < 7) {
             event.getChannel().sendMessage("https://dontasktoask.com/").queue();
+            COOLDOWN_MAP.put(authorId, System.currentTimeMillis());
         } else if (msg.contains("1.12")) {
             event.getChannel().sendMessage("Version 1.12 of Forge is no longer supported! Please update to a newer version (1.14+).").queue();
+            COOLDOWN_MAP.put(authorId, System.currentTimeMillis());
         } else if (event.getMessage().getMentionedUsers().contains(event.getJDA().getSelfUser())) {
             event.getChannel().sendMessage("Uhhh, do you need something?").queue();
-        } else if(msg.contains("@everyone")) {
+            COOLDOWN_MAP.put(authorId, System.currentTimeMillis());
+        } else if (msg.contains("@everyone")) {
             String reply = "";
             switch (ThreadLocalRandom.current().nextInt(4)) {
                 case 0:
@@ -40,6 +55,7 @@ public class ExtrasEventListener extends ListenerAdapter {
             }
             event.getChannel().sendMessage(reply).queue();
             event.getMessage().addReaction("\uD83D\uDE20").queue();
+            COOLDOWN_MAP.put(authorId, System.currentTimeMillis());
         }
     }
 }
