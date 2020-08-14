@@ -5,10 +5,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ExtrasEventListener extends ListenerAdapter {
-    private static final HashMap<String, Long> COOLDOWN_MAP = new HashMap<>();
+    private static final Map<String, Long> COOLDOWN_MAP = new HashMap<>();
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
