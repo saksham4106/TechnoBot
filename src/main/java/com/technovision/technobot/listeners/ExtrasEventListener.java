@@ -18,7 +18,7 @@ public class ExtrasEventListener extends ListenerAdapter {
         String msg = event.getMessage().getContentRaw().toLowerCase();
         boolean triggered = false;
         if (COOLDOWN_MAP.containsKey(authorId)) {
-            if (COOLDOWN_MAP.get(authorId) < 120000) { //2 minutes
+            if (COOLDOWN_MAP.get(authorId) < 120000+System.currentTimeMillis()) { //2 minutes
                 return;
             } else {
                 COOLDOWN_MAP.remove(authorId);
