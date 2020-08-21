@@ -73,7 +73,7 @@ public class TechnoBot {
         JDABuilder builder = JDABuilder.createDefault(getToken());
         builder.setStatus(OnlineStatus.ONLINE).setActivity(Activity.watching("TechnoVisionTV"));
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
-        builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES);
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
         jda = builder.build();
         suggestionManager = new SuggestionManager();
         youtubeManager = new YoutubeManager();

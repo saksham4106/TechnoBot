@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
@@ -20,9 +21,9 @@ import java.util.Scanner;
  */
 public class GuildMemberEvents extends ListenerAdapter {
 
+    public static String JOIN_MESSAGE;
     public static long JOIN_CHANNEL = 739158625800683591L;
     public static long JOIN_ROLE = 599348242538430494L;
-    public static String JOIN_MESSAGE;
 
     @Override
     public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
@@ -33,11 +34,16 @@ public class GuildMemberEvents extends ListenerAdapter {
                 .setDescription("**" + user.getAsTag() + "** has joined the server!" )
                 .setColor(EconManager.SUCCESS_COLOR);
         channel.sendMessage(embed.build()).queue();
+    }
 
-        // Private Message & Role Assignment
-        if (user.isBot()) { return; }
-        event.getGuild().addRoleToMember(event.getMember().getId(), event.getGuild().getRoleById(JOIN_ROLE)).queue();
-        user.openPrivateChannel().queue((dm) -> dm.sendMessage(JOIN_MESSAGE).queue());
+    @Override
+    public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
+        if (event.getChannel().getName().equalsIgnoreCase("verify")) {
+            User user = event.getUser();
+            if (user.isBot()) { return; }
+            event.getGuild().addRoleToMember(event.getMember().getId(), event.getGuild().getRoleById(JOIN_ROLE)).queue();
+            user.openPrivateChannel().queue((dm) -> dm.sendMessage(JOIN_MESSAGE).queue());
+        }
     }
 
     @Override
