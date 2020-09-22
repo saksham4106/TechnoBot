@@ -30,6 +30,25 @@ public class ExtrasEventListener extends ListenerAdapter {
         } else if (msg.contains("will this work")) {
             event.getChannel().sendMessage("https://tryitands.ee/").queue();
             triggered = true;
+	if (msg.contains("upload")) {
+            String reply = "";
+            switch (ThreadLocalRandom.current().nextInt(4)) {
+                case 0:
+                    reply = "<@!" + event.getMember().getUser().getId() + ">, 2023";
+                    break;
+                case 1:
+                    reply = "72 months from now" + "<@!" + event.getMember().getUser().getId() + ">.";
+                    break;
+                case 2:
+                    reply = "sometime in the next 45 years.";
+                    break;
+                case 3:
+                    reply = "2029 " + "<@!" + event.getMember().getUser().getId() + ">?";
+                    break;
+            }
+            event.getChannel().sendMessage(reply).queue();
+            event.getMessage().addReaction("\uD83D\uDE20").queue();
+            triggered = true;
         } else if (msg.startsWith("i need help") && event.getMessage().getContentRaw().split(" ").length < 7) {
             event.getChannel().sendMessage("https://dontasktoask.com/").queue();
             triggered = true;
