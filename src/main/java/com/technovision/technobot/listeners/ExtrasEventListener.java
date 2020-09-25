@@ -53,7 +53,7 @@ public class ExtrasEventListener extends ListenerAdapter {
             event.getChannel().sendMessage("https://dontasktoask.com/").queue();
             triggered = true;
         } else if (msg.contains("1.12")) {
-            event.getChannel().sendMessage("Version 1.12 of Forge is no longer supported! Please update to a newer version (1.14+).").queue();
+            event.getChannel().sendMessage("Version 1.12 of Forge is no longer supported! Please update to a newer version (1.15+).").queue();
             triggered = true;
         } else if (event.getMessage().getMentionedUsers().contains(event.getJDA().getSelfUser())) {
             event.getChannel().sendMessage("Uhhh, do you need something?").queue();
