@@ -48,7 +48,9 @@ public class MusicManager extends ListenerAdapter {
             public void run() {
                 handlers.forEach((gId,handler) -> {
                     if(handler.trackScheduler.getQueueCopy().size()==0) return;
-                    djMessages.forEach((user, message) -> {message.editMessage(assembleEmbed(message.getEmbeds().get(0),handlers.get(gId).trackScheduler).build()).queue();});
+                    try {
+                        djMessages.forEach((user, message) -> {if(message==null) {djMessages.remove(user);return;} message.editMessage(assembleEmbed(message.getEmbeds().get(0),handlers.get(gId).trackScheduler).build()).queue();});
+                    catch (ConcurrentModificationException ignored) {}
                 });
 
             }
