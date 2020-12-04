@@ -46,16 +46,15 @@ public class MusicManager extends ListenerAdapter {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                handlers.forEach((gId,handler) -> {
+                handlers.forEach((gId, handler) -> {
                     if(handler.trackScheduler.getQueueCopy().size()==0) return;
                     try {
                         djMessages.forEach((user, message) -> {if(message==null) {djMessages.remove(user);return;} message.editMessage(assembleEmbed(message.getEmbeds().get(0),handlers.get(gId).trackScheduler).build()).queue();});
-                    catch (ConcurrentModificationException ignored) {}
+                    } catch (ConcurrentModificationException ignored) {};
                 });
-
             }
-        },1000L,5000L);
-    }
+        }, 1000L, 5000L);
+    };
 
     @Override
     public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {

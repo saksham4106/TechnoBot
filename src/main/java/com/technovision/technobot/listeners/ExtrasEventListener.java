@@ -30,6 +30,7 @@ public class ExtrasEventListener extends ListenerAdapter {
         } else if (msg.contains("will this work")) {
             event.getChannel().sendMessage("https://tryitands.ee/").queue();
             triggered = true;
+        }
 	if (msg.contains("upload")) {
             String reply = "";
             switch (ThreadLocalRandom.current().nextInt(4)) {
