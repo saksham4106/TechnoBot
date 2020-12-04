@@ -34,16 +34,11 @@ public class GuildMemberEvents extends ListenerAdapter {
                 .setDescription("**" + user.getAsTag() + "** has joined the server!" )
                 .setColor(EconManager.SUCCESS_COLOR);
         channel.sendMessage(embed.build()).queue();
-    }
 
-    @Override
-    public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
-        if (event.getChannel().getName().equalsIgnoreCase("verify")) {
-            User user = event.getUser();
-            if (user.isBot()) { return; }
-            event.getGuild().addRoleToMember(event.getMember().getId(), event.getGuild().getRoleById(JOIN_ROLE)).queue();
-            user.openPrivateChannel().queue((dm) -> dm.sendMessage(JOIN_MESSAGE).queue());
-        }
+        //Give Member Role
+        if (user.isBot()) { return; }
+        event.getGuild().addRoleToMember(event.getMember().getId(), event.getGuild().getRoleById(JOIN_ROLE)).queue();
+        user.openPrivateChannel().queue((dm) -> dm.sendMessage(JOIN_MESSAGE).queue());
     }
 
     @Override
