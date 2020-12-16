@@ -15,10 +15,11 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class CommandBan extends Command {
+    private final TechnoBot bot;
 
-
-    public CommandBan() {
+    public CommandBan(final TechnoBot bot) {
         super("ban", "Bans the specified user for specified reason", "{prefix}ban <user> [reason]", Command.Category.STAFF);
+        this.bot = bot;
     }
 
     @Override
@@ -86,7 +87,7 @@ public class CommandBan extends Command {
                 .setAuthor(target.getUser().getAsTag() + " has been banned", null, target.getUser().getEffectiveAvatarUrl())
                 .setDescription("**Reason:** " + reason.replaceAll("`","")).build()).queue();
 
-        TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.BAN, reason);
+        bot.getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.BAN, reason);
 
         return true;
     }

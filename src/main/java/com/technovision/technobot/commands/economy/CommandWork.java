@@ -10,24 +10,28 @@ import org.json.JSONObject;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandWork extends Command {
+    private final TechnoBot bot;
 
-    public CommandWork() { super("work", "Work for some cash", "{prefix}work", Command.Category.ECONOMY); }
+    public CommandWork(final TechnoBot bot) {
+        super("work", "Work for some cash", "{prefix}work", Command.Category.ECONOMY);
+        this.bot = bot;
+    }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
         EmbedBuilder embed = new EmbedBuilder();
-        JSONObject profile = TechnoBot.getInstance().getEconomy().getProfile(event.getAuthor());
+        JSONObject profile = bot.getEconomy().getProfile(event.getAuthor());
         long timestamp = profile.getLong("work-timestamp");
         int cooldown = 14400000;
         if (System.currentTimeMillis() >= timestamp + cooldown) {
             int amount = ThreadLocalRandom.current().nextInt(230) + 20;
-            TechnoBot.getInstance().getEconomy().addMoney(event.getAuthor(), amount, EconManager.Activity.WORK);
+            bot.getEconomy().addMoney(event.getAuthor(), amount, EconManager.Activity.WORK);
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getEffectiveAvatarUrl());
             embed.setDescription("You work for the day and receive " + EconManager.SYMBOL +  amount);
             embed.setColor(EconManager.SUCCESS_COLOR);
         } else {
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
-            embed.setDescription(":stopwatch: You cannot work for " + TechnoBot.getInstance().getEconomy().getCooldown(timestamp, cooldown) + ".");
+            embed.setDescription(":stopwatch: You cannot work for " + bot.getEconomy().getCooldown(timestamp, cooldown) + ".");
             embed.setColor(EMBED_COLOR);
         }
         event.getChannel().sendMessage(embed.build()).queue();

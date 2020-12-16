@@ -18,9 +18,11 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandRob extends Command {
+    private final TechnoBot bot;
 
-    public CommandRob() {
+    public CommandRob(final TechnoBot bot) {
         super("rob", "Steal cash from other members", "{prefix}rob [user]", Category.ECONOMY);
+        this.bot = bot;
     }
 
     @Override
@@ -44,8 +46,8 @@ public class CommandRob extends Command {
             return true;
         }
 
-        JSONObject victimProfile = TechnoBot.getInstance().getEconomy().getProfile(victim);
-        JSONObject robberProfile = TechnoBot.getInstance().getEconomy().getProfile(event.getAuthor());
+        JSONObject victimProfile = bot.getEconomy().getProfile(victim);
+        JSONObject robberProfile = bot.getEconomy().getProfile(event.getAuthor());
         long timestamp = robberProfile.getLong("rob-timestamp");
         int cooldown = 86400000;
         embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getEffectiveAvatarUrl());
@@ -54,7 +56,7 @@ public class CommandRob extends Command {
             Random rand = ThreadLocalRandom.current();
             if (rand.nextInt(10) > 5) { //40% Success Rate
                 try {
-                    long amount = TechnoBot.getInstance().getEconomy().rob(robberProfile, victimProfile);
+                    long amount = bot.getEconomy().rob(robberProfile, victimProfile);
                     embed.setColor(EconManager.SUCCESS_COLOR);
                     embed.setDescription("You quickly swipe " + EconManager.SYMBOL + amount + " from " + args[0]);
                 } catch (InvalidBalanceException e) {
@@ -62,11 +64,11 @@ public class CommandRob extends Command {
                 }
             } else {
                 int amount = rand.nextInt(400) + 1;
-                TechnoBot.getInstance().getEconomy().removeMoney(event.getAuthor(), amount, EconManager.Activity.NULL);
+                bot.getEconomy().removeMoney(event.getAuthor(), amount, EconManager.Activity.NULL);
                 embed.setDescription("You were caught and fined " + EconManager.SYMBOL + amount + " for theft!");
             }
         } else {
-            embed.setDescription(":stopwatch: You cannot attempt to rob another member for " + TechnoBot.getInstance().getEconomy().getCooldown(timestamp, cooldown) + ".");
+            embed.setDescription(":stopwatch: You cannot attempt to rob another member for " + bot.getEconomy().getCooldown(timestamp, cooldown) + ".");
         }
         robberProfile.put("rob-timestamp", System.currentTimeMillis());
         event.getChannel().sendMessage(embed.build()).queue();

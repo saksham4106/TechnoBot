@@ -16,10 +16,12 @@ public class SuggestionManager {
 
     public static final String CHANNEL = "SUGGESTIONS";
     public static final String LOG = "SUGGESTION-LOG";
+    private final TechnoBot bot;
 
     private final Configuration suggestions;
 
-    public SuggestionManager() {
+    public SuggestionManager(final TechnoBot bot) {
+        this.bot = bot;
         suggestions = new Configuration("data/","suggestions.json") {
             @Override
             public void load() {
@@ -55,7 +57,7 @@ public class SuggestionManager {
                 reason += args[i] + " ";
             }
         }
-        String id = TechnoBot.getInstance().getSuggestionManager().getSuggestion(num);
+        String id = bot.getSuggestionManager().getSuggestion(num);
         Message msg = channel.retrieveMessageById(id).complete();
         MessageEmbed embed = msg.getEmbeds().get(0);
         EmbedBuilder editedEmbed = new EmbedBuilder();
@@ -84,7 +86,7 @@ public class SuggestionManager {
                 }
                 String staffName = event.getAuthor().getAsTag();
                 TextChannel channel = event.getGuild().getTextChannelsByName(SuggestionManager.CHANNEL, true).get(0);
-                TechnoBot.getInstance().getSuggestionManager().editEmbed(channel, staffName, args, response);
+                bot.getSuggestionManager().editEmbed(channel, staffName, args, response);
 
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(Command.EMBED_COLOR)

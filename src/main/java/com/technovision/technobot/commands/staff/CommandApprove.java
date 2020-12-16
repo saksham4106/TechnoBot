@@ -6,14 +6,16 @@ import com.technovision.technobot.util.enums.SuggestionResponse;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class CommandApprove extends Command {
+    private final TechnoBot bot;
 
-    public CommandApprove() {
+    public CommandApprove(final TechnoBot bot) {
         super("approve", "Approves a suggestion", "{prefix}approve <id> [reason]", Command.Category.STAFF);
+        this.bot = bot;
     }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        TechnoBot.getInstance().getSuggestionManager().respond(event, args, SuggestionResponse.APPROVE);
+        bot.getSuggestionManager().respond(event, args, SuggestionResponse.APPROVE);
         return true;
     }
 }

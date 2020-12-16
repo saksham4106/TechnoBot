@@ -5,9 +5,11 @@ import com.technovision.technobot.listeners.managers.MusicManager;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class CommandJoin extends Command {
+    private final MusicManager musicManager;
 
-    public CommandJoin() {
+    public CommandJoin(final MusicManager musicManager) {
         super("join", "Joins your current voice channel", "{prefix}join", Command.Category.MUSIC);
+        this.musicManager = musicManager;
     }
 
     @Override
@@ -16,7 +18,7 @@ public class CommandJoin extends Command {
             event.getChannel().sendMessage("You are not in a voice channel!").queue();
             return true;
         }
-        MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
+        musicManager.joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
         event.getChannel().sendMessage("Joined `"+event.getMember().getVoiceState().getChannel().getName()+"`").queue();
         return true;
     }

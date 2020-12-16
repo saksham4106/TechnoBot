@@ -21,9 +21,11 @@ import java.net.URL;
 import java.util.Set;
 
 public class CommandRank extends Command {
+    private final TechnoBot bot;
 
-    public CommandRank() {
+    public CommandRank(final TechnoBot bot) {
         super("rank", "Displays your levels and server rank", "{prefix}rank", Command.Category.LEVELS);
+        this.bot = bot;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class CommandRank extends Command {
             }
         }
 
-        Document profile = TechnoBot.getInstance().getLevelManager().getProfile(id);
+        Document profile = bot.getLevelManager().getProfile(id);
         if (profile == null) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setDescription(":x: You do not have a rank yet! Send some messages first.")
@@ -49,7 +51,7 @@ public class CommandRank extends Command {
             return true;
         }
 
-        float percent = ((float) (profile.getInteger("xp") * 100) / (float) (TechnoBot.getInstance().getLevelManager().getMaxXP(profile.getInteger("level"))));
+        float percent = ((float) (profile.getInteger("xp") * 100) / (float) (bot.getLevelManager().getMaxXP(profile.getInteger("level"))));
         String percentStr = String.valueOf((int) percent);
         try {
             //Get Graphics
@@ -95,7 +97,7 @@ public class CommandRank extends Command {
             g.drawString(user.getName(), 300, 110);
             g.setFont(new Font("Arial", Font.PLAIN, 35));
 
-            int rank = TechnoBot.getInstance().getLevelManager().getRank(id);
+            int rank = bot.getLevelManager().getRank(id);
             int xModifier = 0;
             if (rank >= 10) { xModifier += 15; }
             if (rank >= 100) { xModifier += 15; }
@@ -107,7 +109,7 @@ public class CommandRank extends Command {
             g.drawString("Level " + profile.getInteger("level"), 300, 180);
             g.setFont(new Font("Arial", Font.PLAIN, 25));
             String xp = format(profile.getInteger("xp"));
-            String maxXP = format(TechnoBot.getInstance().getLevelManager().getMaxXP(profile.getInteger("level")));
+            String maxXP = format(bot.getLevelManager().getMaxXP(profile.getInteger("level")));
             xModifier = 0;
             if (xp.length() > 2) { xModifier += 10; }
             if (xp.length() > 3 || maxXP.length() > 3) { xModifier += 10; }

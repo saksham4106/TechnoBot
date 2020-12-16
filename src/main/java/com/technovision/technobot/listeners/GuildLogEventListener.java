@@ -25,7 +25,14 @@ public class GuildLogEventListener extends ListenerAdapter {
     public static final int RED = 0xdd5f53;
     public static final int GREEN = 0x53ddac;
 
-    private final WebhookClient webhook = new WebhookClientBuilder(TechnoBot.getInstance().getBotConfig().getJson().getString("guildlogs-webhook")).build();
+    private final WebhookClient webhook;
+    
+    private final TechnoBot bot;
+    
+    public GuildLogEventListener(final TechnoBot bot) {
+        this.bot = bot;
+        webhook = new WebhookClientBuilder(bot.getBotConfig().getJson().getString("guildlogs-webhook")).build();
+    }
 
     @Override
     public void onRoleCreate(@Nonnull RoleCreateEvent event) {

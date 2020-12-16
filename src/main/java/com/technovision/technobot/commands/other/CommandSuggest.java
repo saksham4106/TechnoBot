@@ -7,8 +7,11 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class CommandSuggest extends Command {
-    public CommandSuggest() {
+    private final TechnoBot bot;
+
+    public CommandSuggest(final TechnoBot bot) {
         super("suggest", "Suggest a feature or idea related to the server", "{prefix}suggest [content]", Command.Category.OTHER);
+        this.bot = bot;
     }
 
     @Override
@@ -20,14 +23,14 @@ public class CommandSuggest extends Command {
                 msg.append(arg).append(" ");
             }
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
-            embed.setTitle("Suggestion #" + (TechnoBot.getInstance().getSuggestionManager().getAmount() + 1));
+            embed.setTitle("Suggestion #" + (bot.getSuggestionManager().getAmount() + 1));
             embed.setDescription(msg.toString());
             embed.setColor(EMBED_COLOR);
             TextChannel channel = event.getGuild().getTextChannelsByName("SUGGESTIONS", true).get(0);
             channel.sendMessage(embed.build()).queue(message -> {
                 message.addReaction("\u2B06\uFE0F").queue();
                 message.addReaction("\u2B07\uFE0F").queue();
-                TechnoBot.getInstance().getSuggestionManager().addSuggestion(message.getId());
+                bot.getSuggestionManager().addSuggestion(message.getId());
             });
             EmbedBuilder response = new EmbedBuilder()
                     .setColor(EMBED_COLOR)

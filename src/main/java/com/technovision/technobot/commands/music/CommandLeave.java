@@ -5,9 +5,11 @@ import com.technovision.technobot.listeners.managers.MusicManager;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class CommandLeave extends Command {
+    private final MusicManager musicManager;
 
-    public CommandLeave() {
+    public CommandLeave(final MusicManager musicManager) {
         super("leave", "Leaves the voice channel", "{prefix}leave", Command.Category.MUSIC);
+        this.musicManager = musicManager;
     }
 
     @Override
@@ -16,7 +18,7 @@ public class CommandLeave extends Command {
             event.getChannel().sendMessage("You are not in a voice channel!").queue();
             return true;
         }
-        MusicManager.getInstance().leaveVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel());
+        musicManager.leaveVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel());
         event.getChannel().sendMessage("Left voice channel!").queue();
         return true;
     }

@@ -12,9 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 public class CommandDeposit extends Command {
+    private final TechnoBot bot;
 
-    public CommandDeposit() {
+    public CommandDeposit(final TechnoBot bot) {
         super("deposit", "Deposit cash into the bank", "{prefix}deposit <amount>", Category.ECONOMY);
+        this.bot = bot;
     }
 
     @Override
@@ -25,7 +27,7 @@ public class CommandDeposit extends Command {
             try {
                 long amt = Long.parseLong(args[0]);
                 try {
-                    TechnoBot.getInstance().getEconomy().deposit(event.getAuthor(), amt);
+                    bot.getEconomy().deposit(event.getAuthor(), amt);
                     embed.setColor(EconManager.SUCCESS_COLOR);
                     String money = EconManager.FORMATTER.format(amt);
                     embed.setDescription(":white_check_mark: Deposited " + EconManager.SYMBOL + money + " to your bank!");
@@ -33,7 +35,7 @@ public class CommandDeposit extends Command {
                     return true;
                 } catch (InvalidBalanceException e) {
                     embed.setColor(ERROR_EMBED_COLOR);
-                    long bal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).getLeft();
+                    long bal = bot.getEconomy().getBalance(event.getAuthor()).getLeft();
                     String balFormat = EconManager.FORMATTER.format(bal);
                     embed.setDescription(String.format(":x: You don't have that much money to deposit! You currently have %s%s on hand", EconManager.SYMBOL, balFormat));
                     event.getChannel().sendMessage(embed.build()).queue();

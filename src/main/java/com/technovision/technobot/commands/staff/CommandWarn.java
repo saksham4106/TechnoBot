@@ -17,8 +17,11 @@ import java.util.Set;
 import java.util.TimeZone;
 
 public class CommandWarn extends Command {
-    public CommandWarn() {
+    private final TechnoBot bot;
+    
+    public CommandWarn(final TechnoBot bot) {
         super("warn", "Warns specified user for specified reason", "warn <user> [reason]", Category.STAFF);
+        this.bot = bot;
     }
 
     @Override
@@ -85,7 +88,7 @@ public class CommandWarn extends Command {
                 .setAuthor(target.getUser().getAsTag() + " has been warned", null, target.getUser().getEffectiveAvatarUrl())
                 .setDescription("**Reason:** " + reason.replaceAll("`","")).build()).queue();
 
-        TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.WARN, reason);
+        bot.getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.WARN, reason);
         return true;
     }
 

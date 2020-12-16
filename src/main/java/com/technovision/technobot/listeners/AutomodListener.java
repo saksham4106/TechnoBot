@@ -11,7 +11,13 @@ import javax.annotation.Nonnull;
 public class AutomodListener extends ListenerAdapter {
 
     public static final String ADVERTISE_CHANNEL = "advertise";
-    public static final AutoModLogger LOGGER = TechnoBot.getInstance().getAutoModLogger();
+    private final AutoModLogger LOGGER;
+    private final TechnoBot bot;
+
+    public AutomodListener(final TechnoBot bot) {
+        this.bot = bot;
+        LOGGER = bot.getAutoModLogger();
+    }
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {

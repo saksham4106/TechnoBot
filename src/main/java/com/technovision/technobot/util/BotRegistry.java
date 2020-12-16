@@ -6,6 +6,7 @@ import com.technovision.technobot.logging.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,5 +54,13 @@ public class BotRegistry {
 
     public List<Command> getCommands() {
         return new ArrayList<Command>(commands);
+    }
+
+    @Nullable
+    public ListenerAdapter getListener(Class<? extends ListenerAdapter> clazz) {
+        for(ListenerAdapter adapter : eventListeners) {
+            if(clazz.getName().equals(adapter.getClass().getName())) return adapter;
+        }
+        return null;
     }
 }

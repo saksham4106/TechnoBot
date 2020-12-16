@@ -14,9 +14,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class CommandClear extends Command {
+    private final TechnoBot bot;
 
-    public CommandClear() {
+    public CommandClear(final TechnoBot bot) {
         super("clear", "purges a channel of messages", "{prefix}clear <amount>", Category.STAFF);
+        this.bot = bot;
     }
 
     @Override
@@ -51,7 +53,7 @@ public class CommandClear extends Command {
                     Message m = channel.sendMessage(String.format(":ballot_box_with_check: I have deleted `%d messages`!", amt)).complete();
                     Thread.sleep(3000);
                     m.delete().queue();
-                    TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), event.getAuthor(), event.getAuthor(), AutoModLogger.Infraction.CLEAR);
+                    bot.getAutoModLogger().log(event.getGuild(), event.getTextChannel(), event.getAuthor(), event.getAuthor(), AutoModLogger.Infraction.CLEAR);
                 } catch (InterruptedException ignored) { }
             }).start();
         } catch (NumberFormatException e) {

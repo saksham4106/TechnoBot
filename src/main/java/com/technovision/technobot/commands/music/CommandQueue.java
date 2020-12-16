@@ -12,21 +12,23 @@ import java.util.List;
 import java.util.Set;
 
 public class CommandQueue extends Command {
+    private final MusicManager musicManager;
 
-    public CommandQueue() {
+    public CommandQueue(final MusicManager musicManager) {
         super("queue", "Displays a queue of songs", "{prefix}queue", Command.Category.MUSIC);
+        this.musicManager = musicManager;
     }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
         EmbedBuilder embed = new EmbedBuilder();
-        if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null) {
+        if(musicManager.handlers.get(event.getGuild().getIdLong())==null) {
             embed.setDescription(":x: There's no song in the queue for me to play. **!play** a song first.");
             embed.setColor(ERROR_EMBED_COLOR);
             event.getChannel().sendMessage(embed.build()).queue();
             return true;
         }
-        List<AudioTrack> tracks = MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy();
+        List<AudioTrack> tracks = musicManager.handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy();
         if(tracks.size()==0||tracks.get(0)==null) {
             embed.setDescription(":x: There's no song in the queue for me to play. **!play** a song first.");
             embed.setColor(ERROR_EMBED_COLOR);

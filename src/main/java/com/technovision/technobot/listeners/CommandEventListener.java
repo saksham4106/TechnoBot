@@ -15,6 +15,11 @@ import javax.annotation.Nonnull;
  * @author Sparky
  */
 public class CommandEventListener extends ListenerAdapter {
+    private final TechnoBot bot;
+    
+    public CommandEventListener(final TechnoBot bot) {
+        this.bot = bot;
+    }
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
@@ -27,18 +32,18 @@ public class CommandEventListener extends ListenerAdapter {
                 if (i > 0) args[i - 1] = mArray[i];
             }
 
-            BotRegistry registry = TechnoBot.getInstance().getRegistry();
+            BotRegistry registry = bot.getRegistry();
 
             for (Command cmd : registry.getCommands()) {
                 if ((Command.PREFIX + cmd.name).equalsIgnoreCase(command)) {
                     if (!cmd.execute(event, args)) {
-                        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, "Command '"+cmd.name+"' failed to execute!");
+                        bot.getLogger().log(Logger.LogLevel.SEVERE, "Command '"+cmd.name+"' failed to execute!");
                     }
                     return;
                 }
                 if(cmd.getAliases().contains(command.substring(1).toLowerCase())) {
                     if(!cmd.execute(event,args)) {
-                        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, "Command '"+cmd.name+"' failed to execute!");
+                        bot.getLogger().log(Logger.LogLevel.SEVERE, "Command '"+cmd.name+"' failed to execute!");
                     }
                     return;
                 }

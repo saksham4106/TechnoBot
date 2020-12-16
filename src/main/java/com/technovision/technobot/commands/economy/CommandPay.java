@@ -12,9 +12,11 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.List;
 
 public class CommandPay extends Command {
+    private final TechnoBot bot;
 
-    public CommandPay() {
+    public CommandPay(final TechnoBot bot) {
         super("pay", "Send cash to a friend", "{prefix}pay [user] <amount>", Category.ECONOMY);
+        this.bot = bot;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class CommandPay extends Command {
             try {
                 long amt = Long.parseLong(args[1]);
                 try {
-                    TechnoBot.getInstance().getEconomy().pay(event.getAuthor(), receiver, amt);
+                    bot.getEconomy().pay(event.getAuthor(), receiver, amt);
                     embed.setColor(EconManager.SUCCESS_COLOR);
                     String money = EconManager.FORMATTER.format(amt);
                     embed.setDescription(":white_check_mark: <@!" + receiver.getId() + "> has received your " + EconManager.SYMBOL + money);
@@ -44,7 +46,7 @@ public class CommandPay extends Command {
                     return true;
                 } catch (InvalidBalanceException e) {
                     embed.setColor(ERROR_EMBED_COLOR);
-                    long bal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).getLeft();
+                    long bal = bot.getEconomy().getBalance(event.getAuthor()).getLeft();
                     String balFormat = EconManager.FORMATTER.format(bal);
                     embed.setDescription(String.format(":x: You don't have that much money to give! You currently have %s%s on hand", EconManager.SYMBOL, balFormat));
                     event.getChannel().sendMessage(embed.build()).queue();

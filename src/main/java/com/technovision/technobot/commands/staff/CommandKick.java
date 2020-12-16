@@ -15,10 +15,11 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class CommandKick extends Command {
+    private final TechnoBot bot;
 
-
-    public CommandKick() {
+    public CommandKick(final TechnoBot bot) {
         super("kick", "Kicks the specified user for specified reason", "{prefix}kick <user> [reason]", Command.Category.STAFF);
+        this.bot = bot;
     }
 
     @Override
@@ -87,7 +88,7 @@ public class CommandKick extends Command {
                 .setAuthor(target.getUser().getAsTag() + " has been kicked", null, target.getUser().getEffectiveAvatarUrl())
                 .setDescription("**Reason:** " + reason.replaceAll("`","")).build()).queue();
 
-        TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.KICK, reason);
+        bot.getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.KICK, reason);
 
         return true;
     }

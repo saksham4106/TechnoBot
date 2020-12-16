@@ -33,9 +33,11 @@ public class CommandMute extends Command {
 
     private final String MUTE_ROLE_NAME = "Muted";
     private Role mute_role;
+    private final TechnoBot bot;
 
-    public CommandMute() {
+    public CommandMute(final TechnoBot bot) {
         super("mute", "Mutes the specified user", "mute <user>", Command.Category.STAFF);
+        this.bot = bot;
 
         new Timer().schedule(new TimerTask() {
             @Override
@@ -49,13 +51,13 @@ public class CommandMute extends Command {
 
                     if(System.currentTimeMillis() >= userJSON.getLong("timeEnded")) {
                         toRemove.add(i);
-                        mute_role = TechnoBot.getInstance().getJDA().getGuildById(userJSON.getLong("guild")).getRolesByName(MUTE_ROLE_NAME, true).get(0);
+                        mute_role = bot.getJDA().getGuildById(userJSON.getLong("guild")).getRolesByName(MUTE_ROLE_NAME, true).get(0);
                         if(mute_role==null) {
-                            TechnoBot.getInstance().getLogger().log(Logger.LogLevel.WARNING, "Mute role does not exist!");
+                            bot.getLogger().log(Logger.LogLevel.WARNING, "Mute role does not exist!");
                             return;
                         }
 
-                        Guild guild = TechnoBot.getInstance().getJDA().getGuildById(userJSON.getLong("guild"));
+                        Guild guild = bot.getJDA().getGuildById(userJSON.getLong("guild"));
                         if(guild==null) {
                             throw new RuntimeException("Could not find guild by ID "+userJSON.getLong("guild"), new NullPointerException("Local field 'guild' is null!"));
                         }
@@ -189,7 +191,7 @@ public class CommandMute extends Command {
                 .setAuthor(target.getUser().getAsTag() + " has been muted", null, target.getUser().getEffectiveAvatarUrl())
                 .setDescription("**Reason:** " + reason.replaceAll("`","")).build()).queue();
 
-        TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.MUTE, reason);
+        bot.getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.MUTE, reason);
     }
 
     @Override

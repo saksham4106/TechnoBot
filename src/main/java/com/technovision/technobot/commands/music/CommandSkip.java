@@ -9,9 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 public class CommandSkip extends Command {
+    private final MusicManager musicManager;
 
-    public CommandSkip() {
+    public CommandSkip(final MusicManager musicManager) {
         super("skip", "Skips the currently playing song", "{prefix}skip", Command.Category.MUSIC);
+        this.musicManager = musicManager;
     }
 
     @Override
@@ -20,17 +22,17 @@ public class CommandSkip extends Command {
             event.getChannel().sendMessage("You are not in a voice channel!").queue();
             return true;
         }
-        if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null) {
+        if(musicManager.handlers.get(event.getGuild().getIdLong())==null) {
             event.getChannel().sendMessage("Please use `!join` first!").queue();
             return true;
         }
-        if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+        if(musicManager.handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
             event.getChannel().sendMessage("There are no songs playing.").queue();
             return true;
         }
         event.getChannel().sendMessage("Skipping...").queue();
 
-        MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.skip();
+        musicManager.handlers.get(event.getGuild().getIdLong()).trackScheduler.skip();
         return true;
     }
 

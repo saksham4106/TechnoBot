@@ -16,9 +16,11 @@ import java.util.List;
 import java.util.Set;
 
 public class CommandBalance extends Command {
+    private final TechnoBot bot;
 
-    public CommandBalance() {
+    public CommandBalance(final TechnoBot bot) {
         super("balance", "View your account balance", "{prefix}balance", Command.Category.ECONOMY);
+        this.bot = bot;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class CommandBalance extends Command {
             }
         }
 
-        Pair<Long, Long> profile = TechnoBot.getInstance().getEconomy().getBalance(user);
+        Pair<Long, Long> profile = bot.getEconomy().getBalance(user);
         EmbedBuilder embed = new EmbedBuilder()
                 .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
                 .addField("Cash:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.getLeft()), true)

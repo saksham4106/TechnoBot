@@ -13,9 +13,11 @@ import java.net.URL;
 import java.util.Set;
 
 public class CommandPlay extends Command {
+    private final TechnoBot bot;
 
-    public CommandPlay() {
+    public CommandPlay(final TechnoBot bot) {
         super("play", "Plays music in voice channel", "{prefix}play [song|url]", Command.Category.MUSIC);
+        this.bot = bot;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class CommandPlay extends Command {
             event.getChannel().sendMessage(embed.build()).queue();
             return true;
         }
-        MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
+        bot.getMusicManager().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
         try {
             String url;
             try {
@@ -37,11 +39,11 @@ public class CommandPlay extends Command {
                 for (String word : args) {
                     keywords.append(word).append(" ");
                 }
-                url = TechnoBot.getInstance().getYoutubeManager().search(keywords.toString());
+                url = bot.getYoutubeManager().search(keywords.toString());
             }
             if (url != null) {
-                MusicManager.getInstance().addTrack(event.getAuthor(), url, event.getChannel(), event.getGuild());
-                MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.setPaused(false);
+                bot.getMusicManager().addTrack(event.getAuthor(), url, event.getChannel(), event.getGuild());
+                bot.getMusicManager().handlers.get(event.getGuild().getIdLong()).trackScheduler.setPaused(false);
             } else {
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.setColor(ERROR_EMBED_COLOR);

@@ -19,16 +19,18 @@ import java.util.List;
 import java.util.Set;
 
 public class CommandRankcard extends Command {
+    private final TechnoBot bot;
 
-    public CommandRankcard() {
+    public CommandRankcard(final TechnoBot bot) {
         super("rankcard", "Customize your rank card", "{prefix}rankcard", Command.Category.LEVELS);
+        this.bot = bot;
     }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
         if (args.length > 0) {
 
-            Document profile = TechnoBot.getInstance().getLevelManager().getProfile(event.getAuthor().getIdLong());
+            Document profile = bot.getLevelManager().getProfile(event.getAuthor().getIdLong());
             List<Bson> updates = new ArrayList<>();
             if (profile == null) {
                 EmbedBuilder embed = new EmbedBuilder()
@@ -110,7 +112,7 @@ public class CommandRankcard extends Command {
                     event.getChannel().sendMessage("Reset your rank card to default settings!").queue();
                     break;
             }
-            TechnoBot.getInstance().getLevelManager().update(profile, updates);
+            bot.getLevelManager().update(profile, updates);
             return true;
         }
         EmbedBuilder msg = new EmbedBuilder()

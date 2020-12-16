@@ -10,8 +10,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class CommandHelp extends Command {
-    public CommandHelp() {
+    private final TechnoBot bot;
+    
+    public CommandHelp(final TechnoBot bot) {
         super("help", "Displays a list of available commands","{prefix}help [category|command]", Command.Category.OTHER);
+        this.bot = bot;
     }
 
     @Override
@@ -21,14 +24,14 @@ public class CommandHelp extends Command {
         for(Category c : Category.values()) {
             categories.put(c, new ArrayList<>());
         }
-        for(Command c : TechnoBot.getInstance().getRegistry().getCommands()) {
+        for(Command c : bot.getRegistry().getCommands()) {
             categories.get(c.category).add(c);
         }
         if(args.length == 0) {
             event.getChannel().sendMessage(new EmbedBuilder() {{
                 setTitle("TechnoBot Commands");
                 setColor(EMBED_COLOR);
-                setThumbnail(TechnoBot.getInstance().getJDA().getSelfUser().getEffectiveAvatarUrl());
+                setThumbnail(bot.getJDA().getSelfUser().getEffectiveAvatarUrl());
                 categories.forEach((category, commands) -> {
                     addField((category.name().charAt(0) + "").toUpperCase() + category.name().substring(1).toLowerCase(), commands.size() + " commands in category | `" + PREFIX + "help " + category.name().toLowerCase() + "`", false);
                 });
@@ -48,7 +51,7 @@ public class CommandHelp extends Command {
                 builder.setDescription(description);
                 event.getChannel().sendMessage(builder.build()).queue();
             } catch (IllegalArgumentException e) {
-                for(Command cmd : TechnoBot.getInstance().getRegistry().getCommands()) {
+                for(Command cmd : bot.getRegistry().getCommands()) {
                     if(args[0].equalsIgnoreCase(cmd.name)) {
                         EmbedBuilder builder = new EmbedBuilder()
                                 .setTitle((cmd.name.charAt(0) + "").toUpperCase() + cmd.name.substring(1))

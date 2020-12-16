@@ -5,14 +5,16 @@ import com.technovision.technobot.listeners.managers.MusicManager;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class CommandVolume extends Command {
+    private final MusicManager musicManager;
 
-    public CommandVolume() {
+    public CommandVolume(final MusicManager musicManager) {
         super("volume", "Change volume of music", "{prefix}volume <volume>", Command.Category.MUSIC);
+        this.musicManager = musicManager;
     }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+        if(musicManager.handlers.get(event.getGuild().getIdLong())==null||musicManager.handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
             event.getChannel().sendMessage("There are no songs playing.").queue();
             return true;
         }
@@ -23,7 +25,7 @@ public class CommandVolume extends Command {
         }
 
         try {
-            MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.setVolume(Integer.parseInt(args[0]));
+            musicManager.handlers.get(event.getGuild().getIdLong()).trackScheduler.setVolume(Integer.parseInt(args[0]));
         } catch(IndexOutOfBoundsException e) {
             event.getChannel().sendMessage("Please specify a volume!").queue();
         } catch(NumberFormatException e) {

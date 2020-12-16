@@ -15,9 +15,11 @@ import java.util.Set;
 public class CommandLeaderboard extends Command {
 
     private final DecimalFormat formatter;
+    private final TechnoBot bot;
 
-    public CommandLeaderboard() {
+    public CommandLeaderboard(final TechnoBot bot) {
         super("leaderboard", "Shows the level Leaderboard", "{prefix}leaderboard <page>", Command.Category.LEVELS);
+        this.bot = bot;
         formatter = new DecimalFormat("#,###");
     }
 
@@ -25,7 +27,7 @@ public class CommandLeaderboard extends Command {
     public boolean execute(MessageReceivedEvent event, String[] args) {
         int usersPerPage = 20;
         int start = 0;
-        LinkedList<Document> leaderboard = TechnoBot.getInstance().getLevelManager().getLeaderboard();
+        LinkedList<Document> leaderboard = bot.getLevelManager().getLeaderboard();
 
         if (args.length > 0) {
             try {

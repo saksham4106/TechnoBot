@@ -11,15 +11,17 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandCrime extends Command {
+    private final TechnoBot bot;
 
-    public CommandCrime() {
+    public CommandCrime(final TechnoBot bot) {
         super("crime", "Risk it all for extra cash", "{prefix}crime", Category.ECONOMY);
+        this.bot = bot;
     }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
         EmbedBuilder embed = new EmbedBuilder();
-        JSONObject profile = TechnoBot.getInstance().getEconomy().getProfile(event.getAuthor());
+        JSONObject profile = bot.getEconomy().getProfile(event.getAuthor());
         long timestamp = profile.getLong("crime-timestamp");
         int cooldown = 14400000;
         if (System.currentTimeMillis() >= timestamp + cooldown) {
@@ -27,18 +29,18 @@ public class CommandCrime extends Command {
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getEffectiveAvatarUrl());
             if (rand.nextInt(10) > 5) { //40% Success Rate
                 int amount = rand.nextInt(450) + 250;
-                TechnoBot.getInstance().getEconomy().addMoney(event.getAuthor(), amount, EconManager.Activity.CRIME);
+                bot.getEconomy().addMoney(event.getAuthor(), amount, EconManager.Activity.CRIME);
                 embed.setColor(EconManager.SUCCESS_COLOR);
                 embed.setDescription("You rob the local bank and steal " + EconManager.SYMBOL + amount);
             } else {
                 int amount = rand.nextInt(400) + 1;
-                TechnoBot.getInstance().getEconomy().removeMoney(event.getAuthor(), amount, EconManager.Activity.CRIME);
+                bot.getEconomy().removeMoney(event.getAuthor(), amount, EconManager.Activity.CRIME);
                 embed.setColor(ERROR_EMBED_COLOR);
                 embed.setDescription("You were caught shoplifting. Pay a fine of " + EconManager.SYMBOL + amount);
             }
         } else {
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
-            embed.setDescription(":stopwatch: You cannot commit a crime for " + TechnoBot.getInstance().getEconomy().getCooldown(timestamp, cooldown) + ".");
+            embed.setDescription(":stopwatch: You cannot commit a crime for " + bot.getEconomy().getCooldown(timestamp, cooldown) + ".");
             embed.setColor(EMBED_COLOR);
         }
         event.getChannel().sendMessage(embed.build()).queue();

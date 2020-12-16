@@ -8,9 +8,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class CommandWithdraw extends Command {
+    private final TechnoBot bot;
 
-    public CommandWithdraw() {
+    public CommandWithdraw(final TechnoBot bot) {
         super("withdraw", "Withdraw cash from the bank", "{prefix}withdraw <amount>", Category.ECONOMY);
+        this.bot = bot;
     }
 
     @Override
@@ -21,7 +23,7 @@ public class CommandWithdraw extends Command {
             try {
                 long amt = Long.parseLong(args[0]);
                 try {
-                    TechnoBot.getInstance().getEconomy().withdraw(event.getAuthor(), amt);
+                    bot.getEconomy().withdraw(event.getAuthor(), amt);
                     embed.setColor(EconManager.SUCCESS_COLOR);
                     String money = EconManager.FORMATTER.format(amt);
                     embed.setDescription(":white_check_mark: Withdrew " + EconManager.SYMBOL + money + " from your bank!");
@@ -29,7 +31,7 @@ public class CommandWithdraw extends Command {
                     return true;
                 } catch (InvalidBalanceException e) {
                     embed.setColor(ERROR_EMBED_COLOR);
-                    long bankBal = TechnoBot.getInstance().getEconomy().getBalance(event.getAuthor()).getRight();
+                    long bankBal = bot.getEconomy().getBalance(event.getAuthor()).getRight();
                     String bankBalFormat = EconManager.FORMATTER.format(bankBal);
                     embed.setDescription(String.format(":x: You don't have that much money to withdraw! You currently have %s%s in the bank.", EconManager.SYMBOL, bankBalFormat));
                     event.getChannel().sendMessage(embed.build()).queue();

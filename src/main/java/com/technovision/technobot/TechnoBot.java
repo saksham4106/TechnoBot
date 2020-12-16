@@ -35,8 +35,6 @@ import java.net.URL;
 @Loggable(display = "TechnoBot")
 public class TechnoBot {
 
-    private static TechnoBot instance;
-
     private Logger logger;
     private final JDA jda;
     private final BotRegistry registry;
@@ -46,6 +44,7 @@ public class TechnoBot {
     private final AutoModLogger autoModLogger;
     private final MongoDatabase mongoDatabase;
     private final LevelManager levelManager;
+    private final MusicManager musicManager;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
         @Override
         public void load() {
@@ -62,8 +61,7 @@ public class TechnoBot {
      * Initializes the JDABuilder and Bot Registry.
      * @throws LoginException Malformed bot token.
      */
-    public TechnoBot() throws LoginException {
-        instance = this;
+    public TechnoBot() throws LoginException, InterruptedException {
         registry = new BotRegistry();
 
         MongoClientURI clientURI = new MongoClientURI(getBotConfig().getJson().getString("mongo-client-uri"));
@@ -74,19 +72,26 @@ public class TechnoBot {
         builder.setStatus(OnlineStatus.ONLINE).setActivity(Activity.watching("TechnoVisionTV"));
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
-        jda = builder.build();
-        suggestionManager = new SuggestionManager();
-        youtubeManager = new YoutubeManager();
+        jda = builder.build().awaitReady();
+        suggestionManager = new SuggestionManager(this);
+        youtubeManager = new YoutubeManager(this);
         econManager = new EconManager();
         autoModLogger = new AutoModLogger();
-        levelManager = new LevelManager();
+        levelManager = new LevelManager(this);
+        musicManager = new MusicManager(this);
+    }
+
+    public MusicManager getMusicManager() {
+        return musicManager;
     }
 
     public LevelManager getLevelManager() {
+//        return levelManager;
         return levelManager;
     }
 
     public MongoDatabase getMongoDatabase() {
+//        return mongoDatabase;
         return mongoDatabase;
     }
 
@@ -106,12 +111,6 @@ public class TechnoBot {
         return econManager;
     }
 
-    /**
-     * Accessor for instance of the bot.
-     * @return instance of TechnoBot.
-     */
-    public static TechnoBot getInstance() {
-        return instance;
     }
 
     /**
@@ -149,9 +148,11 @@ public class TechnoBot {
     /**
      * Accessor for the securely stored bot token
      * @return Bot token
+     * @deprecated Probably not a good idea to have a getter for a token ;)
      */
+    @Deprecated
     private String getToken() {
-        return getInstance().getBotConfig().getJson().getString("token");
+        return getBotConfig().getJson().getString("token");
     }
 
     /** Download and store images needed for rank-card creation */
@@ -178,17 +179,18 @@ public class TechnoBot {
      * @param args ignored
      */
     public static void main(String[] args)  {
+        TechnoBot bot;
         try {
-            TechnoBot bot = new TechnoBot();
-            getInstance().logger = new Logger(bot);
-        } catch(LoginException e) { throw new RuntimeException(e); }
+            bot = new TechnoBot();
+            bot.logger = new Logger(bot);
+        } catch(LoginException | InterruptedException e) { throw new RuntimeException(e); }
 
-        getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
-        getInstance().setupImages();
+        bot.getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
+        bot.setupImages();
         GuildMemberEvents.loadJoinMessage();
 
-        new CommandRegistry();
-        getInstance().getRegistry().registerEventListeners(new AutomodListener(), new ExtrasEventListener(), new MusicManager(), new GuildLogEventListener(), getInstance().levelManager, new CommandEventListener(), new GuildMemberEvents());
-        getInstance().getRegistry().addListeners(getInstance().getJDA());
+        new CommandRegistry(bot);
+        bot.getRegistry().registerEventListeners(new AutomodListener(bot), new ExtrasEventListener(), bot.musicManager, new GuildLogEventListener(bot), bot.levelManager, new CommandEventListener(bot), new GuildMemberEvents());
+        bot.getRegistry().addListeners(bot.getJDA());
     }
 }

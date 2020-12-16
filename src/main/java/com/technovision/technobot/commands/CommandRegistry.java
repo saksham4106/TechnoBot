@@ -8,6 +8,9 @@ import com.technovision.technobot.commands.levels.CommandRankcard;
 import com.technovision.technobot.commands.music.*;
 import com.technovision.technobot.commands.other.*;
 import com.technovision.technobot.commands.staff.*;
+import com.technovision.technobot.commands.tickets.CommandTicketMessage;
+import com.technovision.technobot.commands.tickets.CommandTicketSettings;
+import com.technovision.technobot.listeners.managers.MusicManager;
 
 /**
  * Registers commands and their execution.
@@ -16,60 +19,60 @@ import com.technovision.technobot.commands.staff.*;
  */
 public class CommandRegistry {
 
-    public CommandRegistry() {
-        TechnoBot.getInstance().getRegistry().registerCommands(
+    public CommandRegistry(final TechnoBot bot) {
+        bot.getRegistry().registerCommands(
 
                 // Levels
-                new CommandRank(),
-                new CommandRankcard(),
-                new CommandLeaderboard(),
+                new CommandRank(bot),
+                new CommandRankcard(bot),
+                new CommandLeaderboard(bot),
 
                 // Economy
-                new CommandBalance(),
-                new CommandWork(),
-                new CommandCrime(),
-                new CommandPay(),
-                new CommandRob(),
-                new CommandDeposit(),
-                new CommandWithdraw(),
+                new CommandBalance(bot),
+                new CommandWork(bot),
+                new CommandCrime(bot),
+                new CommandPay(bot),
+                new CommandRob(bot),
+                new CommandDeposit(bot),
+                new CommandWithdraw(bot),
 
                 // Music
-                new CommandJoin(),
-                new CommandLeave(),
-                new CommandPlay(),
-                new CommandQueue(),
-                new CommandSkip(),
-                new CommandSkipto(),
-                new CommandNp(),
-                new CommandSeek(),
-                new CommandLoop(),
-                new CommandPause(),
-                new CommandResume(),
-                new CommandDj(),
-                new CommandShuffle(),
-                new CommandVolume(),
+                new CommandJoin(bot.getMusicManager()),
+                new CommandLeave(bot.getMusicManager()),
+                new CommandPlay(bot),
+                new CommandQueue(bot.getMusicManager()),
+                new CommandSkip(bot.getMusicManager()),
+                new CommandSkipto(bot.getMusicManager()),
+                new CommandNp(bot.getMusicManager()),
+                new CommandSeek(bot.getMusicManager()),
+                new CommandLoop(bot.getMusicManager()),
+                new CommandPause(bot.getMusicManager()),
+                new CommandResume(bot.getMusicManager()),
+                new CommandDj(bot.getMusicManager()),
+                new CommandShuffle(bot.getMusicManager()),
+                new CommandVolume(bot.getMusicManager()),
 
                 // Staff
                 new CommandInfractions(),
                 new CommandClearWarn(),
-                new CommandWarn(),
-                new CommandKick(),
-                new CommandBan(),
-                new CommandMute(),
-                new CommandApprove(),
-                new CommandDeny(),
-                new CommandConsider(),
-                new CommandImplement(),
-                new CommandClear(),
-                new CommandUnmute(),
+                new CommandWarn(bot),
+                new CommandKick(bot),
+                new CommandBan(bot),
+                new CommandMute(bot),
+                new CommandApprove(bot),
+                new CommandDeny(bot),
+                new CommandConsider(bot),
+                new CommandImplement(bot),
+                new CommandClear(bot),
+                new CommandUnmute(bot, null),
 
                 // Other
-                new CommandHelp(),
-                new CommandSuggest(),
+                new CommandHelp(bot),
+                new CommandSuggest(bot),
                 new CommandYoutube(),
                 new CommandPing(),
                 new CommandGoogle(),
-                new CommandReport()
+                new CommandReport(),
         );
     }
 }

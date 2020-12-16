@@ -24,9 +24,11 @@ public class LevelManager extends ListenerAdapter {
 
     private final MongoCollection<Document> levels;
     private final LinkedList<Document> leaderboard;
+    private final TechnoBot bot;
 
-    public LevelManager() {
-        levels = TechnoBot.getInstance().getMongoDatabase().getCollection("levels");
+    public LevelManager(final TechnoBot bot) {
+        this.bot = bot;
+        levels = bot.getMongoDatabase().getCollection("levels");
         leaderboard = new LinkedList<>();
         FindIterable<Document> cursor = levels.find().sort(new Document("totalXP", -1));
         for (Document document : cursor) {

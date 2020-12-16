@@ -34,14 +34,10 @@ public class MusicManager extends ListenerAdapter {
     public final Map<User, Message> djMessages = new HashMap<>();
     public final Map<Long, MusicSendHandler> handlers = new HashMap<Long, MusicSendHandler>();
     private final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
+    private final TechnoBot bot;
 
-    private static MusicManager musicManager;
-    public static MusicManager getInstance() {
-        return musicManager;
-    }
-
-    public MusicManager() {
-        musicManager = this;
+    public MusicManager(final TechnoBot bot) {
+        this.bot = bot;
         AudioSourceManagers.registerRemoteSources(playerManager);
         new Timer().schedule(new TimerTask() {
             @Override
@@ -117,7 +113,7 @@ public class MusicManager extends ListenerAdapter {
         AudioManager manager = guild.getAudioManager();
 
         if(manager.getSendingHandler()==null) {
-            handlers.putIfAbsent(guild.getIdLong(), new MusicSendHandler(playerManager.createPlayer(), guild));
+            handlers.putIfAbsent(guild.getIdLong(), new MusicSendHandler(this, playerManager.createPlayer(), guild));
             manager.setSendingHandler(handlers.get(guild.getIdLong()));
         }
 
@@ -170,7 +166,7 @@ public class MusicManager extends ListenerAdapter {
             @Override
             public void loadFailed(FriendlyException e) {
                 channel.sendMessage("An error occurred!").queue();
-                TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, e.getMessage());
+                bot.getLogger().log(Logger.LogLevel.SEVERE, e.getMessage());
             }
         });
     }
@@ -210,9 +206,9 @@ public class MusicManager extends ListenerAdapter {
         private AudioFrame lastFrame;
         public final TrackScheduler trackScheduler;
 
-        public MusicSendHandler(AudioPlayer player, Guild guild) {
+        public MusicSendHandler(final MusicManager musicManager, AudioPlayer player, Guild guild) {
             this.player = player;
-            trackScheduler = new TrackScheduler(player, guild);
+            trackScheduler = new TrackScheduler(musicManager, player, guild);
             player.addListener(trackScheduler);
         }
 
@@ -241,12 +237,14 @@ public class MusicManager extends ListenerAdapter {
         private boolean loopQueue = false;
         private final Guild guild;
         private MessageChannel logChannel;
+        private final MusicManager musicManager;
 
         public List<AudioTrack> getQueueCopy() {
             return new ArrayList<>(trackQueue);
         }
 
-        public TrackScheduler(AudioPlayer player, Guild guild) {
+        public TrackScheduler(final MusicManager musicManager, AudioPlayer player, Guild guild) {
+            this.musicManager = musicManager;
             this.player = player;
             this.guild = guild;
         }
@@ -260,9 +258,9 @@ public class MusicManager extends ListenerAdapter {
         public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
             trackQueue.remove(track);
             if(loop&&endReason.mayStartNext) {
-                MusicManager.getInstance().addTrack(track.getInfo().uri, guild, this, false);
+                musicManager.addTrack(track.getInfo().uri, guild, this, false);
             } else if(loopQueue&&endReason.mayStartNext) {
-                MusicManager.getInstance().addTrack(track.getInfo().uri, guild, this, true);
+                musicManager.addTrack(track.getInfo().uri, guild, this, true);
             } else if(endReason.mayStartNext&&trackQueue.size()>0) player.playTrack(trackQueue.get(0));
         }
 

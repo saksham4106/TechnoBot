@@ -18,10 +18,12 @@ public class YoutubeManager {
     private final String key;
     private final YouTube youtube;
     private final YouTube.Search.List search;
+    private final TechnoBot bot;
 
-    public YoutubeManager() {
+    public YoutubeManager(final TechnoBot bot) {
+        this.bot = bot;
         try {
-            key = TechnoBot.getInstance().getBotConfig().getJson().getString("youtube-api-key");
+            key = bot.getBotConfig().getJson().getString("youtube-api-key");
             youtube = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(),
                     request -> {}).setApplicationName("technobot-discord-bot").build();
             List<String> properties = new ArrayList<>();
