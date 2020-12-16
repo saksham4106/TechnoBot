@@ -73,6 +73,10 @@ public class CommandRegistry {
                 new CommandPing(),
                 new CommandGoogle(),
                 new CommandReport(),
+
+                // Tickets
+                new CommandTicketMessage(bot),
+                new CommandTicketSettings(bot)
         );
     }
 }

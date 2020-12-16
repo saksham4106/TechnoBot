@@ -45,6 +45,7 @@ public class TechnoBot {
     private final MongoDatabase mongoDatabase;
     private final LevelManager levelManager;
     private final MusicManager musicManager;
+    private final TicketManager ticketManager;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
         @Override
         public void load() {
@@ -79,6 +80,7 @@ public class TechnoBot {
         autoModLogger = new AutoModLogger();
         levelManager = new LevelManager(this);
         musicManager = new MusicManager(this);
+        ticketManager = new TicketManager(this);
     }
 
     public MusicManager getMusicManager() {
@@ -111,6 +113,8 @@ public class TechnoBot {
         return econManager;
     }
 
+    public TicketManager getTicketManager() {
+        return ticketManager;
     }
 
     /**
