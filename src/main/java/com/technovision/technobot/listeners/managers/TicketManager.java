@@ -29,6 +29,7 @@ public class TicketManager extends ListenerAdapter {
     private static final long TICKET_ACTION_COOLDOWN = 3000;
     private final Map<Long, Long> TICKET_CREATE_CDMAP = new HashMap<>();
     private final Map<Long, Long> TICKET_ACTION_CDMAP = new HashMap<>();
+    private JSONObject ticketData;
 
     private final TechnoBot bot;
     private final Map<Long, GuildTicketManager> guildMap = new HashMap<>();
@@ -47,17 +48,17 @@ public class TicketManager extends ListenerAdapter {
                 bot.getLogger().log(Logger.LogLevel.SEVERE, "Failed to initialize guilds from TicketManager config!");
                 return;
             }
-            JSONObject obj = (JSONObject) no;
-            GuildTicketManager guildTicketManager = new GuildTicketManager(bot, this, bot.getJDA().getGuildById(obj.getLong("guildId")), obj.getInt("currentId"));
-            guildTicketManager.guild.getTextChannelById(obj.getLong("reactionMessageChannelId")).retrieveMessageById(obj.getLong("reactionMessageId")).queue(message -> guildTicketManager.reactionMessage = message);
-            if(obj.has("inboxChannelId") && obj.getLong("inboxChannelId") != -1)
-                guildTicketManager.inboxChannel = guildTicketManager.guild.getTextChannelById(obj.getLong("inboxChannelId"));
+            ticketData = (JSONObject) no;
+            GuildTicketManager guildTicketManager = new GuildTicketManager(bot, this, bot.getJDA().getGuildById(ticketData.getLong("guildId")), ticketData.getInt("currentId"));
+            guildTicketManager.guild.getTextChannelById(ticketData.getLong("reactionMessageChannelId")).retrieveMessageById(ticketData.getLong("reactionMessageId")).queue(message -> guildTicketManager.reactionMessage = message);
+            if(ticketData.has("inboxChannelId") && ticketData.getLong("inboxChannelId") != -1)
+                guildTicketManager.inboxChannel = guildTicketManager.guild.getTextChannelById(ticketData.getLong("inboxChannelId"));
             else {
                 guildTicketManager.inboxChannel = null;
-                obj.put("inboxChannelId", -1);
+                ticketData.put("inboxChannelId", -1);
             }
 
-            for(Object no2 : obj.getJSONArray("tickets")) {
+            for(Object no2 : ticketData.getJSONArray("tickets")) {
                 if(!(no2 instanceof JSONObject)) {
                     bot.getLogger().log(Logger.LogLevel.SEVERE, "Failed to initialize guilds from TicketManger config!");
                     return;
@@ -65,7 +66,7 @@ public class TicketManager extends ListenerAdapter {
                 JSONObject ticket = (JSONObject) no2;
                 guildTicketManager.createTicketFromConfig(ticket);
             }
-            guildMap.put(obj.getLong("guildId"), guildTicketManager);
+            guildMap.put(ticketData.getLong("guildId"), guildTicketManager);
         }
     }
 
