@@ -282,11 +282,11 @@ public class TicketManager extends ListenerAdapter {
             Guild guild = guildTicketManager.guild;
             Category category = null;
             try {
-                category = guild.getCategoriesByName("tickets", true).get(0);
+                category = guild.getCategoriesByName("\uD83D\uDCE5 Tickets", true).get(0);
             } catch(Exception ignored) {}
 
             try {
-                if (category == null) category = guild.createCategory("tickets").complete(true);
+                if (category == null) category = guild.createCategory("\uD83D\uDCE5 Tickets").complete(true);
             } catch(Exception e) {
                 logger.log(Logger.LogLevel.SEVERE, e.getMessage());
                 e.printStackTrace();
