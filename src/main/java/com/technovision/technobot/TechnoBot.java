@@ -78,7 +78,7 @@ public class TechnoBot {
         youtubeManager = new YoutubeManager(this);
         econManager = new EconManager();
         autoModLogger = new AutoModLogger();
-//        levelManager = new LevelManager(this);
+        levelManager = new LevelManager(this);
         musicManager = new MusicManager(this);
         ticketManager = new TicketManager(this);
     }
