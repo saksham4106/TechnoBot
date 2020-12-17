@@ -177,6 +177,7 @@ public class TicketManager extends ListenerAdapter {
             ).queue(message -> message.addReaction("\uD83C\uDF9F").queue(aVoid -> {
                     reactionMessage = message;
                     ret.set(true);
+                    save();
                 }));
             return ret.get();
         }
@@ -232,6 +233,8 @@ public class TicketManager extends ListenerAdapter {
             o.put("guildId", guild.getIdLong());
             if(inboxChannel!=null) o.put("inboxChannelId", inboxChannel.getIdLong());
             o.put("tickets", new JSONArray());
+            o.put("reactionMessageId", reactionMessage.getIdLong());
+            o.put("reactionMessageChannelId", reactionMessage.getChannel().getIdLong());
             JSONArray ticketArray = o.getJSONArray("tickets");
             for(Ticket ticket : tickets) {
                 ticketArray.put(new JSONObject() {{
@@ -276,7 +279,10 @@ public class TicketManager extends ListenerAdapter {
             if(initialized) return this;
             initialized = true;
             Guild guild = guildTicketManager.guild;
-            Category category = guild.getCategoriesByName("tickets", true).get(0);
+            Category category = null;
+            try {
+                category = guild.getCategoriesByName("tickets", true).get(0);
+            } catch(Exception ignored) {}
 
             try {
                 if (category == null) category = guild.createCategory("tickets").complete(true);

@@ -42,8 +42,8 @@ public class TechnoBot {
     private final YoutubeManager youtubeManager;
     private final EconManager econManager;
     private final AutoModLogger autoModLogger;
-    private final MongoDatabase mongoDatabase;
-    private final LevelManager levelManager;
+//    private final MongoDatabase mongoDatabase;
+//    private final LevelManager levelManager;
     private final MusicManager musicManager;
     private final TicketManager ticketManager;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
@@ -65,9 +65,9 @@ public class TechnoBot {
     public TechnoBot() throws LoginException, InterruptedException {
         registry = new BotRegistry();
 
-        MongoClientURI clientURI = new MongoClientURI(getBotConfig().getJson().getString("mongo-client-uri"));
-        MongoClient mongoClient = new MongoClient(clientURI);
-        mongoDatabase = mongoClient.getDatabase("TechnoBot");
+//        MongoClientURI clientURI = new MongoClientURI(getBotConfig().getJson().getString("mongo-client-uri"));
+//        MongoClient mongoClient = new MongoClient(clientURI);
+//        mongoDatabase = mongoClient.getDatabase("TechnoBot");
 
         JDABuilder builder = JDABuilder.createDefault(getToken());
         builder.setStatus(OnlineStatus.ONLINE).setActivity(Activity.watching("TechnoVisionTV"));
@@ -78,7 +78,7 @@ public class TechnoBot {
         youtubeManager = new YoutubeManager(this);
         econManager = new EconManager();
         autoModLogger = new AutoModLogger();
-        levelManager = new LevelManager(this);
+//        levelManager = new LevelManager(this);
         musicManager = new MusicManager(this);
         ticketManager = new TicketManager(this);
     }
@@ -89,12 +89,12 @@ public class TechnoBot {
 
     public LevelManager getLevelManager() {
 //        return levelManager;
-        return levelManager;
+        return null;
     }
 
     public MongoDatabase getMongoDatabase() {
 //        return mongoDatabase;
-        return mongoDatabase;
+        return null;
     }
 
     public AutoModLogger getAutoModLogger() {
@@ -194,7 +194,7 @@ public class TechnoBot {
         GuildMemberEvents.loadJoinMessage();
 
         new CommandRegistry(bot);
-        bot.getRegistry().registerEventListeners(new AutomodListener(bot), new ExtrasEventListener(), bot.musicManager, new GuildLogEventListener(bot), bot.levelManager, new CommandEventListener(bot), new GuildMemberEvents(), bot.ticketManager);
+        bot.getRegistry().registerEventListeners(new AutomodListener(bot), new ExtrasEventListener(), bot.musicManager, new GuildLogEventListener(bot)/*, bot.levelManager*/, new CommandEventListener(bot), new GuildMemberEvents(), bot.ticketManager);
         bot.getRegistry().addListeners(bot.getJDA());
     }
 }
