@@ -194,7 +194,7 @@ public class TechnoBot {
         GuildMemberEvents.loadJoinMessage();
 
         new CommandRegistry(bot);
-        bot.getRegistry().registerEventListeners(new AutomodListener(bot), new ExtrasEventListener(), bot.musicManager, new GuildLogEventListener(bot), bot.levelManager, new CommandEventListener(bot), new GuildMemberEvents());
+        bot.getRegistry().registerEventListeners(new AutomodListener(bot), new ExtrasEventListener(), bot.musicManager, new GuildLogEventListener(bot), bot.levelManager, new CommandEventListener(bot), new GuildMemberEvents(), bot.ticketManager);
         bot.getRegistry().addListeners(bot.getJDA());
     }
 }

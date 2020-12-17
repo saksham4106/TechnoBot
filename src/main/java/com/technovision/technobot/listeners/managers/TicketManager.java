@@ -1,6 +1,7 @@
 package com.technovision.technobot.listeners.managers;
 
 import com.technovision.technobot.TechnoBot;
+import com.technovision.technobot.commands.Command;
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.TranscriptUtils;
@@ -163,16 +164,15 @@ public class TicketManager extends ListenerAdapter {
         public boolean createReactionMessage(MessageChannel channel) {
             AtomicBoolean ret = new AtomicBoolean(false);
             channel.sendMessage(new EmbedBuilder()
-                    .setTitle("\uD83C\uDF9F Create A Ticket")
-                    .setDescription("Create a support ticket here.\n**DO NOT USE THIS FOR MODDING SUPPORT!**\n*For modding support, please use a support channel. Thanks!*")
+                    .setTitle("\uD83C\uDF9F Create A Support Ticket")
+                    .setDescription("Create a ticket to report a user or get support.\n\n**DO NOT USE THIS FOR MODDING SUPPORT!**\n*For modding support, please use a support channel. Thanks!*\n")
                     .addField("Reactions", "Once you're in the ticket, there will be a few reactions!" +
                             "\n\uD83D\uDED1 - Closes the ticket\n" +
                             "\uD83D\uDD10 - Locks the ticket (staff only)" +
                             "\n\uD83D\uDCF0 - Ticket Editing (subject & description)" +
-                            "\n\uD83D\uDCE8 - Send To Staff. The ticket will not be sent to staff until you fill out the subject and description!" +
-                            "\nMore Coming Soon!", false)
-                    .setFooter("V React Below to Open a Ticket!")
-                    .setColor(Color.RED)
+                            "\n\uD83D\uDCE8 - Send To Staff (after subject/description are filled out)\n\n", false)
+                    .setFooter("Click The Ticket Emoji Below to Open a Ticket!")
+                    .setColor(Command.EMBED_COLOR)
                     .build()
             ).queue(message -> message.addReaction("\uD83C\uDF9F").queue(aVoid -> {
                     reactionMessage = message;
