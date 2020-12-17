@@ -65,6 +65,7 @@ public class GuildLogEventListener extends ListenerAdapter {
 
     @Override
     public void onTextChannelDelete(@Nonnull TextChannelDeleteEvent event) {
+        if (event.getChannel().getParent().getIdLong() == 789008117970108437L) { return; }
         webhook.send(new WebhookEmbedBuilder() {{
             setTitle(new WebhookEmbed.EmbedTitle("Text Channel Deleted", null));
             setColor(RED);
@@ -77,6 +78,7 @@ public class GuildLogEventListener extends ListenerAdapter {
 
     @Override
     public void onTextChannelCreate(@Nonnull TextChannelCreateEvent event) {
+        if (event.getChannel().getParent().getIdLong() == 789008117970108437L) { return; }
         webhook.send(new WebhookEmbedBuilder() {{
             setTitle(new WebhookEmbed.EmbedTitle("Text Channel Created", null));
             setColor(GREEN);

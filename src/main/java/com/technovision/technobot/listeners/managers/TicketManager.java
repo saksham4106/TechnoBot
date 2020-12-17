@@ -2,6 +2,7 @@ package com.technovision.technobot.listeners.managers;
 
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
+import com.technovision.technobot.commands.economy.CommandWork;
 import com.technovision.technobot.data.Configuration;
 import com.technovision.technobot.logging.Logger;
 import com.technovision.technobot.util.TranscriptUtils;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -143,7 +145,7 @@ public class TicketManager extends ListenerAdapter {
 
         public void createTicketFromConfig(JSONObject ticketConf) {
             guild.retrieveMemberById(ticketConf.getLong("openerId")).queue(member -> {
-                Ticket ticket = new Ticket(this, member, bot.getLogger()).id(ticketConf.getInt("ticketId")).subject(ticketConf.getString("subject")).description(ticketConf.getString("description"));
+                Ticket ticket = new Ticket(this, member, bot.getLogger()).id(ticketConf.getInt("ticketId"));
                 ticket.channel = guild.getTextChannelById(ticketConf.getLong("channelId"));
                 if(ticket.channel==null) {
                     bot.getLogger().log(Logger.LogLevel.SEVERE, "Could not find ticket channel!");
@@ -165,14 +167,10 @@ public class TicketManager extends ListenerAdapter {
         public boolean createReactionMessage(MessageChannel channel) {
             AtomicBoolean ret = new AtomicBoolean(false);
             channel.sendMessage(new EmbedBuilder()
-                    .setTitle("\uD83C\uDF9F Create A Support Ticket")
-                    .setDescription("Create a ticket to report a user or get support.\n\n**DO NOT USE THIS FOR MODDING SUPPORT!**\n*For modding support, please use a support channel. Thanks!*\n")
-                    .addField("Reactions", "Once you're in the ticket, there will be a few reactions!" +
-                            "\n\uD83D\uDED1 - Closes the ticket\n" +
-                            "\uD83D\uDD10 - Locks the ticket (staff only)" +
-                            "\n\uD83D\uDCF0 - Ticket Editing (subject & description)" +
-                            "\n\uD83D\uDCE8 - Send To Staff (after subject/description are filled out)\n\n", false)
-                    .setFooter("Click The Ticket Emoji Below to Open a Ticket!")
+                    .setTitle("\uD83C\uDF9F Create a Support Ticket")
+                    .setDescription("Need support, reporting a user, or requesting a ban appeal? Create a ticket by reacting with the emoji below and a staff member will be with you shortly!\n\n" +
+                            "**To Create a Ticket React With** \uD83C\uDF9F")
+                    .setFooter("TechnoVision Discord", "https://i.imgur.com/TzHOnJu.png")
                     .setColor(Command.EMBED_COLOR)
                     .build()
             ).queue(message -> message.addReaction("\uD83C\uDF9F").queue(aVoid -> {
@@ -189,6 +187,7 @@ public class TicketManager extends ListenerAdapter {
                 event.getReaction().removeReaction(event.getUser()).queue();
                 createTicket(event.getMember());
                 ticketManager.TICKET_CREATE_CDMAP.put(event.getUserIdLong(), time);
+
             } else for(Ticket ticket : tickets) {
                 if(ticket.channel.getIdLong() == event.getChannel().getIdLong() || event.getChannel().getIdLong() == inboxChannel.getIdLong() && ((!ticketManager.TICKET_ACTION_CDMAP.containsKey(event.getUserIdLong())) || time > TICKET_ACTION_COOLDOWN + ticketManager.TICKET_ACTION_CDMAP.get(event.getUserIdLong()))) {
                     ticket.reactionAdded(event);
@@ -201,31 +200,25 @@ public class TicketManager extends ListenerAdapter {
             long time = System.currentTimeMillis();
             for(Ticket ticket : tickets) {
                 if(ticket.channel.getIdLong() == event.getChannel().getIdLong() && ((!ticketManager.TICKET_ACTION_CDMAP.containsKey(event.getAuthor().getIdLong())) || time > TICKET_ACTION_COOLDOWN + ticketManager.TICKET_ACTION_CDMAP.get(event.getAuthor().getIdLong()))) {
-                    ticket.messageReceived(event);
                     ticketManager.TICKET_ACTION_CDMAP.put(event.getAuthor().getIdLong(), time);
                 }
             }
         }
 
-        public void close(Ticket ticket, Member closer) {
-            ticket.channel.sendMessage("Creating transcript...").queue();
+        public void close(Ticket ticket, boolean saveTranscript) {
             ticket.channel.getHistory().retrievePast(100).queue(messages -> {
                 String s = TranscriptUtils.threadToTranscript(messages);
                 tickets.remove(ticket);
-                inboxChannel.sendMessage(new EmbedBuilder().setTitle("Creating Transcript...").build()).addFile(s.getBytes(), "transcript_ticket-"+ticket.idFormatted()+".txt").queue(message -> {
-                    message.editMessage(new EmbedBuilder()
-                            .setTitle("\uD83C\uDF9F Ticket Closed")
-                            .addField("Subject", ticket.subject, false)
-                            .addField("Description", ticket.description, false)
-                            .addField("Closed By", closer.getEffectiveName(), false)
-                            .addField("Transcript", "[Download]("+message.getAttachments().get(0).getUrl()+")\nAlternate view soon?", false)
-                            .build()
-                    ).queue(message1 -> {
-                        ((GuildChannel)ticket.channel).delete().queue();
-                    });
-                });
-                save();
+                MessageAction msg = inboxChannel.sendMessage(new EmbedBuilder()
+                        .setTitle("\uD83D\uDD12 Ticket #" + ticket.idFormatted() + " Closed")
+                        .setColor(Command.ERROR_EMBED_COLOR)
+                        .build());
+                if (saveTranscript) {
+                    msg.addFile(s.getBytes(), "transcript_ticket-" + ticket.idFormatted() + ".txt");
+                }
+                msg.queue(message -> ((GuildChannel)ticket.channel).delete().queue());
             });
+            save();
         }
 
         public void save() {
@@ -264,8 +257,8 @@ public class TicketManager extends ListenerAdapter {
         public Member opener;
         private boolean locked;
         private Message inviteMessage;
-        private boolean sentToStaff;
         private boolean closing;
+        private boolean saveTranscript;
 
         public Ticket(GuildTicketManager guildTicketManager, Member member, Logger logger) {
             this.logger = logger;
@@ -296,30 +289,30 @@ public class TicketManager extends ListenerAdapter {
             final String finalIdStr = idFormatted();
             category.createTextChannel("ticket-"+finalIdStr).queue(textChannel -> {
                 channel = textChannel;
-                channel.sendMessage("Please wait...").queue(message -> {
-                    // TODO: 12/15/2020 Add message reactions for splash messages (close ticket, etc)
-                    message.addReaction("\uD83D\uDED1").queue();
-                    message.addReaction("\uD83D\uDD10").queue();
-                    message.addReaction("\uD83D\uDCF0").queue();
-                    message.addReaction("\uD83D\uDCE8").queue();
-                    splashMessage = message;
-                    refreshSplash();
+                channel.sendMessage("<@!" + opener.getUser().getIdLong() +"> Welcome to your ticket!").queue();
+                //Create Ticket Message
+                channel.sendMessage(new EmbedBuilder()
+                        .setTitle("Support Ticket ")
+                        .setDescription("A staff member will be with you shortly! Please take this time to clearly describe your issue, report, or appeal in the chat below.\n\nTo close this ticket, react with \uD83D\uDD12")
+                        .setFooter("TechnoVision Discord", "https://i.imgur.com/TzHOnJu.png")
+                        .setColor(Color.CYAN)
+                        .build()
+                ).queue(message -> {
+                    message.addReaction("\uD83D\uDD12").queue();
                     ((GuildChannel)channel).upsertPermissionOverride(opener).grant(Permission.VIEW_CHANNEL).queue();
+                    ((GuildChannel)channel).upsertPermissionOverride(guild.getRoleById("599344898856189984")).grant(Permission.VIEW_CHANNEL).queue();
+                    splashMessage = message;
                 });
+
+                //Alert Staff
+                guildTicketManager.inboxChannel.sendMessage(new EmbedBuilder()
+                        .setTitle("\uD83D\uDCE8 Ticket #"+idFormatted()+" Opened")
+                        .setColor(EconManager.SUCCESS_COLOR)
+                        .build()
+                ).queue();
             });
+            saveTranscript = false;
             guildTicketManager.save();
-            return this;
-        }
-
-        public Ticket subject(String sub) {
-            subject = sub;
-            refreshSplash();
-            return this;
-        }
-
-        public Ticket description(String desc) {
-            description = desc;
-            refreshSplash();
             return this;
         }
 
@@ -340,11 +333,24 @@ public class TicketManager extends ListenerAdapter {
          * Lock the thread. Essentially just kicks out the original opener.
          * @return The ticket to allow for method chaining.
          */
-        public Ticket lock() {
+        public Ticket lock(User user) {
             if(closing) return this;
-            channel.sendMessage("Locking thread...").queue();
-            ((GuildChannel)channel).upsertPermissionOverride(opener).deny(Permission.VIEW_CHANNEL).queue();
+            channel.sendMessage(new EmbedBuilder()
+                    .setDescription("Ticket Closed by <@!" + user.getIdLong() + ">")
+                    .setColor(0xEAE408)
+                    .build()).queue();
             locked = true;
+            ((GuildChannel)channel).upsertPermissionOverride(opener).deny(Permission.VIEW_CHANNEL).queue();
+            channel.sendMessage(new EmbedBuilder()
+                    .setDescription("\uD83D\uDCD1 Save Transcript" +
+                            "\n\uD83D\uDD13 Reopen Ticket" +
+                            "\n\u26D4 Delete Ticket")
+                    .setColor(Command.ERROR_EMBED_COLOR)
+                    .build()).queue(message -> {
+                        message.addReaction("\uD83D\uDCD1").queue();
+                        message.addReaction("\uD83D\uDD13").queue();
+                        message.addReaction("\u26D4").queue();
+                        });
             guildTicketManager.save();
             return this;
         }
@@ -353,70 +359,16 @@ public class TicketManager extends ListenerAdapter {
          * Unlock the thread. Essentially just lets the original opener into the thread.
          * @return The ticket to allow for method chaining.
          */
-        public Ticket unlock() {
+        public Ticket unlock(User user) {
             if(closing) return this;
-            channel.sendMessage("Unlocking thread...").queue();
             ((GuildChannel)channel).upsertPermissionOverride(opener).grant(Permission.VIEW_CHANNEL).queue();
             locked = false;
-            guildTicketManager.save();
-            return this;
-        }
-
-        /**
-         * Adds a member to the thread. Used to let staff into the thread and can be used to let others into the thread.
-         * @param member The member to opt in.
-         * @return The ticket to allow for method chaining.
-         */
-        public Ticket optIn(Member member) {
-            if(((GuildChannel)channel).getPermissionOverride(member) != null && ((GuildChannel)channel).getPermissionOverride(member).getAllowed().contains(Permission.VIEW_CHANNEL)) return this;
-            if(opener.getIdLong() == member.getIdLong()) return this;
-            channel.sendMessage(new EmbedBuilder() {{
-                        if(member.hasPermission(Permission.KICK_MEMBERS)) addField("Staff Member", member.getEffectiveName()+" is a staff member and will assist you!", false);
-                        else addField("Non-Staff", member.getEffectiveName()+" is a third party member of the ticket.", false);
-                    }}
-                    .setTitle(member.getEffectiveName()+" has joined the ticket")
-                    .setColor(Color.GREEN)
-                    .build()
-            ).queue(message -> {
-                message.addReaction("\uD83D\uDEAA").queue();
-            });
-            ((GuildChannel)channel).upsertPermissionOverride(member).grant(Permission.VIEW_CHANNEL).queue();
-            guildTicketManager.save();
-            return this;
-        }
-
-        /**
-         * Removes a member from the thread. Used for staff members who no longer wish to be a part of a thread.
-         * @param member The member to opt out.
-         * @return The ticket to allow for method chaining.
-         */
-        public Ticket optOut(Member member) {
-            if(!((GuildChannel)channel).getPermissionOverride(member).getAllowed().contains(Permission.VIEW_CHANNEL)) return this;
-            if(opener.getIdLong() == member.getIdLong()) return this;
             channel.sendMessage(new EmbedBuilder()
-                    .setTitle(member.getEffectiveName()+" has left the ticket")
-                    .setColor(Color.RED)
-                    .build()
-            ).queue();
-            ((GuildChannel)channel).upsertPermissionOverride(member).deny(Permission.VIEW_CHANNEL).queue();
+                    .setDescription("Ticket Reopened by <@!" + user.getIdLong() + ">")
+                    .setColor(0xEAE408)
+                    .build()).queue();
             guildTicketManager.save();
             return this;
-        }
-
-        public void close(Member closer) {
-            if(closing) return;
-            closing = true;
-            channel.sendMessage("Closing ticket in 5 seconds...").queue();
-            if(inviteMessage != null && !inviteMessage.getReactions().isEmpty()) {inviteMessage.removeReaction("\uD83D\uDED1").queue();
-            inviteMessage.removeReaction("\uD83D\uDEC3").queue();}
-            if(inviteMessage != null) inviteMessage.editMessage("This ticket has been closed.").queue();
-
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    guildTicketManager.close(Ticket.this, closer);
-                }
-            }, 5000);
         }
 
         public String idFormatted() {
@@ -425,157 +377,45 @@ public class TicketManager extends ListenerAdapter {
             return idStr + id;
         }
 
-        public void inviteStaff() {
-            if(closing) return;
-            if(sentToStaff) return;
-            if(subject.equalsIgnoreCase("None") || description.equalsIgnoreCase("None")) {
-                channel.sendMessage("❌ Please fill out the subject and description before sending to staff.").queue();
-                return;
-            }
-            sentToStaff = true;
-            guildTicketManager.inboxChannel.sendMessage(new EmbedBuilder()
-                    .setTitle("\uD83D\uDCE8 Ticket "+idFormatted()+" Needs Staff")
-                    .addField("Subject", subject, false)
-                    .addField("Description", description, false)
-                    .addField("React to help!", "\uD83D\uDEC3 - Join Ticket\n\uD83D\uDED1 - Flag as Spam", false)
-                    .build()
-            ).queue(message -> {
-                inviteMessage = message;
-                message.addReaction("\uD83D\uDEC3").queue();
-                message.addReaction("\uD83D\uDED1").queue();
-                guildTicketManager.save();
-            });
-            channel.sendMessage("☑ Your ticket has been sent to staff!").queue();
-        }
-
-        public Ticket refreshSplash() {
-            if(splashMessage==null) return this;
-            String idStr = "";
-            for(int i = 0; i < 4-(""+id).length();i++) idStr += "0";
-            idStr += id;
-            final String finalIdStr = idStr;
-            splashMessage.editMessage(new EmbedBuilder()
-                    .setTitle("Ticket "+finalIdStr)
-                    .setDescription("Welcome to the support ticket thread! Set the subject and description with the reactions, and click done when ready!")
-                    .addField("Subject", subject, false)
-                    .addField("Description", description, false)
-                    .setColor(Color.CYAN)
-                    .build()
-            ).queue(message -> {
-                splashMessage = message;
-                channel.retrievePinnedMessages().queue(messages -> {
-                    if(!messages.contains(message)) channel.pinMessageById(message.getIdLong()).queue();
-                });
-
-                guildTicketManager.save();
-            });
-            return this;
-        }
-
         /**
          * Runs when a message in this ticket is reacted on.
          * @param event The reaction event (context).
          */
         public void reactionAdded(@Nonnull final GuildMessageReactionAddEvent event) {
-            if(event.getMessageIdLong() == splashMessage.getIdLong()) {
+            if (event.getChannel().getIdLong() == channel.getIdLong()) {
                 event.getReaction().removeReaction(event.getUser()).queue();
-                // do reaction stuff here for splash message
                 switch(event.getReactionEmote().getEmoji()) {
-                    case "\uD83D\uDED1":
-                        close(event.getMember());
+                    case "\uD83D\uDD12": //Lock
+                        lock(event.getUser());
                         break;
-                    case "\uD83D\uDD10":
-                        if (event.getMember().hasPermission(Permission.KICK_MEMBERS)) {if (locked()) unlock(); else lock();}
-                        else channel.sendMessage("❌ You cannot do that!").queue();
-                        break;
-                    case "\uD83D\uDCE8":
-                        if(event.getMember().getIdLong() == opener.getIdLong()) {
-                            inviteStaff();
-                        } else {
-                            channel.sendMessage("You cannot do that!").queue();
+                    case "\uD83D\uDD13": //Unlock
+                        if (event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
+                            if (locked) { unlock(event.getUser()); }
                         }
                         break;
-                    case "\uD83D\uDCF0":
-                        switch (awaitingMessageMode) {
-                            case SUBJECT:
-                            case DESCRIPTION:
-                            case SUBJECT_OR_DESCRIPTION:
-                                awaitingMessageMode = AwaitingMessageMode.NOT;
-                                channel.sendMessage("Stopped editing ticket info!").queue();
-                                break;
-                            case NOT:
-                                awaitingMessageMode = AwaitingMessageMode.SUBJECT_OR_DESCRIPTION;
-                                channel.sendMessage("What would you like to edit?: `subject`, `description`.").queue();
-                                break;
-                            default:
-                                channel.sendMessage("You are currently editing something else!").queue();
-                                break;
-                        }
-                        break;
-                }
-            } else if(inviteMessage != null && event.getMessageIdLong() == inviteMessage.getIdLong()) {
-                event.getReaction().removeReaction(event.getUser()).queue();
-                if(event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
-                    switch(event.getReactionEmote().getEmoji()) {
-                        case "\uD83D\uDEC3":
-                            optIn(event.getMember());
-                            break;
-                        case "\uD83D\uDED1":
-                            inviteMessage.removeReaction("\uD83D\uDED1").queue();
-                            inviteMessage.removeReaction("\uD83D\uDEC3").queue();
-                            inviteMessage.editMessage("This ticket has been closed.").queue();
-                            channel.sendMessage("Your thread has been marked as spam and will be deleted in 10 seconds!").queue();
+                    case "\u26D4": //Close
+                        if (event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
+                            closing = true;
+                            event.getChannel().sendMessage(new EmbedBuilder()
+                                    .setDescription("Ticket will be deleted in 5 seconds")
+                                    .setColor(Command.ERROR_EMBED_COLOR)
+                                    .build()).queue();
                             timer.schedule(new TimerTask() {
                                 @Override
                                 public void run() {
-                                    close(event.getMember());
+                                    guildTicketManager.close(Ticket.this, saveTranscript);
                                 }
                             }, 5000);
-                    }
-                }
-            } else if(event.getChannel().getIdLong() == channel.getIdLong()) {
-                channel.retrieveMessageById(event.getMessageIdLong()).queue(message -> {
-                    if(!message.getEmbeds().isEmpty()) {
-                        MessageEmbed embed = message.getEmbeds().get(0);
-                        if(embed.getTitle().contains(event.getMember().getEffectiveName())) {
-                            optOut(event.getMember());
-                            message.removeReaction("\uD83D\uDEAA").queue();
                         }
-                    }
-                });
-            }
-        }
-
-        private enum AwaitingMessageMode {NOT, SUBJECT_OR_DESCRIPTION, SUBJECT, DESCRIPTION}
-        private AwaitingMessageMode awaitingMessageMode = AwaitingMessageMode.NOT;
-
-        public void messageReceived(@Nonnull final GuildMessageReceivedEvent event) {
-            String message = event.getMessage().getContentRaw();
-            switch (awaitingMessageMode) {
-                case SUBJECT_OR_DESCRIPTION:
-                    if(message.equalsIgnoreCase("subject")) {
-                        awaitingMessageMode = AwaitingMessageMode.SUBJECT;
-                        channel.sendMessage("What would you like to set the subject to?").queue();
-                    } else if(message.equalsIgnoreCase("description")) {
-                        awaitingMessageMode = AwaitingMessageMode.DESCRIPTION;
-                        channel.sendMessage("What would you like to set the description to?").queue();
-                    }
-                    break;
-                case SUBJECT:
-                    message = message.replaceAll("`", "");
-                    awaitingMessageMode = AwaitingMessageMode.NOT;
-                    subject(message);
-                    channel.sendMessage("Changed the ticket subject to `"+message+"`").queue();
-                    break;
-                case DESCRIPTION:
-                    message = message.replaceAll("`", "");
-                    awaitingMessageMode = AwaitingMessageMode.NOT;
-                    description(message);
-                    channel.sendMessage("Changed the ticket description to `"+message+"`").queue();
-                    break;
-                default:
-                    // nothing (would record sent message, but this can be done by simply reading message history)
-                    break;
+                        break;
+                    case "\uD83D\uDCD1":
+                        channel.sendMessage(new EmbedBuilder()
+                                .setDescription("Transcript has been saved!")
+                                .setColor(0xEAE408)
+                                .build()).queue();
+                        saveTranscript = true;
+                        break;
+                }
             }
         }
     }
