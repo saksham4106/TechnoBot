@@ -11,7 +11,7 @@ public class CommandTicketSettings extends Command {
     private final TechnoBot bot;
 
     public CommandTicketSettings(final TechnoBot bot) {
-        super("ticketsettings", "Guild-specific settings for tickets", "{prefix}ticketsettings [argument] [value]", Category.TICKETS);
+        super("ticketsettings", "Guild-specific settings for tickets", "{prefix}ticketsettings [argument] [value]", Category.STAFF);
         this.bot = bot;
     }
 

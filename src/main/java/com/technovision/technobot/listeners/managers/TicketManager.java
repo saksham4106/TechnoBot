@@ -168,8 +168,9 @@ public class TicketManager extends ListenerAdapter {
             AtomicBoolean ret = new AtomicBoolean(false);
             channel.sendMessage(new EmbedBuilder()
                     .setTitle("\uD83C\uDF9F Create a Support Ticket")
-                    .setDescription("Need support, reporting a user, or requesting a ban appeal? Create a ticket by reacting with the emoji below and a staff member will be with you shortly!\n\n" +
-                            "**To Create a Ticket React With** \uD83C\uDF9F")
+                    .setDescription("Need support, reporting a user, or requesting a ban appeal? Create a ticket by reacting with the emoji below and a staff member will be with you shortly!" +
+                            "\n\n**DO NOT USE THIS FOR CODING SUPPORT!**\n*For help with code, please use a support channel.*" +
+                            "\n\n**To Create a Ticket React With** \uD83C\uDF9F")
                     .setFooter("TechnoVision Discord", "https://i.imgur.com/TzHOnJu.png")
                     .setColor(Command.EMBED_COLOR)
                     .build()
