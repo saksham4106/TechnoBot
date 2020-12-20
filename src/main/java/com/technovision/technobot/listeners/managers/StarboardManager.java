@@ -42,7 +42,7 @@ public class StarboardManager extends ListenerAdapter {
         Message msg = event.getMessage();
         if (event.getChannel().getIdLong() == SHOWCASE) {
             if (!msg.getAttachments().isEmpty()) {
-                if (msg.getAttachments().get(0).isImage() || msg.getAttachments().get(0).isVideo()) {
+                if (msg.getAttachments().get(0).isImage()) {
                     String msgID = String.valueOf(msg.getIdLong());
                     posts.put(msgID, new JSONObject());
                     posts.getJSONObject(msgID).put("stars", 0);
@@ -55,7 +55,7 @@ public class StarboardManager extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
+    public synchronized void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
         //Excludes bot/self reacts and anything outside of #showcase
         if (event.getUser().isBot()) { return; }
         if (event.getChannel().getIdLong() == SHOWCASE) {
@@ -69,11 +69,7 @@ public class StarboardManager extends ListenerAdapter {
                 data.save();
 
                 //Add to starboard if stars == 3
-                if (stars == 3) {
-                    if (posts.getJSONObject(msgID).getBoolean("onBoard")) {
-                        data.save();
-                        return;
-                    }
+                if (stars == 3 && !posts.getJSONObject(msgID).getBoolean("onBoard")) {
                     event.getGuild().getTextChannelById(STARBOARD).sendMessage(":star: **" + stars + "** <#" + SHOWCASE + ">").queue((message) -> {
                         event.getGuild().getTextChannelById(SHOWCASE).retrieveMessageById(msgID).queue((originalMessage) -> {
                             message.editMessage(new EmbedBuilder()
@@ -90,8 +86,8 @@ public class StarboardManager extends ListenerAdapter {
                         });
                     });
                 }
-                //Update existing starboard if stars > 3
-                else if (stars > 3) {
+                //Update existing starboard
+                else {
                     long id = posts.getJSONObject(msgID).getLong("boardID");
                     int finalStars = stars;
                     event.getGuild().getTextChannelById(STARBOARD).retrieveMessageById(id).queue((message) -> {
@@ -104,7 +100,7 @@ public class StarboardManager extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReactionRemove(@Nonnull GuildMessageReactionRemoveEvent event) {
+    public synchronized void onGuildMessageReactionRemove(@Nonnull GuildMessageReactionRemoveEvent event) {
         //Excludes bot/self reacts and anything outside of #showcase
         if (event.getUser().isBot()) { return; }
         if (event.getChannel().getIdLong() == SHOWCASE) {
@@ -138,7 +134,7 @@ public class StarboardManager extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageDelete(@Nonnull GuildMessageDeleteEvent event) {
+    public synchronized void onGuildMessageDelete(@Nonnull GuildMessageDeleteEvent event) {
         if (event.getChannel().getIdLong() == SHOWCASE) {
             String msgID = String.valueOf(event.getMessageIdLong());
             if (posts.has(msgID)) {
