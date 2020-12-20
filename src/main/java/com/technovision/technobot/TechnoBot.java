@@ -46,6 +46,7 @@ public class TechnoBot {
     private final LevelManager levelManager;
     private final MusicManager musicManager;
     private final TicketManager ticketManager;
+    private final StarboardManager starboardManager;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
         @Override
         public void load() {
@@ -81,6 +82,7 @@ public class TechnoBot {
         levelManager = new LevelManager(this);
         musicManager = new MusicManager(this);
         ticketManager = new TicketManager(this);
+        starboardManager = new StarboardManager();
     }
 
     public MusicManager getMusicManager() {
@@ -192,7 +194,7 @@ public class TechnoBot {
         GuildMemberEvents.loadJoinMessage();
 
         new CommandRegistry(bot);
-        bot.getRegistry().registerEventListeners(new AutomodListener(bot), new ExtrasEventListener(), bot.musicManager, new GuildLogEventListener(bot), bot.levelManager, new CommandEventListener(bot), new GuildMemberEvents(), bot.ticketManager);
+        bot.getRegistry().registerEventListeners(new AutomodListener(bot), new ExtrasEventListener(), bot.musicManager, new GuildLogEventListener(bot), bot.levelManager, new CommandEventListener(bot), new GuildMemberEvents(), bot.starboardManager, bot.ticketManager);
         bot.getRegistry().addListeners(bot.getJDA());
     }
 }
