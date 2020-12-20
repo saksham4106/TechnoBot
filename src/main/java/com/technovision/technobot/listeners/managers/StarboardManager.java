@@ -87,7 +87,7 @@ public class StarboardManager extends ListenerAdapter {
                     });
                 }
                 //Update existing starboard
-                else {
+                else if (posts.getJSONObject(msgID).getBoolean("onBoard")) {
                     long id = posts.getJSONObject(msgID).getLong("boardID");
                     int finalStars = stars;
                     event.getGuild().getTextChannelById(STARBOARD).retrieveMessageById(id).queue((message) -> {
@@ -102,7 +102,6 @@ public class StarboardManager extends ListenerAdapter {
     @Override
     public synchronized void onGuildMessageReactionRemove(@Nonnull GuildMessageReactionRemoveEvent event) {
         //Excludes bot/self reacts and anything outside of #showcase
-        if (event.getUser().isBot()) { return; }
         if (event.getChannel().getIdLong() == SHOWCASE) {
             //Checks for star emoji
             if (event.getReactionEmote().getAsReactionCode().equalsIgnoreCase(EMOTE)) {
@@ -138,10 +137,12 @@ public class StarboardManager extends ListenerAdapter {
         if (event.getChannel().getIdLong() == SHOWCASE) {
             String msgID = String.valueOf(event.getMessageIdLong());
             if (posts.has(msgID)) {
-                long boardID = posts.getJSONObject(msgID).getLong("boardID");
+                if (posts.getJSONObject(msgID).getBoolean("onBoard")) {
+                    long boardID = posts.getJSONObject(msgID).getLong("boardID");
+                    event.getGuild().getTextChannelById(STARBOARD).deleteMessageById(boardID).queue();
+                }
                 posts.remove(msgID);
                 data.save();
-                event.getGuild().getTextChannelById(STARBOARD).deleteMessageById(boardID).queue();
             }
         }
     }
