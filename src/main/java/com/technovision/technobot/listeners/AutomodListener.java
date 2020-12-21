@@ -22,7 +22,7 @@ public class AutomodListener extends ListenerAdapter {
         }
         if (event.getMessage().getMentionedMembers().size() > 0) {
             if (event.getMessage().getMentionedMembers().contains(event.getGuild().getMemberById(595024631438508070L)) &&
-                hasRole(event.getMember(), "staff")) {
+                !hasRole(event.getMember(), "staff")) {
                 TextChannel channel = event.getGuild().getTextChannelsByName("RULES-AND-INFO", true).get(0);
                 event.getMessage().delete().queue();
                 event.getChannel().sendMessage("<@!" + event.getAuthor().getIdLong() + ">, do not ping TechnoVision! <#" + channel.getId() + ">").queue();
