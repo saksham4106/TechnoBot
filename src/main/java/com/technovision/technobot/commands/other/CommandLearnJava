@@ -1,0 +1,21 @@
+import com.technovision.technobot.commands.Command;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+
+public class CommandLearnJava extends Command{
+  
+  public CommandLearnJava() {
+        super("learnjava", "tells how learning java is important for modding", "{prefix}learnjava", Command.Category.OTHER);
+    }
+    
+    
+    @Override
+    public boolean execute(MessageReceivedEvent event, String[] args) {
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setTitle("learn Java");
+        embed.setDescription("How is learning java Important for modding? Minecraft is a complex game it uses various type of complex java features like functional Interfaces, Suppliers and many more. To make mods you should be thorough in these concepts. without learning java you are wasting your time and our time. so learn Java");
+        event.getChannel().sendMessage(embed.build()).queue();
+        return true;
+    }
+
+}
