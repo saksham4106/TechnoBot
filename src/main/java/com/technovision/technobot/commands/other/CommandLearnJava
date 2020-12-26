@@ -5,16 +5,13 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class CommandLearnJava extends Command{
   
   public CommandLearnJava() {
-        super("learnjava", "tells how learning java is important for modding", "{prefix}learnjava", Command.Category.OTHER);
+        super("learnjava", "Tells how learning Java is important for MinecraftModding", "{prefix}learnjava", Command.Category.OTHER);
     }
     
     
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("learn Java");
-        embed.setDescription("How is learning java Important for modding? Minecraft is a complex game it uses various type of complex java features like functional Interfaces, Suppliers and many more. To make mods you should be thorough in these concepts. without learning java you are wasting your time and our time. so learn Java");
-        event.getChannel().sendMessage(embed.build()).queue();
+        event.getChannel().sendMessage(new EmbedBuilder().setTitle("Learn Java").setDescription("Why is learning Java important? Minecraft is a complex game, it uses various complex java features like functionalInterfaces, Suppliers and many more.. you can't expect to make a mod without knowing java thouroughly. By not learning java you are wasting your time and our time by asking silly questions which you could easily fix if you knew Java.. It is expected that you ask only API questions. Thanks and remember to learn java before starting to mod.").build().queue());
         return true;
     }
 
