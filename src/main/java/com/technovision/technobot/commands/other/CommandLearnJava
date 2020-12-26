@@ -11,7 +11,23 @@ public class CommandLearnJava extends Command{
     
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        event.getChannel().sendMessage(new EmbedBuilder().setTitle("Learn Java").setDescription("Why is learning Java important? Minecraft is a complex game, it uses various complex java features like functionalInterfaces, Suppliers and many more.. you can't expect to make a mod without knowing java thouroughly. By not learning java you are wasting your time and our time by asking silly questions which you could easily fix if you knew Java.. It is expected that you ask only API questions. Thanks and remember to learn java before starting to mod.").build().queue());
+        event.getChannel().sendMessage(new EmbedBuilder().setTitle("Learn Java").setDescription("If you don't know java and you attempt to get support here that could be solved by simply knowing java, please don't question why people are telling you to learn java. It's just common sense to learn java first. We get conversations about learning java every other day and it's just repetitive.\n"+
+"Why should I learn java? I'm just making a simple mod to play with friends! \n"+
+"You still need a basic understanding of java. Programming requires a lot of skill, effort, and time.\n"+
+"\n I know that you know the answer to the problem, so why won't you just give it to me?! \n"+
+"We don't want you to rely on us every time you have an issue because then you'll come back and ask more and more questions that have a simple, straightforward answer.\n"+
+"\n I've learned java already! posts image clearly showing that they haven't \n"+
+"We know you don't know java. It's pretty clear that you don't know it when you make X mistake.\n"+
+"\n I don't care about learning java, just tell me what to do!  \n"+
+"Spoonfeeding is a term used to describe the act of giving a person an answer without explaining how to get to that answer (ex: saying 1*2 is 2 to a 7 year old)"+
+"Stop acting entitled and condescending and just learn java.\n" +
+"If you want to learn java here are some useful courses \n" +
+"Official documentation: \n"+
+"https://docs.oracle.com/javase/tutorial/ \n"+
+"Absolute basics with an interactive editor: \n"+
+"https://www.codecademy.com/learn/learn-java \n"+
+"Ongoing online course with assignments: \n" +
+"https://java-programming.mooc.fi/").build().queue());
         return true;
     }
 
