@@ -73,6 +73,7 @@ public class CommandRegistry {
                 new CommandPing(),
                 new CommandGoogle(),
                 new CommandReport(),
+                new CommandLearnjava(),
 
                 // Tickets
                 new CommandTicketMessage(bot),
